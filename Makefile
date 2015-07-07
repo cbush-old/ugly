@@ -6,16 +6,21 @@ INCLUDE= -Iinclude \
 	-Ithird-party/glm
 
 LDFLAGS= -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
-TEST_LDFLAGS= $(LDFLAGS)
+TEST_LDFLAGS= $(LDFLAGS) -L.
 
 LIBS= -lGL
 TEST_LIBS= $(LIBS) \
 	-lglfw3 \
 	-framework Cocoa \
 	-framework CoreVideo \
-	-framework IOKit
+	-framework IOKit \
+	-logl
 
-SOURCES=
+SOURCES= \
+	src/program.cpp \
+	src/shader.cpp \
+	src/vbo.cpp
+
 
 TEST_SOURCES= \
 	test/main.cpp
@@ -23,10 +28,10 @@ TEST_SOURCES= \
 OBJECTS= $(SOURCES:.cpp=.o)
 TEST_OBJECTS= $(TEST_SOURCES:.cpp=.o)
 
-OUTPUT_SO=ogl.so
+OUTPUT_SO=libogl.dylib
 
 lib: $(OBJECTS)
-	$(CC) -Wl,-undefined -Wl,dynamic_lookup $(LDFLAGS) $(LIBS) $(ALL_OBJECTS) -o $(OUTPUT_SO)
+	$(CC) -dynamiclib -Wl,-undefined -Wl,dynamic_lookup $(OBJECTS) -o $(OUTPUT_SO)
 
 test: lib $(TEST_OBJECTS)
 	$(CC) $(TEST_LDFLAGS) $(TEST_LIBS) $(TEST_OBJECTS) -o main

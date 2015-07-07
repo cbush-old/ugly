@@ -1,4 +1,6 @@
 main
-ogl.so
+*.so
+*.dylib
+*.a
 *.o
 
