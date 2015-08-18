@@ -85,6 +85,7 @@ void Program::disable(attribute const attr) const {
   GL_CALL(glDisableVertexAttribArray(attr));
 }
 
+/*
 uniform Program::get_uniform(const char* name) const {
   GL_CALL(auto rv = glGetUniformLocation(_id, name));
   logv("Get uniform %s = %d", name, rv);
@@ -115,6 +116,7 @@ void Program::set_uniform(uniform var, float const arg1, float const arg2, float
 void Program::set_matrix(uniform location, GLsizei const count, GLboolean const transpose, const GLfloat* value) const {
   GL_CALL(glUniformMatrix4fv((GLint)location, count, transpose, value));
 }
+*/
 
 }
 

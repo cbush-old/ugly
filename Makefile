@@ -19,7 +19,8 @@ TEST_LIBS= $(LIBS) \
 SOURCES= \
 	src/program.cpp \
 	src/shader.cpp \
-	src/vbo.cpp
+	src/vbo.cpp \
+	src/uniform.cpp
 
 
 TEST_SOURCES= \

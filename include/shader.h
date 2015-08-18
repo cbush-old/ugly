@@ -37,11 +37,12 @@ class Shader_type : public Shader {
 };
 
 
-using Fragment_shader = Shader_type<GL_FRAGMENT_SHADER>;
-using Vertex_shader = Shader_type<GL_VERTEX_SHADER>;
-using Tess_control_shader = Shader_type<GL_TESS_CONTROL_SHADER>;
-using Tess_evaluation_shader = Shader_type<GL_TESS_EVALUATION_SHADER>;
-using Geometry_shader = Shader_type<GL_GEOMETRY_SHADER>;
+typedef Shader_type<GL_FRAGMENT_SHADER> Fragment_shader;
+typedef Shader_type<GL_VERTEX_SHADER> Vertex_shader;
+typedef Shader_type<GL_TESS_CONTROL_SHADER> Tess_control_shader;
+typedef Shader_type<GL_TESS_EVALUATION_SHADER> Tess_evaluation_shader;
+typedef Shader_type<GL_GEOMETRY_SHADER> Geometry_shader;
+
 
 }
 

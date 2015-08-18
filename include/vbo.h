@@ -9,9 +9,9 @@ namespace ogl {
 class VBO {
   public:
     VBO(std::vector<float> const&);
+    ~VBO();
 
   public:
-    ~VBO();
     VBO(VBO const&) = delete;
     VBO& operator=(VBO const&) = delete;
 
