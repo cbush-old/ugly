@@ -2,7 +2,7 @@
 #include "log.h"
 #include "gl_type.h"
 
-namespace ogl {
+namespace gl {
 
 template<void(*f0)(GLuint, GLenum, GLint*), void(*f1)(GLuint, GLsizei, GLsizei*, GLchar*)>
 void gl_log(GLuint id);
@@ -15,24 +15,24 @@ static inline void print_log(GLuint id) {
 }
 
 Program::Program() {
-  GL_CALL(_id = glCreateProgram());
-  logi("Created program %d", _id);
+  GL_CALL(_name = glCreateProgram());
+  logi("Created program %d", _name);
 }
 
 Program::~Program() {
-  GL_CALL(glDeleteProgram(_id));
-  logi("Destroyed program %d", _id);
+  GL_CALL(glDeleteProgram(_name));
+  logi("Destroyed program %d", _name);
 }
 
 void Program::bind() const {
 
-  glUseProgram(_id);
+  glUseProgram(_name);
 
   GLenum error = glGetError();
 
   if (error != GL_NO_ERROR) {
     loge("Error binding shader program: %d", error);
-    print_log(_id);
+    print_log(_name);
     throw;
   }
 }
@@ -42,27 +42,27 @@ void Program::unbind() const {
 }
 
 void Program::attach(Shader const& shader) const {
-  logi("Attaching shader %d to program %d", shader.get_id(), _id);
-  GL_CALL(glAttachShader(_id, shader.get_id()));
+  logi("Attaching shader %d to program %d", shader.get_name(), _name);
+  GL_CALL(glAttachShader(_name, shader.get_name()));
 }
 
 void Program::detach(Shader const& shader) const {
-  logi("Detaching shader %d from program %d", shader.get_id(), _id);
-  GL_CALL(glDetachShader(_id, shader.get_id()));
+  logi("Detaching shader %d from program %d", shader.get_name(), _name);
+  GL_CALL(glDetachShader(_name, shader.get_name()));
 }
 
 
 
 void Program::link() const {
-  logi("Linking program %d", _id);
-  GL_CALL(glLinkProgram(_id));
+  logi("Linking program %d", _name);
+  GL_CALL(glLinkProgram(_name));
 
   int success = GL_FALSE;
-  glGetProgramiv(_id, GL_LINK_STATUS, &success);
+  glGetProgramiv(_name, GL_LINK_STATUS, &success);
 
   if (success != GL_TRUE) {
-    loge("Error in linking program %d", _id);
-    print_log(_id);
+    loge("Error in linking program %d", _name);
+    print_log(_name);
     throw;
   }
 }
@@ -74,8 +74,8 @@ void Program::enable(attribute const attr) const {
   GLenum error = glGetError();
 
   if (error != GL_NO_ERROR){
-    loge("Error enabling attribute %d for SP%d: %d", attr, _id, error);
-    print_log(_id);
+    loge("Error enabling attribute %d for SP%d: %d", attr, _name, error);
+    print_log(_name);
     throw;
   }
 
@@ -87,13 +87,13 @@ void Program::disable(attribute const attr) const {
 
 /*
 uniform Program::get_uniform(const char* name) const {
-  GL_CALL(auto rv = glGetUniformLocation(_id, name));
+  GL_CALL(auto rv = glGetUniformLocation(_name, name));
   logv("Get uniform %s = %d", name, rv);
   return rv;
 }
 
 attribute Program::get_attrib(const char* name) const {
-  GL_CALL(auto rv = glGetAttribLocation(_id, name));
+  GL_CALL(auto rv = glGetAttribLocation(_name, name));
   return rv;
 }
 

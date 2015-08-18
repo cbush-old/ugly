@@ -4,7 +4,7 @@
 #include "gl_type.h"
 #include <vector>
 
-namespace ogl {
+namespace gl {
 
 class uniform {
   public:
@@ -14,10 +14,10 @@ class uniform {
     virtual ~uniform() =0;
 
   public:
-    operator int() { return _id; }
+    operator int() { return _name; }
 
   private:
-    GLint _id { 0 };
+    GLint _name { 0 };
 
 };
 
@@ -71,6 +71,6 @@ class uniform_vector : public uniform {
 
 };
 
-} // namespace ogl
+} // namespace gl
 
 #endif

@@ -5,7 +5,7 @@
 #include "shader.h"
 #include "uniform.h"
 
-namespace ogl {
+namespace gl {
 
 class Program {  
   public:
@@ -56,7 +56,7 @@ class Program {
     void set_matrix(uniform, GLsizei const, GLboolean const, GLfloat const *) const;
     */
   private:
-    GLint _id { 0 };
+    GLint _name { 0 };
 
 };
 

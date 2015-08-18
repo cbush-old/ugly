@@ -7,7 +7,7 @@
 #define glUniformNTv(N, T) glUniformNT(N, T)v
 #define glUniformMatrixN(NxN) glUniformMatrix##NxN##fv
 
-namespace ogl {
+namespace gl {
 
 template<typename T> using Uniform1Func = std::function<void(GLint, T)>;
 template<typename T> using Uniform2Func = std::function<void(GLint, T, T)>;

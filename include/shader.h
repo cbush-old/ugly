@@ -3,7 +3,7 @@
 
 #include "gl_type.h"
 
-namespace ogl {
+namespace gl {
 
 class Shader {
   protected:
@@ -17,12 +17,12 @@ class Shader {
     void compile() const;
 
   public:
-    inline GLuint get_id() const {
-      return _id;
+    inline GLuint get_name() const {
+      return _name;
     };
 
   protected:
-    GLenum _id { 0 };
+    GLenum _name { 0 };
 
 };
 

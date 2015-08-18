@@ -6,14 +6,14 @@
 #include <cstring>
 
 
-namespace ogl {
+namespace gl {
 
 template<void(*f0)(GLuint, GLenum, GLint*), void(*f1)(GLuint, GLsizei, GLsizei*, GLchar*)>
-void gl_log(GLuint id) {
+void gl_log(GLuint name) {
   int log_length, max_length;
-  GL_CALL(f0(id, GL_INFO_LOG_LENGTH, &max_length));
+  GL_CALL(f0(name, GL_INFO_LOG_LENGTH, &max_length));
   char* log = new char[max_length];
-  GL_CALL(f1(id, max_length, &log_length, log));
+  GL_CALL(f1(name, max_length, &log_length, log));
   if(log_length > 0) {
     log[log_length - 1] = '\0';
     logw("%s", log);
@@ -52,20 +52,20 @@ void Shader::load(const char* path) {
     return;
   }
 
-  GL_CALL(glShaderSource(_id, 1, source, NULL));
+  GL_CALL(glShaderSource(_name, 1, source, NULL));
 
 }
 
 void Shader::compile() const {
 
-  GL_CALL(glCompileShader(_id));
+  GL_CALL(glCompileShader(_name));
 
   GLint compiled = GL_FALSE;
-  GL_CALL(glGetShaderiv(_id, GL_COMPILE_STATUS, &compiled));
+  GL_CALL(glGetShaderiv(_name, GL_COMPILE_STATUS, &compiled));
 
   if (compiled != GL_TRUE) {
-    loge("Couldn't compile shader #%d!", _id); 
-    print_log(_id);
+    loge("Couldn't compile shader #%d!", _name); 
+    print_log(_name);
     throw;
   }
 

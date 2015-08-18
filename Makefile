@@ -14,13 +14,23 @@ TEST_LIBS= $(LIBS) \
 	-framework Cocoa \
 	-framework CoreVideo \
 	-framework IOKit \
-	-logl
+	-lugly
 
 SOURCES= \
+	src/buffer.cpp \
+	src/context.cpp \
+	src/framebuffer.cpp \
+	src/pipeline.cpp \
 	src/program.cpp \
+	src/query.cpp \
+	src/renderbuffer.cpp \
+	src/sampler.cpp \
 	src/shader.cpp \
-	src/vbo.cpp \
-	src/uniform.cpp
+	src/texture.cpp \
+	src/transform_feedback.cpp \
+	src/uniform.cpp \
+	src/vertex_array.cpp \
+	src/viewport.cpp
 
 
 TEST_SOURCES= \
@@ -29,7 +39,7 @@ TEST_SOURCES= \
 OBJECTS= $(SOURCES:.cpp=.o)
 TEST_OBJECTS= $(TEST_SOURCES:.cpp=.o)
 
-OUTPUT_SO=libogl.dylib
+OUTPUT_SO=libugly.dylib
 
 lib: $(OBJECTS)
 	$(CC) -dynamiclib -Wl,-undefined -Wl,dynamic_lookup $(OBJECTS) -o $(OUTPUT_SO)

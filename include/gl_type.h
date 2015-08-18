@@ -6,7 +6,7 @@
 #include <gl3.h>
 #include <gl3ext.h>
 
-namespace ogl {
+namespace gl {
 
 template<typename T>
 struct vec2_t {
@@ -38,66 +38,18 @@ using attribute = GLint;
     } \
   }
 
-template<void(*glGenFunc)(GLsizei, GLuint*), void(*glDeleteFunc)(GLsizei, const GLuint *)>
-class GeneratedObject {
-  public:
-    GeneratedObject();
-    virtual ~GeneratedObject() =0;
+#define DECL_GL_OBJECT(Class) \
+  private: GLuint _name { 0 }; \
+           Class(); \
+           Class(GLuint); \
+  public: ~Class();
 
-  private:
-    GLuint _id;
-};
+#define DEFINE_GL_OBJECT(Class, Plural) \
+  Class::Class() { GL_CALL(glGen##Plural(1, &_name)); } \
+  Class::Class(GLuint name): _name(name) {} \
+  Class::~Class() { try { GL_CALL(glDelete##Plural(1, &_name)); } catch(...){} }
 
-#define GENERATED_OBJECT(names) GeneratedObject< glGen##names , glDelete##names >
 
-class Buffer : public GENERATED_OBJECT(Buffers) {
-  public:
-    virtual ~Buffer() {}
-};
-
-class Framebuffer : public GENERATED_OBJECT(Framebuffers) {
-  public:
-    virtual ~Framebuffer() {}
-
-};
-
-class Pipeline : public GENERATED_OBJECT(ProgramPipelines) {
-  public:
-    virtual ~Pipeline() {}
-};
-
-class Query : public GENERATED_OBJECT(Queries) {
-  public:
-    virtual ~Query() {}
-};
-
-class Renderbuffer : public GENERATED_OBJECT(Renderbuffers) {
-  public:
-    virtual ~Renderbuffer() {}
-};
-
-class Sampler : public GENERATED_OBJECT(Samplers) {
-  public:
-    virtual ~Sampler() {}
-};
-
-class Texture : public GENERATED_OBJECT(Textures) {
-  public:
-    virtual ~Texture() {}
-};
-
-class TransformFeedback : public GENERATED_OBJECT(TransformFeedbacks) {
-  public:
-    virtual ~TransformFeedback() {}
-
-};
-
-class VertexArray : public GENERATED_OBJECT(VertexArrays) {
-  public:
-    virtual ~VertexArray() {}
-
-};
-
-} // namespace ogl
+} // namespace gl
 
 #endif

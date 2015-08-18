@@ -2,8 +2,17 @@
 #define CONTEXT_H
 
 #include "gl_type.h"
+#include "buffer.h"
+#include "pipeline.h"
+#include "program.h"
+#include "renderbuffer.h"
+#include "framebuffer.h"
+#include "texture.h"
+#include "vertex_array.h"
+#include "viewport.h"
 
-namespace ogl {
+
+namespace gl {
 
 struct PackInfo {
   int alignment;
@@ -21,11 +30,14 @@ class Context {
     Context(void*);
     ~Context();
 
+  public:
+    Program* create_program();
+    
 
   public:
     void bind(Renderbuffer&);
-    void unbind_renderbuffer();
-    
+    void unbind();
+
 
 
   public: // BLENDING

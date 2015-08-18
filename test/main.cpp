@@ -1,6 +1,8 @@
 #include "ogl.h"
 #include "log.h"
 
+#include "pipeline.h"
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
