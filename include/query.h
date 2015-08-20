@@ -6,7 +6,6 @@
 namespace gl {
 
 class Query {
-  DECL_GL_OBJECT(Query);
 };
 
 } // namespace gl

@@ -6,7 +6,6 @@
 namespace gl {
 
 class Texture {
-  DECL_GL_OBJECT(Texture);
 };
 
 } // namespace gl

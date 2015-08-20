@@ -6,7 +6,17 @@
 namespace gl {
 
 class VertexArray {
-  DECL_GL_OBJECT(VertexArray);
+  public:
+    /**
+     * @brief Bind the VertexArray to the Context
+     **/
+    void bind();
+
+    /**
+     * @brief Unbind the VertexArray
+     **/
+    void unbind();
+
 };
 
 } // namespace gl

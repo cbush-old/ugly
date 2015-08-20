@@ -20,6 +20,7 @@ SOURCES= \
 	src/buffer.cpp \
 	src/context.cpp \
 	src/framebuffer.cpp \
+	src/generated_object.cpp \
 	src/pipeline.cpp \
 	src/program.cpp \
 	src/query.cpp \

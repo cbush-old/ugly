@@ -7,7 +7,7 @@
 namespace gl {
 
 class uniform {
-  public:
+  protected:
     uniform();
 
   public:

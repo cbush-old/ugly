@@ -2,6 +2,4 @@
 
 namespace gl {
 
-DEFINE_GL_OBJECT(VertexArray, VertexArrays);
-
 } // namespace gl

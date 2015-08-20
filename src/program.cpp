@@ -14,33 +14,15 @@ static inline void print_log(GLuint id) {
   gl_log<glGetProgramiv, glGetProgramInfoLog>(id);
 }
 
-Program::Program() {
+Program::Program(IContext& context):
+  ContextAssociatedObject(context) {
   GL_CALL(_name = glCreateProgram());
-  logi("Created program %d", _name);
 }
 
 Program::~Program() {
   GL_CALL(glDeleteProgram(_name));
-  logi("Destroyed program %d", _name);
 }
-
-void Program::bind() const {
-
-  glUseProgram(_name);
-
-  GLenum error = glGetError();
-
-  if (error != GL_NO_ERROR) {
-    loge("Error binding shader program: %d", error);
-    print_log(_name);
-    throw;
-  }
-}
-
-void Program::unbind() const {
-  GL_CALL(glUseProgram(0));
-}
-
+/*
 void Program::attach(Shader const& shader) const {
   logi("Attaching shader %d to program %d", shader.get_name(), _name);
   GL_CALL(glAttachShader(_name, shader.get_name()));
@@ -51,9 +33,9 @@ void Program::detach(Shader const& shader) const {
   GL_CALL(glDetachShader(_name, shader.get_name()));
 }
 
+*/
 
-
-void Program::link() const {
+void Program::link() {
   logi("Linking program %d", _name);
   GL_CALL(glLinkProgram(_name));
 
@@ -67,6 +49,8 @@ void Program::link() const {
   }
 }
 
+
+/*
 void Program::enable(attribute const attr) const {
 
   glEnableVertexAttribArray(attr);
@@ -85,7 +69,6 @@ void Program::disable(attribute const attr) const {
   GL_CALL(glDisableVertexAttribArray(attr));
 }
 
-/*
 uniform Program::get_uniform(const char* name) const {
   GL_CALL(auto rv = glGetUniformLocation(_name, name));
   logv("Get uniform %s = %d", name, rv);

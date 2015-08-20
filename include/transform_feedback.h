@@ -6,7 +6,6 @@
 namespace gl {
 
 class TransformFeedback {
-  DECL_GL_OBJECT(TransformFeedback);
 };
 
 } // namespace gl

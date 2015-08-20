@@ -7,14 +7,6 @@
 namespace gl {
 
 class Pipeline {
-  DECL_GL_OBJECT(Pipeline);
-
-  public:
-    /**
-     * @brief Set the active Program object for the Pipeline.
-     **/
-    void set_active(Program&);
-
 };
 
 } // namespace gl

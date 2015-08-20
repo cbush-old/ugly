@@ -6,7 +6,6 @@
 namespace gl {
 
 class Sampler {
-  DECL_GL_OBJECT(Sampler);
 };
 
 } // namespace gl

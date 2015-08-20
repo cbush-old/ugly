@@ -6,7 +6,10 @@
 namespace gl {
 
 class Framebuffer {
-  DECL_GL_OBJECT(Framebuffer);
+  public:
+    void bind(GLenum target);
+    void unbind();
+
 };
 
 } // namespace gl
