@@ -40,8 +40,53 @@ ContextAssociatedObject::~ContextAssociatedObject() {
 }
 
 
+template<typename T, void(*GET)(GLenum, T*)>
+inline T get(IContext const& context, GLenum param) {
+  if (!context.current()) {
+    throw gl::exception("can't get param from inactive context");
+  }
+  T rv;
+  GL_CALL(GET(param, &rv));
+  return rv;
+}
+
+template<typename T>
+inline T get(IContext const& context, GLenum param);
+
+template<>
+inline int get<int>(IContext const& context, GLenum param) {
+  return get<GLint, glGetIntegerv>(context, param);
+}
+
+template<>
+inline int64_t get<int64_t>(IContext const& context, GLenum param) {
+  return get<GLint64, glGetInteger64v>(context, param);
+}
+
+template<>
+inline bool get<bool>(IContext const& context, GLenum param) {
+  return get<GLboolean, glGetBooleanv>(context, param);
+}
+
+template<>
+inline double get<double>(IContext const& context, GLenum param) {
+  return get<GLdouble, glGetDoublev>(context, param);
+}
+
+template<>
+inline float get<float>(IContext const& context, GLenum param) {
+  return get<GLfloat, glGetFloatv>(context, param);
+}
 
 
+
+unsigned BaseContext::major_version() const {
+  return (unsigned)get<int>(*this, GL_MAJOR_VERSION);
+}
+
+unsigned BaseContext::minor_version() const {
+  return (unsigned)get<int>(*this, GL_MINOR_VERSION);
+}
 
 
 void BaseContext::add(ContextAssociatedObject* object) {

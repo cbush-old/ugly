@@ -58,10 +58,8 @@ std::string load_file(std::string const& path) {
 
 
 void Shader::load(std::string const& path) {
-
   std::string file = load_file(path);
   set_source(file);
-
 }
 
 void Shader::compile() {
@@ -90,7 +88,7 @@ void Shader::set_source(std::vector<std::string> const& sources) {
   }
 
   try {
-    GL_CALL(glShaderSource(_name, 1, source, NULL));
+    GL_CALL(glShaderSource(_name, sources.size(), source, NULL));
   } catch(...) {
     delete[] source;
     throw;

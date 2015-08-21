@@ -19,7 +19,7 @@ class exception {
     exception(std::string what): _what(what) {}
 
   public:
-    std::string const& what() const { return _what; }
+    const char* what() const { return _what.c_str(); }
 
   protected:
     std::string _what;
@@ -202,6 +202,10 @@ class IContext {
      **/
     virtual void attach(IController&) =0;
     virtual void detach(IController&) =0;
+
+  public:
+    virtual unsigned major_version() const =0;
+    virtual unsigned minor_version() const =0;
 
   public:
     /**

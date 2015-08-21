@@ -25,10 +25,8 @@ class BaseContext : public IContext {
     void detach(IController &) override;
 
   public: // OPENGL VERSION INFO
-    int get_major_version() const;
-    int get_minor_version() const;
-    template<typename T>
-    T get(GLenum) const;
+    unsigned major_version() const override;
+    unsigned minor_version() const override;
 
   protected:
     void add(ContextAssociatedObject*) override;
@@ -37,11 +35,12 @@ class BaseContext : public IContext {
   protected:
     void on_made_not_current() override;
 
-  private:
+  protected:
     void *_handle { nullptr };
-
     IProgram const* _program { nullptr };
     IBuffer const* _buffer[BUFFER_INDEX_MAX] { nullptr };
+
+  private:
 
     std::set<ContextAssociatedObject const*> _associated_objects;
     std::set<IController*> _attached_controllers;

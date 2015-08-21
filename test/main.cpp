@@ -29,6 +29,7 @@ void expect(const char* name, bool result) {
 
 
 int main(int argc, const char* const argv[]) {
+  try {
 
   glfwApp app;
 
@@ -46,6 +47,9 @@ int main(int argc, const char* const argv[]) {
   expect("after making context1 current, context2 is not current", !context2.current());
   expect("after making context1 current, context1 is current", context1.current());
 
+  expect("gl major version is 4", context1.major_version(), 4u);
+  expect("gl minor version is 1", context1.minor_version(), 1u);
+
 
   //  SHADER TESTS
   //
@@ -55,6 +59,15 @@ int main(int argc, const char* const argv[]) {
 
   EXPECT_THROW("bad file path threw", gl::VertexShader bad_path("garbage"))
   EXPECT_THROW("compiling shader with bad syntax failed", gl::VertexShader syntax_error_vert("test/shaders/bad_syntax.glsl"));
+
+  gl::VertexShader shader;
+  shader.set_source("hello");
+  expect("after setting single shader source, source matches input", shader.get_source(), "hello\n");
+
+  shader.set_source({
+    "hello", "cruel", "world",
+  });
+  expect("after setting multiple shader source, source matches input", shader.get_source(), "hellocruelworld\n");
 
   gl::FragmentShader frag ("test/shaders/frag.glsl");
 
@@ -70,4 +83,7 @@ int main(int argc, const char* const argv[]) {
     app.update();
   }
 
+  } catch(gl::exception const& e) {
+    loge("caught exception: %s", e.what()); 
+  }
 }
