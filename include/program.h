@@ -7,12 +7,14 @@
 
 namespace gl {
 
-class Program : public ContextAssociatedObject, IProgram {
-  private:
-    Program(IContext&);
+class Program : public IProgram {
+  public:
+    Program();
 
   public:
     ~Program();
+    Program(Program const&) = delete;
+    Program& operator=(Program const&) = delete;
 
   public:
     void attach(IShader const&) override;

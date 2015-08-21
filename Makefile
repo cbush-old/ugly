@@ -19,6 +19,7 @@ TEST_LIBS= $(LIBS) \
 SOURCES= \
 	src/buffer.cpp \
 	src/context.cpp \
+	src/controller.cpp \
 	src/framebuffer.cpp \
 	src/generated_object.cpp \
 	src/pipeline.cpp \

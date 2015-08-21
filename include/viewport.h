@@ -3,7 +3,4 @@
 
 #include "gl_type.h"
 
-class Viewport {
-};
-
 #endif

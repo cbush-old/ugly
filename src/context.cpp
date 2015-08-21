@@ -2,6 +2,28 @@
 
 namespace gl {
 
+// Lookup table for BufferIndex to GL_TARGET_BUFFER enums.
+// Obviously, BufferIndex order must match this table order.
+// Have you updated either table recently? Do the orders 
+// still match? Well, do they? Did you double check...?!
+const GLenum BaseContext::buffer_target[BUFFER_INDEX_MAX] {
+  GL_ARRAY_BUFFER,
+  // GL_ATOMIC_COUNTER_BUFFER,
+  GL_COPY_READ_BUFFER,
+  GL_COPY_WRITE_BUFFER,
+  // GL_DISPATCH_INDIRECT_BUFFER,
+  GL_DRAW_INDIRECT_BUFFER,
+  GL_ELEMENT_ARRAY_BUFFER,
+  GL_PIXEL_PACK_BUFFER,
+  GL_PIXEL_UNPACK_BUFFER,
+  // GL_QUERY_BUFFER,
+  // GL_SHADER_STORAGE_BUFFER,
+  GL_TEXTURE_BUFFER,
+  GL_TRANSFORM_FEEDBACK_BUFFER,
+  GL_UNIFORM_BUFFER,
+};
+
+
 ContextAssociatedObject::ContextAssociatedObject(IContext& context)
   : _context(context)
 {
@@ -11,6 +33,11 @@ ContextAssociatedObject::ContextAssociatedObject(IContext& context)
 ContextAssociatedObject::~ContextAssociatedObject() {
   _context.remove(this);
 }
+
+
+
+
+
 
 void BaseContext::add(ContextAssociatedObject* object) {
   _associated_objects.insert(object);
@@ -24,7 +51,19 @@ BaseContext::BaseContext(void* handle)
   : _handle(handle) 
   {}
 
+BaseContext::~BaseContext() {}
+
+void BaseContext::attach(IController& configurator) {
+  configurator.activate(*this);
+}
+
+void BaseContext::detach(IController& configurator) {
+  configurator.deactivate();
+}
+
+
 MonoContext::MonoContext(void* handle): BaseContext(handle) {}
+
 
 void MonoContext::make_current() {
   current_context = this;
@@ -50,16 +89,27 @@ void MultiContext::make_current() {
   if (std::this_thread::get_id() != _thread_id) {
     throw;
   }
-  std::lock_guard<std::recursive_mutex> lock(current_context_lock);
-
+  {
+    std::lock_guard<std::recursive_mutex> lock(current_context_lock);
+    current_context[_thread_id] = this;
+  }
 }
 
 bool MultiContext::current() const {
-  return false;
+  if (std::this_thread::get_id() != _thread_id) {
+    throw;
+  }
+  std::lock_guard<std::recursive_mutex> lock(current_context_lock);
+  auto it = current_context.find(_thread_id);
+  return it != current_context.end() && it->second == this;
 }
 
 MultiContext::~MultiContext() {
-
+  std::lock_guard<std::recursive_mutex> lock(current_context_lock);
+  auto it = current_context.find(_thread_id);
+  if (it != current_context.end() && it->second == this) {
+    current_context.erase(it);
+  }
 }
 
 

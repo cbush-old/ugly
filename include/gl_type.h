@@ -68,41 +68,6 @@ class ContextAssociatedObject {
 };
 
 
-class IContextConfigurator {
-  public:
-    virtual ~IContextConfigurator() {}
-
-  public:
-    virtual void activate() =0;
-    virtual void deactivate() =0;
-
-};
-
-class IViewport : public IContextConfigurator {
-  public:
-    virtual ~IViewport() =0;
-};
-
-class IBlend : public IContextConfigurator {
-  public:
-    virtual ~IBlend() =0;
-
-};
-
-class ICullface : public IContextConfigurator {
-  public:
-    virtual ~ICullface() =0;
-};
-
-class IDepth : public IContextConfigurator {
-  public:
-    virtual ~IDepth() =0;
-};
-
-class IColor : public IContextConfigurator {
-  public:
-    virtual ~IColor() =0;
-};
 
 
 template<void(*glGenFunc)(GLsizei, GLuint*), void(*glDeleteFunc)(GLsizei, GLuint const*)>
@@ -161,37 +126,71 @@ class IBuffer {
 
 };
 
+enum BufferIndex {
+  BUFFER_INDEX_ARRAY = 0,
+  // BUFFER_INDEX_ATOMIC_COUNTER, // 4.2+
+  BUFFER_INDEX_COPY_READ,
+  BUFFER_INDEX_COPY_WRITE,
+  // BUFFER_INDEX_DISPATCH_INDIRECT, // 4.3+
+  BUFFER_INDEX_DRAW_INDIRECT,
+  BUFFER_INDEX_ELEMENT_ARRAY,
+  BUFFER_INDEX_PIXEL_PACK,
+  BUFFER_INDEX_PIXEL_UNPACK,
+  // BUFFER_INDEX_QUERY, // 4.4+
+  // BUFFER_INDEX_SHADER_STORAGE, // 4.3+
+  BUFFER_INDEX_TEXTURE,
+  BUFFER_INDEX_TRANSFORM_FEEDBACK,
+  BUFFER_INDEX_UNIFORM,
+  BUFFER_INDEX_MAX
+};
 
 class IContext {
+  public:
+    class IController {
+      public:
+        virtual ~IController() {}
+
+      public:
+        virtual void activate(IContext&) =0;
+        virtual void deactivate() =0;
+    };
+
   public:
     virtual ~IContext() {}
 
   public:
-    virtual void set_viewport(IViewport&) =0;
-    virtual void set_blend(IBlend&) =0;
-    virtual void set_cullface(ICullface&) =0;
-    virtual void set_depth(IDepth&) =0;
-    virtual void set_color(IColor&) =0;
+    /**
+     * @brief attach a Controller to the Context
+     **/
+    virtual void attach(IController&) =0;
+    virtual void detach(IController&) =0;
 
   public:
     /**
-     * @brief Bind a Program to the Context.
+     * @brief install the Program as part of the current rendering state.
      **/
-    virtual void bind(IProgram const&) =0;
+    virtual void use(IProgram const& program) =0;
 
     /**
-     * @brief Unbind a Program from the Context.
+     * @brief bind a Buffer to the target of Context.
+     * @param buffer  the buffer to bind
+     * @param target  the target to bind the buffer to
      **/
-    virtual void unbind(IProgram const&) =0;
+     virtual void bind(IBuffer const& buffer, BufferIndex target);
+
+    /**
+     * @brief unbind the target
+     **/
+     virtual void unbind(BufferIndex);
 
   public:
     /**
-     * @brief Make this Context the current Context of this thread.
+     * @brief make this Context the current Context of this thread.
      **/
     virtual void make_current() =0;
 
     /**
-     * @brief Check whether the Context is current on this thread.
+     * @brief check whether the Context is current on this thread.
      * @return true if the Context is current on this thread.
      **/
     virtual bool current() const =0;
