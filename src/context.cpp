@@ -77,7 +77,11 @@ void BaseContext::on_made_not_current() {
 }
 
 
-MonoContext::MonoContext(void* handle): BaseContext(handle) {}
+MonoContext::MonoContext(void* handle): BaseContext(handle) {
+  if (!current_context) {
+    make_current();
+  }
+}
 
 
 void MonoContext::make_current() {
@@ -102,7 +106,12 @@ MonoContext::~MonoContext() {
 MultiContext::MultiContext(void* handle)
   : BaseContext(handle)
   , _thread_id(std::this_thread::get_id())
-  {}
+{
+  std::lock_guard<std::recursive_mutex> lock(current_context_lock);
+  if (current_context.empty()) {
+    make_current();
+  }
+}
 
 void MultiContext::make_current() {
   if (std::this_thread::get_id() != _thread_id) {

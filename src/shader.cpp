@@ -8,6 +8,24 @@
 
 namespace gl {
 
+Shader::Shader() {}
+
+Shader::~Shader() {}
+
+template<GLenum Type>
+Shader_type<Type>::Shader_type() {
+  GL_CALL(_name = glCreateShader(Type));
+}
+
+template<GLenum Type>
+Shader_type<Type>::Shader_type(std::string const& path)
+  : Shader_type<Type>()
+{
+  load(path);
+  compile();
+}
+
+
 template<void(*f0)(GLuint, GLenum, GLint*), void(*f1)(GLuint, GLsizei, GLsizei*, GLchar*)>
 void gl_log(GLuint name) {
   int log_length, max_length;
@@ -33,30 +51,20 @@ inline static void print_log(GLuint id) {
 std::string load_file(std::string const& path) {
   std::ifstream f(path);
   if (!f.good()) {
-    return "";
+    throw;
   }
   return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 }
 
 
-void Shader::load(const char* path) {
+void Shader::load(std::string const& path) {
 
   std::string file = load_file(path);
-
-  char const * source[1] {
-    file.c_str()
-  };
-
-  if (!source[0]) {
-    loge("Couldn't load shader '%s'", path);
-    return;
-  }
-
-  GL_CALL(glShaderSource(_name, 1, source, NULL));
+  set_source(file);
 
 }
 
-void Shader::compile() const {
+void Shader::compile() {
 
   GL_CALL(glCompileShader(_name));
 
@@ -71,4 +79,82 @@ void Shader::compile() const {
 
 }
 
+void Shader::set_source(std::string const& source) {
+  char const * sources[1] {
+    source.c_str()
+  };
+  GL_CALL(glShaderSource(_name, 1, sources, NULL));
 }
+
+void Shader::set_source(std::vector<std::string> const& sources) {
+  char const** source = new char const*[sources.size()];
+  size_t i = 0;
+  for (auto const& src : sources) {
+    source[i++] = src.c_str();
+  }
+
+  try {
+    GL_CALL(glShaderSource(_name, 1, source, NULL));
+  } catch(...) {
+    delete[] source;
+    throw;
+  }
+  delete[] source;
+}
+
+std::string Shader::get_source() const {
+  GLsizei length = source_length();
+  if (!length) {
+    return "";
+  }
+
+  char* buf = new char[length];
+  try {
+    GL_CALL(glGetShaderSource(_name, length, &length, buf));
+  } catch(...) {
+    delete[] buf;
+    throw;
+  }
+  std::string source (buf);
+  delete[] buf;
+  return source;
+}
+
+GLuint Shader::name() const {
+  return _name;
+}
+
+template<GLenum PARAM>
+inline GLint get(GLuint name) {
+  GLint info;
+  GL_CALL(glGetShaderiv(name, PARAM, &info));
+  return info;
+}
+
+GLenum Shader::type() const {
+  return (GLenum)get<GL_SHADER_TYPE>(_name);
+}
+
+bool Shader::deleted() const {
+  return get<GL_DELETE_STATUS>(_name);
+}
+
+bool Shader::compiled() const {
+  return get<GL_COMPILE_STATUS>(_name);
+}
+
+unsigned Shader::source_length() const {
+  return (unsigned)get<GL_SHADER_SOURCE_LENGTH>(_name);
+}
+
+
+template class Shader_type<GL_FRAGMENT_SHADER>;
+template class Shader_type<GL_VERTEX_SHADER>;
+template class Shader_type<GL_TESS_CONTROL_SHADER>;
+template class Shader_type<GL_TESS_EVALUATION_SHADER>;
+template class Shader_type<GL_GEOMETRY_SHADER>;
+
+} // namespace gl
+
+
+

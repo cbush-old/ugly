@@ -35,8 +35,11 @@ SOURCES= \
 	src/viewport.cpp
 
 
+TEST_INCLUDE= $(INCLUDE) -Itest
+
 TEST_SOURCES= \
-	test/main.cpp
+	test/main.cpp \
+	test/glfw_app.cpp
 
 OBJECTS= $(SOURCES:.cpp=.o)
 TEST_OBJECTS= $(TEST_SOURCES:.cpp=.o)
@@ -47,7 +50,7 @@ lib: $(OBJECTS)
 	$(CC) -dynamiclib -Wl,-undefined -Wl,dynamic_lookup $(OBJECTS) -o $(OUTPUT_SO)
 
 test: lib $(TEST_OBJECTS)
-	$(CC) $(TEST_LDFLAGS) $(TEST_LIBS) $(TEST_OBJECTS) -o main
+	$(CC) $(TEST_INCLUDE) $(TEST_LDFLAGS) $(TEST_LIBS) $(TEST_OBJECTS) -o main
 
 .cpp.o:
 	$(CC) $(CFLAGS) $(INCLUDE) $< -o $@

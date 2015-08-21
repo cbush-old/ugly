@@ -17,7 +17,7 @@ class Controller : public IContext::IController {
     bool active() const;
 
   private:
-    IContext* _context;
+    IContext* _context { nullptr };
 };
 
 class BlendController : public Controller {

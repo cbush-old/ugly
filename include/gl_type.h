@@ -8,6 +8,8 @@
 
 #include <map>
 #include <thread>
+#include <vector>
+#include <string>
 
 namespace gl {
 
@@ -41,20 +43,6 @@ using attribute = GLint;
     } \
   }
 
-#define DECL_GL_OBJECT(Class) \
-  friend class Context; \
-  private: GLuint _name { 0 }; \
-           Class(); \
-           Class(GLuint); \
-  public: ~Class(); \
-           Class(Class const&) = delete; \
-           Class& operator=(Class const&) = delete;
-
-#define DEFINE_GL_OBJECT(Class, Plural) \
-  Class::Class() { GL_CALL(glGen##Plural(1, &_name)); } \
-  Class::Class(GLuint name): _name(name) {} \
-  Class::~Class() { try { GL_CALL(glDelete##Plural(1, &_name)); } catch(...){} }
-
 
 class IContext;
 
@@ -86,6 +74,21 @@ class GeneratedObject {
 class IShader {
   public:
     virtual ~IShader() =0;
+
+  public: // Shader source functions
+    virtual void set_source(std::string const& source) =0;
+    virtual void set_source(std::vector<std::string> const& sources) =0;
+    virtual std::string get_source() const =0;
+
+  public: // Shader info
+    virtual GLuint name() const =0;
+    virtual GLenum type() const =0;
+    virtual bool deleted() const =0;
+    virtual bool compiled() const =0;
+    virtual unsigned source_length() const =0;
+
+  public: // Shader compilation
+    virtual void compile() =0;
 
 };
 

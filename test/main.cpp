@@ -1,46 +1,26 @@
 #include "log.h"
 #include "ugly.h"
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "glfw_app.h"
 
 #include <thread>
 #include <chrono>
 
-bool done { false };
-
-void on_glfw_error(int err, const char* message) {
-  loge("glfw error %d: %s", err, message);
-  throw 1;
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-  done = true;
-}
-
-
 int main(int argc, const char* const argv[]) {
-  glfwSetErrorCallback(on_glfw_error);
-  glfwInit();
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
-
-  GLFWwindow* window = glfwCreateWindow(640, 480, "ogl test", NULL, NULL);
-
-  glfwSetKeyCallback(window, key_callback);
-
-  gl::Context context(window);
+  glfwApp app;
+  gl::Context context(&app);
+  gl::Program program;
+  gl::VertexShader vert ("test/shaders/vert.glsl");
+  gl::FragmentShader frag ("test/shaders/frag.glsl");
+  program.attach(vert);
+  program.attach(frag);
+  program.link();
+  program.use(context);
 
 
-  while (!done) {
-    glfwPollEvents();
-    glfwSwapBuffers(window);
+  while (!app.done()) {
+    app.update();
   }
-
-  glfwDestroyWindow(window);
-  glfwTerminate();
 
 }
