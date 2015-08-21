@@ -4,6 +4,7 @@
 #include "context.h"
 #include "program.h"
 #include "shader.h"
+#include "controller.h"
 
 
 #endif

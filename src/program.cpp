@@ -34,21 +34,21 @@ void Program::detach(IShader const& shader) {
 
 
 void Program::link() {
-  logi("Linking program %d", _name);
   GL_CALL(glLinkProgram(_name));
 
   int success = GL_FALSE;
   glGetProgramiv(_name, GL_LINK_STATUS, &success);
 
   if (success != GL_TRUE) {
-    loge("Error in linking program %d", _name);
     print_log(_name);
-    throw;
+    throw gl::exception("failed to link program");
   }
 }
 
 void Program::use(IContext const& context) {
-  if (!context.current()) throw;
+  if (!context.current()) {
+    throw gl::exception("attempt to use program with non-current context");
+  }
   GL_CALL(glUseProgram(_name));
 }
 
@@ -62,7 +62,6 @@ void Program::enable(attribute const attr) const {
   if (error != GL_NO_ERROR){
     loge("Error enabling attribute %d for SP%d: %d", attr, _name, error);
     print_log(_name);
-    throw;
   }
 
 }

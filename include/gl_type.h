@@ -10,8 +10,21 @@
 #include <thread>
 #include <vector>
 #include <string>
+#include <stdexcept>
 
 namespace gl {
+
+class exception {
+  public:
+    exception(std::string what): _what(what) {}
+
+  public:
+    std::string const& what() const { return _what; }
+
+  protected:
+    std::string _what;
+
+};
 
 template<typename T>
 struct vec2_t {
@@ -39,7 +52,7 @@ using attribute = GLint;
     GLenum error = glGetError(); \
     if (error != GL_NO_ERROR) { \
       loge(#x " failed: %d", error); \
-      throw; \
+      throw gl::exception("gl call " #x " failed"); \
     } \
   }
 

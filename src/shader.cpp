@@ -51,7 +51,7 @@ inline static void print_log(GLuint id) {
 std::string load_file(std::string const& path) {
   std::ifstream f(path);
   if (!f.good()) {
-    throw;
+    throw 1;
   }
   return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 }
@@ -68,13 +68,9 @@ void Shader::compile() {
 
   GL_CALL(glCompileShader(_name));
 
-  GLint compiled = GL_FALSE;
-  GL_CALL(glGetShaderiv(_name, GL_COMPILE_STATUS, &compiled));
-
-  if (compiled != GL_TRUE) {
-    loge("Couldn't compile shader #%d!", _name); 
+  if (!compiled()) {
     print_log(_name);
-    throw;
+    throw gl::exception("shader compilation failed");
   }
 
 }

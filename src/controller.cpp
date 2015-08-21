@@ -17,12 +17,16 @@ bool Controller::active() const {
 BlendController::~BlendController() {}
 
 void BlendController::func(GLenum src, GLenum dst) {
-  if (!active()) throw;
+  if (!active()) {
+    throw gl::exception("blend controller is not active");
+  }
   GL_CALL(glBlendFunc(src, dst));
 }
 
 void BlendController::func(GLuint buf, GLenum src, GLenum dst) {
-  if (!active()) throw;
+  if (!active()) {
+    throw gl::exception("blend controller is not active");
+  }
   // validate buf, src, dst
   GL_CALL(glBlendFunci(buf, src, dst));
 }
