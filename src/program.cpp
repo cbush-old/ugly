@@ -14,26 +14,24 @@ static inline void print_log(GLuint id) {
   gl_log<glGetProgramiv, glGetProgramInfoLog>(id);
 }
 
-Program::Program(IContext& context):
-  ContextAssociatedObject(context) {
+Program::Program() {
   GL_CALL(_name = glCreateProgram());
 }
 
 Program::~Program() {
   GL_CALL(glDeleteProgram(_name));
 }
-/*
-void Program::attach(Shader const& shader) const {
-  logi("Attaching shader %d to program %d", shader.get_name(), _name);
-  GL_CALL(glAttachShader(_name, shader.get_name()));
+
+void Program::attach(IShader const& shader) {
+  //logi("Attaching shader %d to program %d", shader.get_name(), _name);
+  // GL_CALL(glAttachShader(_name, shader.get_name()));
 }
 
-void Program::detach(Shader const& shader) const {
-  logi("Detaching shader %d from program %d", shader.get_name(), _name);
-  GL_CALL(glDetachShader(_name, shader.get_name()));
+void Program::detach(IShader const& shader) {
+  //logi("Detaching shader %d from program %d", shader.get_name(), _name);
+  //GL_CALL(glDetachShader(_name, shader.get_name()));
 }
 
-*/
 
 void Program::link() {
   logi("Linking program %d", _name);
@@ -49,6 +47,10 @@ void Program::link() {
   }
 }
 
+void Program::use(IContext const& context) {
+  if (!context.current()) throw;
+  GL_CALL(glUseProgram(_name));
+}
 
 /*
 void Program::enable(attribute const attr) const {

@@ -115,16 +115,17 @@ class IProgram {
      **/
     virtual void link() =0;
 
+    /**
+     * @brief install the Program as part of the given Context rendering state.
+     **/
+    virtual void use(IContext const& context) =0;
+
+
 };
 
 inline IProgram::~IProgram() {}
 
 
-class IBuffer {
-  public:
-    virtual ~IBuffer() =0;
-
-};
 
 enum BufferIndex {
   BUFFER_INDEX_ARRAY = 0,
@@ -144,6 +145,27 @@ enum BufferIndex {
   BUFFER_INDEX_MAX
 };
 
+
+class IBuffer {
+  public:
+    virtual ~IBuffer() =0;
+
+  public:
+    /**
+     * @brief bind a Buffer to the target of the current Context.
+     * @param target  the target to bind the buffer to
+     **/
+     virtual void bind(BufferIndex target);
+
+    /**
+     * @brief unbind the target
+     **/
+     virtual void unbind(BufferIndex);
+
+
+};
+
+
 class IContext {
   public:
     class IController {
@@ -152,7 +174,7 @@ class IContext {
 
       public:
         virtual void activate(IContext&) =0;
-        virtual void deactivate() =0;
+        virtual void deactivate(IContext&) =0;
     };
 
   public:
@@ -167,24 +189,6 @@ class IContext {
 
   public:
     /**
-     * @brief install the Program as part of the current rendering state.
-     **/
-    virtual void use(IProgram const& program) =0;
-
-    /**
-     * @brief bind a Buffer to the target of Context.
-     * @param buffer  the buffer to bind
-     * @param target  the target to bind the buffer to
-     **/
-     virtual void bind(IBuffer const& buffer, BufferIndex target);
-
-    /**
-     * @brief unbind the target
-     **/
-     virtual void unbind(BufferIndex);
-
-  public:
-    /**
      * @brief make this Context the current Context of this thread.
      **/
     virtual void make_current() =0;
@@ -194,6 +198,14 @@ class IContext {
      * @return true if the Context is current on this thread.
      **/
     virtual bool current() const =0;
+
+    /**
+     * @brief Called when this Context is current and another Context takes 
+     * @note "I used to be 'with it'. Then they changed what 'it' was. Now what
+     *        I'm 'with' isn't 'it', and what is 'it' seems weird and scary to me.
+     *        It'll happen to you!"
+     **/
+    virtual void on_made_not_current() =0;
 
 
   protected:

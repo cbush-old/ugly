@@ -20,6 +20,7 @@ class Program : public IProgram {
     void attach(IShader const&) override;
     void detach(IShader const&) override;
     void link() override;
+    void use(IContext const&) override;
 
   private:
     GLint _name { 0 };

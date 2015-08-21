@@ -30,14 +30,12 @@ class BaseContext : public IContext {
     template<typename T>
     T get(GLenum) const;
 
-  public:
-    virtual void use(IProgram const&) =0;
-    virtual void bind(IBuffer const& buffer, BufferIndex target) override;
-    virtual void unbind(BufferIndex) override;
-
   protected:
     void add(ContextAssociatedObject*) override;
     void remove(ContextAssociatedObject*) override;
+
+  protected:
+    void on_made_not_current() override;
 
   private:
     void *_handle { nullptr };
@@ -46,6 +44,7 @@ class BaseContext : public IContext {
     IBuffer const* _buffer[BUFFER_INDEX_MAX] { nullptr };
 
     std::set<ContextAssociatedObject const*> _associated_objects;
+    std::set<IController*> _attached_controllers;
 
 };
 
@@ -55,7 +54,7 @@ class BaseContext : public IContext {
  **/
 class MonoContext : public BaseContext {
   private:
-    static MonoContext const* current_context;
+    static MonoContext* current_context;
 
   public:
     MonoContext(void*);
@@ -77,7 +76,7 @@ class MonoContext : public BaseContext {
  **/
 class MultiContext : public BaseContext {
   private:
-    static std::map<std::thread::id, MultiContext const*> current_context;
+    static std::map<std::thread::id, MultiContext*> current_context;
     static std::recursive_mutex current_context_lock;
 
   public:

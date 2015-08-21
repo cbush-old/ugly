@@ -1,7 +1,5 @@
-#include "ogl.h"
 #include "log.h"
-
-#include "pipeline.h"
+#include "ugly.h"
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -33,6 +31,9 @@ int main(int argc, const char* const argv[]) {
   GLFWwindow* window = glfwCreateWindow(640, 480, "ogl test", NULL, NULL);
 
   glfwSetKeyCallback(window, key_callback);
+
+  gl::Context context(window);
+
 
   while (!done) {
     glfwPollEvents();

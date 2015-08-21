@@ -2,8 +2,6 @@
 #define UGLY_CONTROLLER_H
 
 #include "context.h"
-#include <functional>
-#include <vector>
 
 namespace gl {
 
@@ -13,18 +11,13 @@ class Controller : public IContext::IController {
 
   public:
     void activate(IContext&) override;
-    void deactivate() override;
-
-  public:
-    void commit();
+    void deactivate(IContext&) override;
 
   protected:
-    bool is_active() const;
-    void post(std::function<void()>);
+    bool active() const;
 
   private:
-    IContext *_context { nullptr };
-    std::vector<std::function<void()>> _queue;
+    IContext* _context;
 };
 
 class BlendController : public Controller {
@@ -34,8 +27,6 @@ class BlendController : public Controller {
   public:
     void func(GLenum src, GLenum dst);
     void func(GLuint buf, GLenum src, GLenum dst);
-    void func_separate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
-    void func_separate(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
 
 };
 

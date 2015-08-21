@@ -2,6 +2,11 @@
 
 namespace gl {
 
+MonoContext* MonoContext::current_context { 0 };
+
+std::map<std::thread::id, MultiContext*> MultiContext::current_context;
+std::recursive_mutex MultiContext::current_context_lock;
+
 // Lookup table for BufferIndex to GL_TARGET_BUFFER enums.
 // Obviously, BufferIndex order must match this table order.
 // Have you updated either table recently? Do the orders 
@@ -53,12 +58,22 @@ BaseContext::BaseContext(void* handle)
 
 BaseContext::~BaseContext() {}
 
-void BaseContext::attach(IController& configurator) {
-  configurator.activate(*this);
+void BaseContext::attach(IController& controller) {
+  controller.activate(*this);
+  _attached_controllers.insert(&controller);
 }
 
-void BaseContext::detach(IController& configurator) {
-  configurator.deactivate();
+void BaseContext::detach(IController& controller) {
+  _attached_controllers.erase(&controller);
+  controller.deactivate(*this);
+}
+
+
+void BaseContext::on_made_not_current() {
+  for (IController* controller : _attached_controllers) {
+    controller->deactivate(*this);
+  }
+  _attached_controllers.clear();
 }
 
 
@@ -66,12 +81,16 @@ MonoContext::MonoContext(void* handle): BaseContext(handle) {}
 
 
 void MonoContext::make_current() {
+  if (current_context && current_context != this) {
+    current_context->on_made_not_current();
+  }
   current_context = this;
 }
 
 bool MonoContext::current() const {
   return current_context == this;
 }
+
 
 MonoContext::~MonoContext() {
   if (current_context == this) {
@@ -91,8 +110,15 @@ void MultiContext::make_current() {
   }
   {
     std::lock_guard<std::recursive_mutex> lock(current_context_lock);
-    current_context[_thread_id] = this;
+    auto& i = current_context[_thread_id]; 
+    if (i != this) {
+      if (i) {
+        i->on_made_not_current();
+      }
+      i = this;
+    }
   }
+  BaseContext::make_current();
 }
 
 bool MultiContext::current() const {
