@@ -8,9 +8,33 @@
 
 namespace gl {
 
-Shader::Shader() {}
+// Not much point to using pImpl while the only data member is _name.
+// For now, treat _impl as reserved, but use it as _name.
 
-Shader::~Shader() {}
+class Shader_impl;
+
+#define _name ((GLuint&)*_impl)
+
+
+Shader::Shader(): _impl((Shader_impl*)new GLuint(0)) {}
+
+
+Shader::~Shader() {
+  GL_CALL(glDeleteShader(_name));
+  delete (GLuint*)_impl;
+}
+
+
+
+std::string load_file(std::string const& path) {
+  std::ifstream f(path);
+  if (!f.good()) {
+    throw 1;
+  }
+  return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+}
+
+
 
 template<GLenum Type>
 Shader_type<Type>::Shader_type() {
@@ -21,7 +45,8 @@ template<GLenum Type>
 Shader_type<Type>::Shader_type(std::string const& path)
   : Shader_type<Type>()
 {
-  load(path);
+  std::string file = load_file(path);
+  set_source(file);
   compile();
 }
 
@@ -46,20 +71,6 @@ inline static void print_log(GLuint id) {
   gl_log<glGetShaderiv, glGetShaderInfoLog>(id);
 }
 
-
-std::string load_file(std::string const& path) {
-  std::ifstream f(path);
-  if (!f.good()) {
-    throw 1;
-  }
-  return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
-}
-
-
-void Shader::load(std::string const& path) {
-  std::string file = load_file(path);
-  set_source(file);
-}
 
 void Shader::compile() {
 

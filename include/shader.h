@@ -7,7 +7,7 @@
 namespace gl {
 
 
-class Shader : public IShader {
+class Shader {
   public:
     Shader();
 
@@ -17,27 +17,25 @@ class Shader : public IShader {
     Shader(Shader const&) = delete;
 
   public:
-    void set_source(std::string const& source) override;
-    void set_source(std::vector<std::string> const& sources) override;
-    std::string get_source() const override;
+    void set_source(std::string const& source);
+    void set_source(std::vector<std::string> const& sources);
+    std::string get_source() const;
 
   public:
-    GLuint name() const override;
-    GLenum type() const override;
-    bool deleted() const override;
-    bool compiled() const override;
-    unsigned source_length() const override;
+    void compile();
 
   public:
-    void compile() override;
+    GLuint name() const;
+    GLenum type() const;
+    bool deleted() const;
+    bool compiled() const;
+    unsigned source_length() const;
 
   protected:
-    void load(std::string const& path);
-
-  protected:
-    GLenum _name { 0 };
+    class Shader_impl* _impl { nullptr };
 
 };
+
 
 template<GLenum ShaderType>
 class Shader_type : public Shader {

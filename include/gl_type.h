@@ -128,28 +128,7 @@ class GeneratedObject {
 };
 
 
-class IShader {
-  public:
-    virtual ~IShader() =0;
-
-  public: // Shader source functions
-    virtual void set_source(std::string const& source) =0;
-    virtual void set_source(std::vector<std::string> const& sources) =0;
-    virtual std::string get_source() const =0;
-
-  public: // Shader info
-    virtual GLuint name() const =0;
-    virtual GLenum type() const =0;
-    virtual bool deleted() const =0;
-    virtual bool compiled() const =0;
-    virtual unsigned source_length() const =0;
-
-  public: // Shader compilation
-    virtual void compile() =0;
-
-};
-
-inline IShader::~IShader() {}
+class Shader;
 
 class IProgram {
   public:
@@ -160,13 +139,13 @@ class IProgram {
      * @brief Attach a Shader to the Program.
      * @param shader  The Shader to attach.
      **/
-    virtual void attach(IShader const& shader) =0;
+    virtual void attach(Shader const& shader) =0;
 
     /**
      * @brief Detach the given Shader from the Program.
      * @param shader  The Shader to detach.
      **/
-    virtual void detach(IShader const& shader) =0;
+    virtual void detach(Shader const& shader) =0;
 
     /**
      * @brief Link the Program.

@@ -24,12 +24,12 @@ Program::~Program() {
   GL_CALL(glDeleteProgram(_name));
 }
 
-void Program::attach(IShader const& shader) {
+void Program::attach(Shader const& shader) {
   GL_VALIDATE(Shader, shader.name());
   GL_CALL(glAttachShader(_name, shader.name()));
 }
 
-void Program::detach(IShader const& shader) {
+void Program::detach(Shader const& shader) {
   GL_VALIDATE(Shader, shader.name());
   GL_CALL(glDetachShader(_name, shader.name()));
 }

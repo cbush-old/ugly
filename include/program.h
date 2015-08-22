@@ -13,13 +13,13 @@ class Program : public IProgram {
 
   public: // convenience constructors
     template<typename... ShaderT>
-    Program(IShader const&, ShaderT const&...);
+    Program(Shader const&, ShaderT const&...);
 
     /**
      * @brief construct a program with attached shaders, then use the program with context
      **/
     template<typename... ShaderT>
-    Program(IContext const&, IShader const&, ShaderT const&...);
+    Program(IContext const&, Shader const&, ShaderT const&...);
 
   public:
     ~Program();
@@ -27,8 +27,8 @@ class Program : public IProgram {
     Program& operator=(Program const&) = delete;
 
   public:
-    void attach(IShader const&) override;
-    void detach(IShader const&) override;
+    void attach(Shader const&) override;
+    void detach(Shader const&) override;
     void link() override;
     void use(IContext const&) override;
 
@@ -45,7 +45,7 @@ class Program : public IProgram {
 };
 
 template<typename... ShaderT>
-inline Program::Program(IShader const& shader, ShaderT const&... shaders): Program() {
+inline Program::Program(Shader const& shader, ShaderT const&... shaders): Program() {
   GL_VALIDATE(Program, _name);
   attach(shader, shaders...);
   link();
@@ -53,13 +53,13 @@ inline Program::Program(IShader const& shader, ShaderT const&... shaders): Progr
 
 
 template<typename... ShaderT>
-inline Program::Program(IContext const& context, IShader const& shader, ShaderT const&... shaders): Program(shader, shaders...) {
+inline Program::Program(IContext const& context, Shader const& shader, ShaderT const&... shaders): Program(shader, shaders...) {
   use(context);
 }
 
 template<typename ShaderT, typename... ShaderV>
 inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
-  attach(static_cast<IShader const&>(first));
+  attach(static_cast<Shader const&>(first));
   attach(the_rest...);
 }
 
