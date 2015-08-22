@@ -7,9 +7,6 @@ namespace gl {
 template<void(*f0)(GLuint, GLenum, GLint*), void(*f1)(GLuint, GLsizei, GLsizei*, GLchar*)>
 void gl_log(GLuint id);
 
-template<>
-void gl_log<glGetProgramiv, glGetProgramInfoLog>(GLuint id);
-
 static inline void print_log(GLuint id) {
   gl_log<glGetProgramiv, glGetProgramInfoLog>(id);
 }
@@ -18,22 +15,27 @@ Program::Program() {
   GL_CALL(_name = glCreateProgram());
 }
 
+
+
+
+
+
 Program::~Program() {
   GL_CALL(glDeleteProgram(_name));
 }
 
 void Program::attach(IShader const& shader) {
-  //logi("Attaching shader %d to program %d", shader.get_name(), _name);
-  // GL_CALL(glAttachShader(_name, shader.get_name()));
+  GL_VALIDATE(Shader, shader.name());
+  GL_CALL(glAttachShader(_name, shader.name()));
 }
 
 void Program::detach(IShader const& shader) {
-  //logi("Detaching shader %d from program %d", shader.get_name(), _name);
-  //GL_CALL(glDetachShader(_name, shader.get_name()));
+  GL_CALL(glDetachShader(_name, shader.name()));
 }
 
 
 void Program::link() {
+  GL_VALIDATE(Program, _name);
   GL_CALL(glLinkProgram(_name));
 
   int success = GL_FALSE;
@@ -41,7 +43,7 @@ void Program::link() {
 
   if (success != GL_TRUE) {
     print_log(_name);
-    throw gl::exception("failed to link program");
+    throw gl::exception("failed to link program %u", _name);
   }
 }
 

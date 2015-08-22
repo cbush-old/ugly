@@ -34,14 +34,13 @@ void gl_log(GLuint name) {
   GL_CALL(f1(name, max_length, &log_length, log));
   if(log_length > 0) {
     log[log_length - 1] = '\0';
-    logw("%s", log);
+    logi("%s", log);
   }
   delete[] log;
 }
 
-template<>
-void gl_log<glGetProgramiv, glGetProgramInfoLog>(GLuint id);
-
+template void gl_log<glGetProgramiv, glGetProgramInfoLog>(GLuint id);
+template void gl_log<glGetShaderiv, glGetShaderInfoLog>(GLuint id);
 
 inline static void print_log(GLuint id) {
   gl_log<glGetShaderiv, glGetShaderInfoLog>(id);

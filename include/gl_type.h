@@ -11,20 +11,58 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <sstream>
 
 namespace gl {
 
 class exception {
   public:
     exception(std::string what): _what(what) {}
+    exception(const char* what): _what(what) {}
+
+    template<typename... T>
+    exception(const char* fmt, T const&... args) {
+      std::stringstream ss;
+      format(ss, fmt, args...);
+      _what = ss.str();
+    }
 
   public:
     const char* what() const { return _what.c_str(); }
 
   protected:
+    void format(std::ostream&, const char* fmt);
+
+    template<typename T, typename... Args>
+    void format(std::ostream&, const char* fmt, T const&, Args const&... args);
+
+  protected:
     std::string _what;
 
 };
+
+inline void exception::format(std::ostream& os, const char* fmt) {
+  os << fmt;
+}
+
+template<typename T, typename... Args>
+inline void exception::format(std::ostream& os, const char* fmt, T const& value, Args const&... args) {
+  while (*fmt) {  
+    if (*fmt == '%') {
+      if (fmt[1] == '%') {
+        ++fmt;
+      } else {
+        os << value;
+        fmt += 2;
+        format(os, fmt, args...);
+        return;
+      }
+    }
+    os << *fmt;
+    ++fmt;
+  }
+}
+
 
 template<typename T>
 struct vec2_t {
@@ -52,8 +90,14 @@ using attribute = GLint;
     GLenum error = glGetError(); \
     if (error != GL_NO_ERROR) { \
       loge(#x " failed: %d", error); \
-      throw gl::exception("gl call " #x " failed"); \
+      throw gl::exception("gl call " #x " failed: %d", error); \
     } \
+  }
+
+#define GL_VALIDATE(Type, name) {\
+  GL_CALL(bool valid = glIs##Type(name)) \
+  if (!valid) { throw gl::exception("%u is not a " #Type "!", name); } \
+  else { logv("named object %u is a " #Type, name); } \
   }
 
 
@@ -204,7 +248,14 @@ class IContext {
     virtual void detach(IController&) =0;
 
   public:
+    /**
+     * @brief retrieve the major OpenGL version
+     **/
     virtual unsigned major_version() const =0;
+
+    /**
+     * @brief retrieve the minor OpenGL version
+     **/
     virtual unsigned minor_version() const =0;
 
   public:
