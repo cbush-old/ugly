@@ -113,9 +113,6 @@ class ContextAssociatedObject {
     IContext& _context;
 };
 
-
-
-
 template<void(*glGenFunc)(GLsizei, GLuint*), void(*glDeleteFunc)(GLsizei, GLuint const*)>
 class GeneratedObject {
   public:
@@ -127,11 +124,6 @@ class GeneratedObject {
     GLuint _name;
 
 };
-
-
-class Shader;
-
-
 
 enum BufferIndex {
   BUFFER_INDEX_ARRAY = 0,

@@ -46,6 +46,16 @@ TEST_OBJECTS= $(TEST_SOURCES:.cpp=.o)
 
 OUTPUT_SO=libugly.dylib
 
+DEPFILE=.depends
+
+
+all: test
+
+
+depend:
+	touch $(DEPFILE)
+	makedepend -f$(DEPFILE) -Y $(TEST_INCLUDE) $(SOURCES)
+
 lib: $(OBJECTS)
 	$(CC) -dynamiclib -Wl,-undefined -Wl,dynamic_lookup $(OBJECTS) -o $(OUTPUT_SO)
 
@@ -58,3 +68,6 @@ test: lib $(TEST_OBJECTS)
 clean:
 	rm -f $(OBJECTS) $(OUTPUT_SO)
 	rm -f $(TEST_OBJECTS) main
+
+
+sinclude $(DEPFILE)
