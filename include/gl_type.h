@@ -102,6 +102,7 @@ using attribute = GLint;
 
 
 class IContext;
+class BaseContext;
 
 class ContextAssociatedObject {
   public:
@@ -204,18 +205,16 @@ class IBuffer {
 
 };
 
+class IController {
+  public:
+    virtual ~IController() {}
+
+  public:
+    virtual void activate(IContext&) =0;
+    virtual void deactivate(IContext&) =0;
+};
 
 class IContext {
-  public:
-    class IController {
-      public:
-        virtual ~IController() {}
-
-      public:
-        virtual void activate(IContext&) =0;
-        virtual void deactivate(IContext&) =0;
-    };
-
   public:
     virtual ~IContext() {}
 

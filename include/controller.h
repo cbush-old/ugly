@@ -5,7 +5,7 @@
 
 namespace gl {
 
-class Controller : public IContext::IController {
+class Controller : public IController {
   public:
     virtual ~Controller() {}
 

@@ -1,6 +1,6 @@
 #include "program.h"
 #include "log.h"
-#include "gl_type.h"
+#include "context.h"
 
 namespace gl {
 
@@ -11,6 +11,8 @@ static inline void print_log(GLuint id) {
   gl_log<glGetProgramiv, glGetProgramInfoLog>(id);
 }
 
+// Not much point to using pImpl while the only data member is _name.
+// For now, treat _impl as reserved, but use it as _name.
 
 class Program_impl;
 
@@ -50,7 +52,7 @@ void Program::link() {
   }
 }
 
-void Program::use(IContext const& context) {
+void Program::use(BaseContext const& context) {
   if (!context.current()) {
     throw gl::exception("attempt to use program with non-current context");
   }
