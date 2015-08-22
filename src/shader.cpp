@@ -34,7 +34,7 @@ void gl_log(GLuint name) {
   GL_CALL(f1(name, max_length, &log_length, log));
   if(log_length > 0) {
     log[log_length - 1] = '\0';
-    logi("%s", log);
+    logw("%s", log);
   }
   delete[] log;
 }

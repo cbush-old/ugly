@@ -55,9 +55,7 @@ inline Program::Program(ShaderT const&... shaders): Program() {
 
 template<typename ShaderT, typename... ShaderV>
 inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
-  IShader const& first_shader = static_cast<IShader const&>(first);
-  GL_VALIDATE(Shader, first_shader.name());
-  attach(first_shader);
+  attach(static_cast<IShader const&>(first));
   attach(the_rest...);
 }
 
