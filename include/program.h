@@ -7,7 +7,7 @@
 
 namespace gl {
 
-class Program : public IProgram {
+class Program {
   public:
     Program();
 
@@ -27,26 +27,29 @@ class Program : public IProgram {
     Program& operator=(Program const&) = delete;
 
   public:
-    void attach(Shader const&) override;
-    void detach(Shader const&) override;
-    void link() override;
-    void use(IContext const&) override;
+    void attach(Shader const&);
+    void detach(Shader const&);
+    void link();
+    void use(IContext const&);
 
   public:
     template<typename ShaderT, typename... ShaderV>
     void attach(ShaderT const&, ShaderV const&...);
 
+  public:
+    GLuint name() const;
+
   private:
     void attach() {}
 
   private:
-    GLint _name { 0 };
+    class Program_impl* _impl;
 
 };
 
 template<typename... ShaderT>
 inline Program::Program(Shader const& shader, ShaderT const&... shaders): Program() {
-  GL_VALIDATE(Program, _name);
+  GL_VALIDATE(Program, name());
   attach(shader, shaders...);
   link();
 }
