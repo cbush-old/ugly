@@ -30,6 +30,7 @@ void Program::attach(IShader const& shader) {
 }
 
 void Program::detach(IShader const& shader) {
+  GL_VALIDATE(Shader, shader.name());
   GL_CALL(glDetachShader(_name, shader.name()));
 }
 

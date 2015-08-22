@@ -76,7 +76,15 @@ int main(int argc, const char* const argv[]) {
   gl::Program program (vert, frag);
   program.use(context1);
 
+  gl::Program program2 (
+    context1,
+    gl::VertexShader("test/shaders/vert.glsl"),
+    gl::FragmentShader("test/shaders/frag.glsl")
+  );
+
+  
   while (!app.done()) {
+    context1.clear();
     app.update();
   }
 

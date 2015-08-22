@@ -122,6 +122,17 @@ void BaseContext::on_made_not_current() {
 }
 
 
+void BaseContext::clear() {
+  GL_CALL(glClear(_clear_mask));
+}
+
+void BaseContext::clear(GLbitfield mask) {
+  GL_CALL(glClear(mask));
+}
+
+
+
+
 MonoContext::MonoContext(void* handle): BaseContext(handle) {
   make_current();
 }

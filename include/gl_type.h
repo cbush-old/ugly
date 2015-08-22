@@ -278,6 +278,10 @@ class IContext {
      **/
     virtual void on_made_not_current() =0;
 
+  public:
+    virtual void clear() =0;
+    virtual void clear(GLbitfield mask) =0;
+
 
   protected:
     friend class ContextAssociatedObject;

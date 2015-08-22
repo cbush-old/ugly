@@ -28,6 +28,10 @@ class BaseContext : public IContext {
     unsigned major_version() const override;
     unsigned minor_version() const override;
 
+  public:
+    void clear() override;
+    void clear(GLbitfield mask) override;
+
   protected:
     void add(ContextAssociatedObject*) override;
     void remove(ContextAssociatedObject*) override;
@@ -41,9 +45,9 @@ class BaseContext : public IContext {
     IBuffer const* _buffer[BUFFER_INDEX_MAX] { nullptr };
 
   private:
-
     std::set<ContextAssociatedObject const*> _associated_objects;
     std::set<IController*> _attached_controllers;
+    GLbitfield _clear_mask { GL_COLOR_BUFFER_BIT };
 
 };
 

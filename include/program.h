@@ -13,15 +13,13 @@ class Program : public IProgram {
 
   public: // convenience constructors
     template<typename... ShaderT>
-    Program(ShaderT const&...);
-
-
+    Program(IShader const&, ShaderT const&...);
 
     /**
      * @brief construct a program with attached shaders, then use the program with context
      **/
-    Program(IContext const&, VertexShader const&, FragmentShader const&);
-
+    template<typename... ShaderT>
+    Program(IContext const&, IShader const&, ShaderT const&...);
 
   public:
     ~Program();
@@ -47,10 +45,16 @@ class Program : public IProgram {
 };
 
 template<typename... ShaderT>
-inline Program::Program(ShaderT const&... shaders): Program() {
+inline Program::Program(IShader const& shader, ShaderT const&... shaders): Program() {
   GL_VALIDATE(Program, _name);
-  attach(shaders...);
+  attach(shader, shaders...);
   link();
+}
+
+
+template<typename... ShaderT>
+inline Program::Program(IContext const& context, IShader const& shader, ShaderT const&... shaders): Program(shader, shaders...) {
+  use(context);
 }
 
 template<typename ShaderT, typename... ShaderV>
