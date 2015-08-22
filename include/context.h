@@ -16,16 +16,27 @@ class BaseContext {
     BaseContext(BaseContext const&) = delete;
     BaseContext& operator=(BaseContext const&) = delete;
 
-  public:
-    void attach(IController &);
-    void detach(IController &);
-
   public: // OPENGL VERSION INFO
+    /**
+     * @brief retrieve the major OpenGL version
+     **/
     unsigned major_version() const;
+
+    /**
+     * @brief retrieve the minor OpenGL version
+     **/
     unsigned minor_version() const;
 
   public:
+    /**
+     * @brief make this Context the current Context of this thread.
+     **/
     void make_current();
+
+    /**
+     * @brief check whether the Context is current on this thread.
+     * @return true if the Context is current on this thread.
+     **/
     bool current() const;
 
   public:

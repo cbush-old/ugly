@@ -205,69 +205,6 @@ class IBuffer {
 
 };
 
-class IController {
-  public:
-    virtual ~IController() {}
-
-  public:
-    virtual void activate(IContext&) =0;
-    virtual void deactivate(IContext&) =0;
-};
-
-class IContext {
-  public:
-    virtual ~IContext() {}
-
-  public:
-    /**
-     * @brief attach a Controller to the Context
-     **/
-    virtual void attach(IController&) =0;
-    virtual void detach(IController&) =0;
-
-  public:
-    /**
-     * @brief retrieve the major OpenGL version
-     **/
-    virtual unsigned major_version() const =0;
-
-    /**
-     * @brief retrieve the minor OpenGL version
-     **/
-    virtual unsigned minor_version() const =0;
-
-  public:
-    /**
-     * @brief make this Context the current Context of this thread.
-     **/
-    virtual void make_current() =0;
-
-    /**
-     * @brief check whether the Context is current on this thread.
-     * @return true if the Context is current on this thread.
-     **/
-    virtual bool current() const =0;
-
-    /**
-     * @brief Called when this Context is current and another Context takes 
-     * @note "I used to be 'with it'. Then they changed what 'it' was. Now what
-     *        I'm 'with' isn't 'it', and what is 'it' seems weird and scary to me.
-     *        It'll happen to you!"
-     **/
-    virtual void on_made_not_current() =0;
-
-  public:
-    virtual void clear() =0;
-    virtual void clear(GLbitfield mask) =0;
-
-
-  protected:
-    friend class ContextAssociatedObject;
-    virtual void add(ContextAssociatedObject*) =0;
-    virtual void remove(ContextAssociatedObject*) =0;
-
-};
-
 
 } // namespace gl
 
