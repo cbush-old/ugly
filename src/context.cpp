@@ -38,10 +38,6 @@ class Context_impl {
     Context_impl(void *);
     virtual ~Context_impl() =0;
 
-  public:
-    void *_handle { nullptr };
-    IProgram const* _program { nullptr };
-    IBuffer const* _buffer[BUFFER_INDEX_MAX] { nullptr };
 
   public:
     virtual void make_current() =0;
@@ -50,8 +46,10 @@ class Context_impl {
 
   public:
     std::set<ContextAssociatedObject const*> _associated_objects;
-    std::set<IController*> _attached_controllers;
     GLbitfield _clear_mask { GL_COLOR_BUFFER_BIT };
+
+  protected:
+    void *_handle { nullptr };
 };
 
 
@@ -150,23 +148,7 @@ BaseContext::~BaseContext() {
   delete _impl;
 }
 
-void BaseContext::attach(IController& controller) {
-  //controller.activate(*this);
-  _impl->_attached_controllers.insert(&controller);
-}
-
-void BaseContext::detach(IController& controller) {
-  _impl->_attached_controllers.erase(&controller);
-  //controller.deactivate(*this);
-}
-
-
-void Context_impl::on_made_not_current() {
-  //for (IController* controller : _attached_controllers) {
-    //controller->deactivate(*this);
-  //}
-  _attached_controllers.clear();
-}
+void Context_impl::on_made_not_current() {}
 
 
 void BaseContext::clear() {

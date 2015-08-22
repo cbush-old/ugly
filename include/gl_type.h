@@ -131,40 +131,6 @@ class GeneratedObject {
 
 class Shader;
 
-class IProgram {
-  public:
-    virtual ~IProgram() =0;
-
-  public:
-    /**
-     * @brief Attach a Shader to the Program.
-     * @param shader  The Shader to attach.
-     **/
-    virtual void attach(Shader const& shader) =0;
-
-    /**
-     * @brief Detach the given Shader from the Program.
-     * @param shader  The Shader to detach.
-     **/
-    virtual void detach(Shader const& shader) =0;
-
-    /**
-     * @brief Link the Program.
-     * 
-     * Call this after all the shaders are attached.
-     **/
-    virtual void link() =0;
-
-    /**
-     * @brief install the Program as part of the given Context rendering state.
-     **/
-    virtual void use(IContext const& context) =0;
-
-
-};
-
-inline IProgram::~IProgram() {}
-
 
 
 enum BufferIndex {
@@ -185,25 +151,6 @@ enum BufferIndex {
   BUFFER_INDEX_MAX
 };
 
-
-class IBuffer {
-  public:
-    virtual ~IBuffer() =0;
-
-  public:
-    /**
-     * @brief bind a Buffer to the target of the current Context.
-     * @param target  the target to bind the buffer to
-     **/
-     virtual void bind(BufferIndex target);
-
-    /**
-     * @brief unbind the target
-     **/
-     virtual void unbind(BufferIndex);
-
-
-};
 
 
 } // namespace gl
