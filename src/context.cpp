@@ -45,7 +45,6 @@ class Context_impl {
     void on_made_not_current();
 
   public:
-    std::set<ContextAssociatedObject const*> _associated_objects;
     GLbitfield _clear_mask { GL_COLOR_BUFFER_BIT };
 
   protected:

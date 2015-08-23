@@ -13,56 +13,9 @@
 #include <stdexcept>
 #include <sstream>
 
+#include "exception.h"
+
 namespace gl {
-
-class exception {
-  public:
-    exception(std::string what): _what(what) {}
-    exception(const char* what): _what(what) {}
-
-    template<typename... T>
-    exception(const char* fmt, T const&... args) {
-      std::stringstream ss;
-      format(ss, fmt, args...);
-      _what = ss.str();
-    }
-
-  public:
-    const char* what() const { return _what.c_str(); }
-
-  protected:
-    void format(std::ostream&, const char* fmt);
-
-    template<typename T, typename... Args>
-    void format(std::ostream&, const char* fmt, T const&, Args const&... args);
-
-  protected:
-    std::string _what;
-
-};
-
-inline void exception::format(std::ostream& os, const char* fmt) {
-  os << fmt;
-}
-
-template<typename T, typename... Args>
-inline void exception::format(std::ostream& os, const char* fmt, T const& value, Args const&... args) {
-  while (*fmt) {  
-    if (*fmt == '%') {
-      if (fmt[1] == '%') {
-        ++fmt;
-      } else {
-        os << value;
-        fmt += 2;
-        format(os, fmt, args...);
-        return;
-      }
-    }
-    os << *fmt;
-    ++fmt;
-  }
-}
-
 
 template<typename T>
 struct vec2_t {
@@ -101,29 +54,8 @@ using attribute = GLint;
   }
 
 
-class IContext;
 class BaseContext;
 
-class ContextAssociatedObject {
-  public:
-    ContextAssociatedObject(IContext& context);
-    virtual ~ContextAssociatedObject() =0;
-
-  protected:
-    IContext& _context;
-};
-
-template<void(*glGenFunc)(GLsizei, GLuint*), void(*glDeleteFunc)(GLsizei, GLuint const*)>
-class GeneratedObject {
-  public:
-    GeneratedObject();
-    GeneratedObject(GLuint name);
-    virtual ~GeneratedObject() =0;
-
-  protected:
-    GLuint _name;
-
-};
 
 enum BufferIndex {
   BUFFER_INDEX_ARRAY = 0,

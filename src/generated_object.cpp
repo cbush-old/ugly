@@ -1,4 +1,4 @@
-#include "gl_type.h"
+#include "generated_object.h"
 
 namespace gl {
 
@@ -16,8 +16,21 @@ GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject(GLuint name): _name(name) 
 
 template<glGenFunc GenFunc, glDeleteFunc DeleteFunc>
 GeneratedObject<GenFunc, DeleteFunc>::~GeneratedObject() {
-  glDeleteFunc(1, &_name);
+  GL_CALL(DeleteFunc(1, &_name));
 }
+
+#define INSTANTIATE(Type) template class GeneratedObject< glGen##Type , glDelete##Type >;
+
+INSTANTIATE(Buffers);
+INSTANTIATE(Framebuffers);
+INSTANTIATE(ProgramPipelines);
+INSTANTIATE(Queries);
+INSTANTIATE(Renderbuffers);
+INSTANTIATE(Samplers);
+INSTANTIATE(Textures);
+INSTANTIATE(TransformFeedbacks);
+INSTANTIATE(VertexArrays);
+
 
 }
 
