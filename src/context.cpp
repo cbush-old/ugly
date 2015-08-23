@@ -40,8 +40,8 @@ class Context_impl {
 
 
   public:
-    virtual void make_current() =0;
-    virtual bool current() const =0;
+    virtual void make_current() {}
+    virtual bool current() const { return false; }
     void on_made_not_current();
 
   public:

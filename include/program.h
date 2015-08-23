@@ -42,6 +42,20 @@ class Program {
   public:
     GLuint name() const;
 
+  public:
+    template<typename... T>
+    uniform<T...> get_uniform(std::string const& name) {
+      return get_uniform_location(name.c_str());
+    }
+
+    template<typename... T>
+    uniform<T...> get_uniform(const char* name) {
+      return get_uniform_location(name);
+    }
+
+  protected:
+    GLint get_uniform_location(const char* name) const;
+
   private:
     void attach() {}
 

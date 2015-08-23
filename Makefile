@@ -48,16 +48,16 @@ OUTPUT_SO=libugly.dylib
 
 DEPFILE=.depends
 
+# -Wl,-undefined -Wl,dynamic_lookup
 
 all: test
-
 
 depend:
 	touch $(DEPFILE)
 	makedepend -f$(DEPFILE) -Y $(TEST_INCLUDE) $(SOURCES)
 
 lib: $(OBJECTS)
-	$(CC) -dynamiclib -Wl,-undefined -Wl,dynamic_lookup $(OBJECTS) -o $(OUTPUT_SO)
+	$(CC) -dynamiclib $(OBJECTS) $(LDFLAGS) $(LIBS) -o $(OUTPUT_SO)
 
 test: lib $(TEST_OBJECTS)
 	$(CC) $(TEST_INCLUDE) $(TEST_LDFLAGS) $(TEST_LIBS) $(TEST_OBJECTS) -o main

@@ -76,13 +76,17 @@ int main(int argc, const char* const argv[]) {
   gl::Program program (vert, frag);
   program.use(context1);
 
+
   gl::Program program2 (
     context1,
     gl::VertexShader("test/shaders/vert.glsl"),
     gl::FragmentShader("test/shaders/frag.glsl")
   );
 
-  
+  gl::uniform<int> a = program2.get_uniform<int>("blah");
+  gl::uniform<int> b;
+  expect("uniform copy matches", a.location(), b.location());
+
   while (!app.done()) {
     context1.clear();
     app.update();

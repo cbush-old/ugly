@@ -6,70 +6,46 @@
 
 namespace gl {
 
+/**
+ * @brief handle to a uniform location
+ **/
+template<typename... T>
 class uniform {
-  protected:
+  public:
     uniform();
+    uniform(GLint location);
+    uniform(uniform<T...> const&);
+    uniform<T...>& operator=(uniform<T...> const&);
 
   public:
-    virtual ~uniform() =0;
+    ~uniform();
 
   public:
-    operator int() { return _name; }
+    bool operator==(uniform<T...> const&) const;
+    bool operator!=(uniform<T...> const&) const;
+
+  public:
+    void set(T... values);
+
+  public:
+    GLint location() const;
 
   private:
-    GLint _name { 0 };
+    GLint _location { 0 };
 
 };
+
+template<typename T> 
+using uniform1 = uniform<T>;
 
 template<typename T>
-class uniform1 : public uniform {
-  public:
-    ~uniform1() override {}
-
-  public:
-    void set(T const);
-
-};
+using uniform2 = uniform<T, T>;
 
 template<typename T>
-class uniform2 : public uniform {
-  public:
-    ~uniform2() override {}
-
-  public:
-    void set(T const, T const);
-
-};
+using uniform3 = uniform<T, T, T>;
 
 template<typename T>
-class uniform3 : public uniform {
-  public:
-    ~uniform3() override {}
-
-  public:
-    void set(T const, T const, T const);
-
-};
-
-template<typename T>
-class uniform4 : public uniform {
-  public:
-    ~uniform4() override {};
-
-  public:
-    void set(T const, T const, T const, T const);
-
-};
-
-template<size_t Dimensions>
-class uniform_vector : public uniform {
-  public:
-    ~uniform_vector() override {}
-
-  public:
-    void set(std::vector<float> const&);
-
-};
+using uniform4 = uniform<T, T, T, T>;
 
 } // namespace gl
 

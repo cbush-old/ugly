@@ -5,6 +5,6 @@
 #include "program.h"
 #include "shader.h"
 #include "controller.h"
-
+#include "uniform.h"
 
 #endif
