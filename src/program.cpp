@@ -63,13 +63,20 @@ GLuint Program::name() const {
   return _name;
 }
 
-GLint Program::get_uniform_location(const char* uniform_name) const {
+GLint Program::uniform_location(const char* uniform_name) const {
   GL_CALL(GLint location = glGetUniformLocation(_name, uniform_name));
   return location;
 }
 
-
+GLint Program::uniform_location(std::string const& uniform_name) const {
+  GL_CALL(GLint location = glGetUniformLocation(_name, uniform_name.c_str()));
+  return location;
 }
+
+
+
+
+} // namespace gl
 
 
 

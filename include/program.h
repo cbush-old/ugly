@@ -43,18 +43,18 @@ class Program {
     GLuint name() const;
 
   public:
+    GLint uniform_location(const char* name) const;
+    GLint uniform_location(std::string const& name) const;
+
     template<typename... T>
-    uniform<T...> get_uniform(std::string const& name) {
-      return get_uniform_location(name.c_str());
+    gl::uniform<T...> uniform(const char* name) const {
+      return uniform_location(name);
     }
 
     template<typename... T>
-    uniform<T...> get_uniform(const char* name) {
-      return get_uniform_location(name);
+    gl::uniform<T...> uniform(std::string const& name) const {
+      return uniform_location(name.c_str());
     }
-
-  protected:
-    GLint get_uniform_location(const char* name) const;
 
   private:
     void attach() {}
@@ -83,6 +83,7 @@ inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
 }
 
 
-}
+
+} // namespace gl
 
 #endif

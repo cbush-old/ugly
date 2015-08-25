@@ -73,8 +73,8 @@ int main(int argc, const char* const argv[]) {
 
   gl::VertexShader vert ("test/shaders/vert.glsl");
   gl::FragmentShader frag ("test/shaders/frag.glsl");
-  gl::Program program (vert, frag);
-  program.use(context1);
+  gl::Program program1 (vert, frag);
+  program1.use(context1);
 
 
   gl::Program program2 (
@@ -83,9 +83,26 @@ int main(int argc, const char* const argv[]) {
     gl::FragmentShader("test/shaders/frag.glsl")
   );
 
-  gl::uniform<int> a = program2.get_uniform<int>("blah");
-  gl::uniform<int> b;
-  expect("uniform copy matches", a.location(), b.location());
+  {
+    gl::uniform<int> a (program2.uniform_location("blah"));
+    expect("non-existent uniform not found", a.location(), -1);
+  }
+
+  {
+    gl::uniform<int> a (program2.uniform_location("color"));
+    expect("existent uniform found", a.location() != -1);
+
+    gl::uniform<int> b = a;
+    expect("uniform copy succeeded", a.location() == b.location());
+    expect("uniform equality works", a == b);
+  }
+
+  gl::uniform4<float> color = program2.uniform_location("color");
+
+  struct {
+    float x, y, z, w;
+  } vec;
+  color.set(vec);
 
   while (!app.done()) {
     context1.clear();

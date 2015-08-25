@@ -41,8 +41,13 @@ TEST_SOURCES= \
 	test/main.cpp \
 	test/glfw_app.cpp
 
+DEMO_SOURCES= \
+	test/demo.cpp \
+	test/glfw_app.cpp
+
 OBJECTS= $(SOURCES:.cpp=.o)
 TEST_OBJECTS= $(TEST_SOURCES:.cpp=.o)
+DEMO_OBJECTS= $(DEMO_SOURCES:.cpp=.o)
 
 OUTPUT_SO=libugly.dylib
 
@@ -61,6 +66,9 @@ lib: $(OBJECTS)
 
 test: lib $(TEST_OBJECTS)
 	$(CC) $(TEST_INCLUDE) $(TEST_LDFLAGS) $(TEST_LIBS) $(TEST_OBJECTS) -o main
+
+demo: lib $(DEMO_OBJECTS)
+	$(CC) $(TEST_INCLUDE) $(TEST_LDFLAGS) $(TEST_LIBS) $(DEMO_OBJECTS) -o demo
 
 .cpp.o:
 	$(CC) $(CFLAGS) $(INCLUDE) $< -o $@

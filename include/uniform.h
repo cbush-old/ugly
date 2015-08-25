@@ -27,11 +27,16 @@ class uniform {
   public:
     void set(T... values);
 
+    template<typename U>
+    void set(U const& vec) {
+      set(vec.x, vec.y, vec.z, vec.w);
+    }
+
   public:
     GLint location() const;
 
   private:
-    GLint _location { 0 };
+    GLint _location { -1 };
 
 };
 
@@ -46,6 +51,12 @@ using uniform3 = uniform<T, T, T>;
 
 template<typename T>
 using uniform4 = uniform<T, T, T, T>;
+
+/*
+template<typename T>
+template<typename U>
+void uniform<T, T>::set(U const& valueStruct) {}
+*/
 
 } // namespace gl
 

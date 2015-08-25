@@ -52,7 +52,7 @@ GLint uniform<T...>::location() const {
 
 #define SPECIALIZE_STEP1(...) template<> void uniform<__VA_ARGS__>
 #define SPECIALIZE_STEP2(...) ::set(__VA_ARGS__)
-#define SPECIALIZE_STEP3(Count, Suffix, ...) { glUniform##Count##Suffix(_location, __VA_ARGS__ ); }
+#define SPECIALIZE_STEP3(Count, Suffix, ...) { GL_CALL(glUniform##Count##Suffix(_location, __VA_ARGS__ )); }
 
 #define SPECIALIZE1(Type, Suffix) \
   SPECIALIZE_STEP1(Type) \
