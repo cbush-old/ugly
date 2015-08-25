@@ -84,12 +84,12 @@ int main(int argc, const char* const argv[]) {
   );
 
   {
-    gl::uniform<int> a (program2.uniform_location("blah"));
+    gl::uniform<int> a (program2, "blah");
     expect("non-existent uniform not found", a.location(), -1);
   }
 
   {
-    gl::uniform<int> a (program2.uniform_location("color"));
+    gl::uniform<int> a (program2, "color");
     expect("existent uniform found", a.location() != -1);
 
     gl::uniform<int> b = a;
@@ -97,10 +97,10 @@ int main(int argc, const char* const argv[]) {
     expect("uniform equality works", a == b);
   }
 
-  gl::uniform4<float> color = program2.uniform_location("color");
+  gl::uniform4<float> color (program2, "color");
 
   struct {
-    float x, y, z, w;
+    int x, y, z, w;
   } vec;
   color.set(vec);
 

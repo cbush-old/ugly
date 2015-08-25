@@ -15,6 +15,8 @@ int main(int argc, const char* const argv[]) {
     gl::FragmentShader("test/shaders/frag.glsl")
   );
 
+  
+
   while (!app.done()) {
     context.clear();
     app.update();

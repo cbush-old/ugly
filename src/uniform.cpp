@@ -1,5 +1,8 @@
+
+
 #include "uniform.h"
 #include "gl_type.h"
+#include "program.h"
 
 #include <functional>
 
@@ -8,6 +11,15 @@
 
 namespace gl {
 
+
+// What is this madness? Well, it's a very C++y way to provide a bit of type safety
+// and translate to the glUniform1f, -2i, -3ui, etc., function names in a compact cpp file.
+// Variadic templates are explicitly instantiated only for the types accepted by OpenGL
+// while template specializations, aided by macros, do the translation to the appropriate
+// OpenGL function name.
+#pragma wankfest
+
+
 template<typename... T>
 uniform<T...>::uniform() {}
 
@@ -15,6 +27,18 @@ uniform<T...>::uniform() {}
 template<typename... T>
 uniform<T...>::uniform(GLint location)
   : _location(location)
+  {}
+
+
+template<typename... T>
+uniform<T...>::uniform(Program const& program, const char* name)
+  : _location(program.uniform_location(name))
+  {}
+
+
+template<typename... T>
+uniform<T...>::uniform(Program const& program, std::string const& name)
+  : _location(program.uniform_location(name))
   {}
 
 
@@ -48,6 +72,8 @@ template<typename... T>
 GLint uniform<T...>::location() const {
   return _location;
 }
+
+
 
 
 #define SPECIALIZE_STEP1(...) template<> void uniform<__VA_ARGS__>

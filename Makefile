@@ -1,5 +1,5 @@
 CC= clang++
-CFLAGS=-c -Wall -Werror -std=c++14 -O3
+CFLAGS=-c -Wall -Werror -std=c++14 -O3 -Wno-unknown-pragmas
 
 INCLUDE= -Iinclude \
 	-I/System/Library/Frameworks/OpenGL.framework/Headers \
@@ -52,8 +52,6 @@ DEMO_OBJECTS= $(DEMO_SOURCES:.cpp=.o)
 OUTPUT_SO=libugly.dylib
 
 DEPFILE=.depends
-
-# -Wl,-undefined -Wl,dynamic_lookup
 
 all: test
 

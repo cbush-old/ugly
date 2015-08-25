@@ -46,16 +46,6 @@ class Program {
     GLint uniform_location(const char* name) const;
     GLint uniform_location(std::string const& name) const;
 
-    template<typename... T>
-    gl::uniform<T...> uniform(const char* name) const {
-      return uniform_location(name);
-    }
-
-    template<typename... T>
-    gl::uniform<T...> uniform(std::string const& name) const {
-      return uniform_location(name.c_str());
-    }
-
   private:
     void attach() {}
 
