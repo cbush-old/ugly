@@ -27,7 +27,7 @@ class uniform {
   public:
     uniform(uniform<T...> const&);
     uniform<T...>& operator=(uniform<T...> const&);
-    ~uniform();
+    virtual ~uniform();
 
   public:
     bool operator==(uniform<T...> const&) const;
@@ -46,6 +46,26 @@ class uniform {
     GLint _location { -1 };
 
 };
+
+template<typename T, int Dimensions = 1, >
+class uniform_vector {
+  public:
+    uniform_vector();
+    uniform_vector(GLint location);
+    uniform_vector(Program const& program, const char* name);
+    uniform_vector(Program const& program, std::string const& name);
+
+  public:
+    void set(T const*, size_t count);
+    void set(std::vector<T> const&);
+
+};
+
+
+class uniform_matrix {
+
+};
+
 
 template<typename T> 
 using uniform1 = uniform<T>;
