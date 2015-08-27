@@ -104,6 +104,11 @@ int main(int argc, const char* const argv[]) {
   } vec;
   color.set(vec);
 
+
+
+  gl::Texture tex0;
+
+
   while (!app.done()) {
     context1.clear();
     app.update();

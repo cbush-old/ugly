@@ -47,7 +47,7 @@ class uniform {
 
 };
 
-template<typename T, int Dimensions = 1, >
+template<typename T, int Dimensions = 1>
 class uniform_vector {
   public:
     uniform_vector();
