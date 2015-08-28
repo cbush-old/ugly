@@ -5,12 +5,26 @@
 
 namespace gl {
 
-class ViewportController;
-class CullfaceController;
-class DepthController;
-class ColorController;
+class Controller {
+  public:
+    Controller();
+    Controller(BaseContext& context);
+    virtual ~Controller();
 
-}
+  protected:
+    bool active() const;
+
+  private:
+    class Controller_impl* _impl;
+
+};
+
+class ViewportController : public Controller {};
+class CullfaceController : public Controller {};
+class DepthController : public Controller {};
+class ColorController : public Controller {};
+
+} // namespace gl
 
 
 #endif

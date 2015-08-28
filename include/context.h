@@ -6,6 +6,7 @@
 
 namespace gl {
 
+class Controller;
 
 class BaseContext {
   public:
@@ -42,6 +43,10 @@ class BaseContext {
   public:
     void clear();
     void clear(GLbitfield mask);
+
+  public:
+    void attach(Controller& controller);
+    void detach(Controller& controller);
 
   protected:
     class Context_impl* _impl { nullptr };

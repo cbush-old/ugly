@@ -54,8 +54,6 @@ using attribute = GLint;
   }
 
 
-class BaseContext;
-
 
 enum BufferIndex {
   BUFFER_INDEX_ARRAY = 0,

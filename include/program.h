@@ -4,6 +4,7 @@
 #include "gl_type.h"
 #include "shader.h"
 #include "uniform.h"
+#include "context.h"
 
 namespace gl {
 

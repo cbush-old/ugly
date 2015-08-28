@@ -32,10 +32,20 @@ static const GLenum buffer_target[BUFFER_INDEX_MAX] {
 };
 */
 
+// My policy with the impl so far is only to forward function calls where I actually 
+// need polymorphism. Mostly, I'll use impl class as an opaque data storage type.
+// And I'm using pimpl at all, rather than pure virtual interface inheritance,
+// because:
+//   -  I want users to be able to put the concrete types on their stacks
+//   -  I don't want to write factories all over the place
+//   -  There's no intention to have multiple implementations of most things
+//       (I mean, it's a wrapper...)
+//   -  I'm trying to avoid future ABI compatibility issues
+//   -  It's faster  :trollface:
 
 class Context_impl {
   public:
-    Context_impl(void *);
+    Context_impl(BaseContext& context, void * handle);
     virtual ~Context_impl() =0;
 
 
@@ -46,8 +56,10 @@ class Context_impl {
 
   public:
     GLbitfield _clear_mask { GL_COLOR_BUFFER_BIT };
+    std::set<Controller*> controllers;
 
   protected:
+    BaseContext& _context;
     void *_handle { nullptr };
 };
 
@@ -57,7 +69,7 @@ class MonoContext_impl : public Context_impl {
     static MonoContext_impl* current_context;
 
   public:
-    MonoContext_impl(void *);
+    MonoContext_impl(BaseContext& context, void *);
     ~MonoContext_impl();
 
   public:
@@ -73,7 +85,7 @@ class MultiContext_impl : public Context_impl {
     static std::recursive_mutex current_context_lock;
 
   public:
-    MultiContext_impl(void *);
+    MultiContext_impl(MultiContext& context, void *);
     ~MultiContext_impl();
 
   public:
@@ -147,7 +159,24 @@ BaseContext::~BaseContext() {
   delete _impl;
 }
 
-void Context_impl::on_made_not_current() {}
+void BaseContext::attach(Controller& controller) {
+  if (_impl->controllers.insert(&controller).second) {
+    //controller.on_attached(*this);
+  }
+}
+
+void BaseContext::detach(Controller& controller) {
+  auto it = _impl->controllers.find(&controller);
+  if (it != _impl->controllers.end()) {
+    _impl->controllers.erase(it);
+    //controller.on_detached(*this);
+  }
+}
+
+
+void Context_impl::on_made_not_current() {
+  // detach controllers
+}
 
 
 void BaseContext::clear() {
@@ -161,17 +190,18 @@ void BaseContext::clear(GLbitfield mask) {
 
 BaseContext::BaseContext() {}
 
-Context_impl::Context_impl(void* handle): _handle(handle) {}
+Context_impl::Context_impl(BaseContext& context, void* handle): _context(context), _handle(handle) {}
 
-Context_impl::~Context_impl() {}
+Context_impl::~Context_impl() {
+}
 
-MonoContext_impl::MonoContext_impl(void* handle): Context_impl(handle) {
+MonoContext_impl::MonoContext_impl(BaseContext& context, void* handle): Context_impl(context, handle) {
   make_current();
 }
 
 
 MonoContext::MonoContext(void* handle): BaseContext() {
-  _impl = new MonoContext_impl(handle);
+  _impl = new MonoContext_impl(*this, handle);
 }
 
 
@@ -194,8 +224,8 @@ MonoContext_impl::~MonoContext_impl() {
 }
 
 
-MultiContext_impl::MultiContext_impl(void* handle)
-  : Context_impl(handle)
+MultiContext_impl::MultiContext_impl(MultiContext& context, void* handle)
+  : Context_impl(context, handle)
   , _thread_id(std::this_thread::get_id())
 {
   make_current();
