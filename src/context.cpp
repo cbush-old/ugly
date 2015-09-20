@@ -107,12 +107,17 @@ std::recursive_mutex MultiContext_impl::current_context_lock;
 
 
 template<typename T, void(*GET)(GLenum, T*)>
-inline T get(Context const& context, GLenum param) {
+inline void get(Context const& context, GLenum param, T* out) {
   if (!context.current()) {
     throw gl::exception("can't get param from inactive context");
   }
+  GL_CALL(GET(param, out));
+}
+
+template<typename T, void(*GET)(GLenum, T*)>
+inline T get(Context const& context, GLenum param) { // get single
   T rv;
-  GL_CALL(GET(param, &rv));
+  get<T, GET>(context, param, &rv);
   return rv;
 }
 
@@ -144,14 +149,20 @@ inline float get<float>(Context const& context, GLenum param) {
   return get<GLfloat, glGetFloatv>(context, param);
 }
 
+template<>
+inline color get<color>(Context const& context, GLenum param) {
+  color c;
+  get<GLfloat, glGetFloatv>(context, param, reinterpret_cast<GLfloat*>(&c));
+  return c;
+}
 
 
 unsigned Context::major_version() const {
-  return (unsigned)get<int>(*this, GL_MAJOR_VERSION);
+  return (unsigned)gl::get<int>(*this, GL_MAJOR_VERSION);
 }
 
 unsigned Context::minor_version() const {
-  return (unsigned)get<int>(*this, GL_MINOR_VERSION);
+  return (unsigned)gl::get<int>(*this, GL_MINOR_VERSION);
 }
 
 Context::~Context() {
@@ -277,16 +288,21 @@ void Context::disable() {
 }
 
 template<GLenum capability>
-bool Context::is_enabled() {
+bool Context::is_enabled() const {
   auto rv = GL_CALL(glIsEnabled(capability));
   return rv;
+}
+
+template<GLenum P, typename T>
+T Context::get() const {
+  return gl::get<T>(*this, P);
 }
 
 
 #define INSTANTIATE_ENABLE(MODE) \
   template void Context::enable< MODE >(); \
   template void Context::disable< MODE >(); \
-  template bool Context::is_enabled<MODE>();
+  template bool Context::is_enabled<MODE>() const;
 
 INSTANTIATE_ENABLE(GL_BLEND);
 INSTANTIATE_ENABLE(GL_COLOR_LOGIC_OP);

@@ -35,7 +35,7 @@ void expect(const char* name, bool result) {
 void test_enable_disable(gl::Context& context) {
   using enable_f = void(gl::Context::*)();
   using disable_f = void(gl::Context::*)();
-  using is_enabled_f = bool(gl::Context::*)();
+  using is_enabled_f = bool(gl::Context::*)() const;
   using threeway = std::tuple<const char*, enable_f, disable_f, is_enabled_f>;
 
 #define FTUPLE(CAP) \
@@ -184,6 +184,9 @@ int main(int argc, const char* const argv[]) {
 
 
   test_enable_disable(context1);
+
+  auto b = context1.get<GL_BLEND, bool>();
+  
 
   gl::color c (0.f, 0.f, 0.f, 1.f);
   float i = 0;
