@@ -25,6 +25,7 @@ struct vec2_t {
 
 template<typename T>
 struct vec4_t {
+  vec4_t(T x, T y, T z, T w): x(x), y(y), z(z), w(w) {}
   union { T x, r; };
   union { T y, g; };
   union { T z, b; };

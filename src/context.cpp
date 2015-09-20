@@ -56,7 +56,6 @@ class Context_impl {
 
   public:
     GLbitfield _clear_mask { GL_COLOR_BUFFER_BIT };
-    std::set<Controller*> controllers;
 
   protected:
     BaseContext& _context;
@@ -159,23 +158,7 @@ BaseContext::~BaseContext() {
   delete _impl;
 }
 
-void BaseContext::attach(Controller& controller) {
-  if (_impl->controllers.insert(&controller).second) {
-    //controller.on_attached(*this);
-  }
-}
-
-void BaseContext::detach(Controller& controller) {
-  auto it = _impl->controllers.find(&controller);
-  if (it != _impl->controllers.end()) {
-    _impl->controllers.erase(it);
-    //controller.on_detached(*this);
-  }
-}
-
-
 void Context_impl::on_made_not_current() {
-  // detach controllers
 }
 
 
@@ -185,6 +168,10 @@ void BaseContext::clear() {
 
 void BaseContext::clear(GLbitfield mask) {
   GL_CALL(glClear(mask));
+}
+
+void BaseContext::clear_color(color const& color) {
+  GL_CALL(glClearColor(color.r, color.g, color.b, color.a));
 }
 
 

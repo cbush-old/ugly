@@ -6,7 +6,9 @@
 
 namespace gl {
 
-class Controller;
+class Pipeline;
+class Buffer;
+class Framebuffer;
 
 class BaseContext {
   public:
@@ -28,7 +30,8 @@ class BaseContext {
      **/
     unsigned minor_version() const;
 
-  public:
+
+  public: // CURRENT CONTEXT
     /**
      * @brief make this Context the current Context of this thread.
      **/
@@ -40,13 +43,29 @@ class BaseContext {
      **/
     bool current() const;
 
+
+  public:
+    void bind(Pipeline&);
+
+    template<GLenum target>
+    void bind(Framebuffer&);
+
   public:
     void clear();
     void clear(GLbitfield mask);
 
   public:
-    void attach(Controller& controller);
-    void detach(Controller& controller);
+    /**
+     * @brief set the color buffer value
+     **/
+    void clear_color(color const&);
+
+    /**
+     * @brief bind buffer to target
+     **/
+    template<GLenum target>
+    void bind(Buffer& buffer);
+
 
   protected:
     class Context_impl* _impl { nullptr };

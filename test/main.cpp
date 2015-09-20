@@ -6,7 +6,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-
+#include <cmath>
 
 template<typename T, typename U>
 void expect(const char* name, T result, U expected) {
@@ -104,13 +104,17 @@ int main(int argc, const char* const argv[]) {
   } vec;
   color.set(vec);
 
-
-
   gl::Texture tex0;
 
-
+  gl::color c (0.f, 0.f, 0.f, 1.f);
+  float i = 0;
   while (!app.done()) {
     context1.clear();
+    i += 0.01;
+    c.r = 0.5 + std::sin(i) * 0.5;
+    c.g = 0.5 + std::sin(i + M_PI_2) * 0.5;
+    c.b = 0.5 + std::sin(i + M_PI_2 * 2.f) * 0.5;
+    context1.clear_color(c);
     app.update();
   }
 
