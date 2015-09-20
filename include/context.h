@@ -10,14 +10,14 @@ class Pipeline;
 class Buffer;
 class Framebuffer;
 
-class BaseContext {
+class Context {
   public:
-    BaseContext();
+    Context();
 
   public:
-    virtual ~BaseContext() =0;
-    BaseContext(BaseContext const&) = delete;
-    BaseContext& operator=(BaseContext const&) = delete;
+    virtual ~Context() =0;
+    Context(Context const&) = delete;
+    Context& operator=(Context const&) = delete;
 
   public: // OPENGL VERSION INFO
     /**
@@ -97,9 +97,9 @@ class BaseContext {
 
 
 #define INSTANTIATE_ENABLE(MODE) \
-  extern template void BaseContext::enable< MODE >(); \
-  extern template void BaseContext::disable< MODE >(); \
-  extern template bool BaseContext::is_enabled<MODE>();
+  extern template void Context::enable< MODE >(); \
+  extern template void Context::disable< MODE >(); \
+  extern template bool Context::is_enabled<MODE>();
 
 INSTANTIATE_ENABLE(GL_BLEND);
 INSTANTIATE_ENABLE(GL_COLOR_LOGIC_OP);
@@ -134,18 +134,18 @@ INSTANTIATE_ENABLE(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 #undef INSTANTIATE_ENABLE
 
 
-extern template void BaseContext::draw_arrays<GL_POINTS>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_LINE_STRIP>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_LINE_LOOP>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_LINES>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_LINE_STRIP_ADJACENCY>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_LINES_ADJACENCY>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_TRIANGLE_STRIP>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_TRIANGLE_FAN>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_TRIANGLES>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_TRIANGLE_STRIP_ADJACENCY>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_TRIANGLES_ADJACENCY>(int, GLsizei);
-extern template void BaseContext::draw_arrays<GL_PATCHES>(int, GLsizei);
+extern template void Context::draw_arrays<GL_POINTS>(int, GLsizei);
+extern template void Context::draw_arrays<GL_LINE_STRIP>(int, GLsizei);
+extern template void Context::draw_arrays<GL_LINE_LOOP>(int, GLsizei);
+extern template void Context::draw_arrays<GL_LINES>(int, GLsizei);
+extern template void Context::draw_arrays<GL_LINE_STRIP_ADJACENCY>(int, GLsizei);
+extern template void Context::draw_arrays<GL_LINES_ADJACENCY>(int, GLsizei);
+extern template void Context::draw_arrays<GL_TRIANGLE_STRIP>(int, GLsizei);
+extern template void Context::draw_arrays<GL_TRIANGLE_FAN>(int, GLsizei);
+extern template void Context::draw_arrays<GL_TRIANGLES>(int, GLsizei);
+extern template void Context::draw_arrays<GL_TRIANGLE_STRIP_ADJACENCY>(int, GLsizei);
+extern template void Context::draw_arrays<GL_TRIANGLES_ADJACENCY>(int, GLsizei);
+extern template void Context::draw_arrays<GL_PATCHES>(int, GLsizei);
 
 
 
@@ -153,7 +153,7 @@ extern template void BaseContext::draw_arrays<GL_PATCHES>(int, GLsizei);
 /**
  * @brief a Context to be used when Context activity will always happen on the same thread.
  **/
-class MonoContext : public BaseContext {
+class MonoContext : public Context {
   public:
     MonoContext(void*);
     ~MonoContext() override;
@@ -167,14 +167,12 @@ class MonoContext : public BaseContext {
  * from any other thread. However, you can create another MultiContext on a different
  * thread.
  **/
-class MultiContext : public BaseContext {
+class MultiContext : public Context {
   public:
     MultiContext(void*);
     ~MultiContext() override;
 };
 
-
-using Context = MonoContext;
 
 }
 

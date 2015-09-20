@@ -52,7 +52,7 @@ void Program::link() {
   }
 }
 
-void Program::use(BaseContext const& context) {
+void Program::use(Context const& context) {
   if (!context.current()) {
     throw gl::exception("attempt to use program with non-current context");
   }

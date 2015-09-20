@@ -45,7 +45,7 @@ static const GLenum buffer_target[BUFFER_INDEX_MAX] {
 
 class Context_impl {
   public:
-    Context_impl(BaseContext& context, void * handle);
+    Context_impl(Context& context, void * handle);
     virtual ~Context_impl() =0;
 
 
@@ -58,7 +58,7 @@ class Context_impl {
     GLbitfield _clear_mask { GL_COLOR_BUFFER_BIT };
 
   protected:
-    BaseContext& _context;
+    Context& _context;
     void *_handle { nullptr };
 };
 
@@ -68,7 +68,7 @@ class MonoContext_impl : public Context_impl {
     static MonoContext_impl* current_context;
 
   public:
-    MonoContext_impl(BaseContext& context, void *);
+    MonoContext_impl(Context& context, void *);
     ~MonoContext_impl();
 
   public:
@@ -107,7 +107,7 @@ std::recursive_mutex MultiContext_impl::current_context_lock;
 
 
 template<typename T, void(*GET)(GLenum, T*)>
-inline T get(BaseContext const& context, GLenum param) {
+inline T get(Context const& context, GLenum param) {
   if (!context.current()) {
     throw gl::exception("can't get param from inactive context");
   }
@@ -117,44 +117,44 @@ inline T get(BaseContext const& context, GLenum param) {
 }
 
 template<typename T>
-inline T get(BaseContext const& context, GLenum param);
+inline T get(Context const& context, GLenum param);
 
 template<>
-inline int get<int>(BaseContext const& context, GLenum param) {
+inline int get<int>(Context const& context, GLenum param) {
   return get<GLint, glGetIntegerv>(context, param);
 }
 
 template<>
-inline int64_t get<int64_t>(BaseContext const& context, GLenum param) {
+inline int64_t get<int64_t>(Context const& context, GLenum param) {
   return get<GLint64, glGetInteger64v>(context, param);
 }
 
 template<>
-inline bool get<bool>(BaseContext const& context, GLenum param) {
+inline bool get<bool>(Context const& context, GLenum param) {
   return get<GLboolean, glGetBooleanv>(context, param);
 }
 
 template<>
-inline double get<double>(BaseContext const& context, GLenum param) {
+inline double get<double>(Context const& context, GLenum param) {
   return get<GLdouble, glGetDoublev>(context, param);
 }
 
 template<>
-inline float get<float>(BaseContext const& context, GLenum param) {
+inline float get<float>(Context const& context, GLenum param) {
   return get<GLfloat, glGetFloatv>(context, param);
 }
 
 
 
-unsigned BaseContext::major_version() const {
+unsigned Context::major_version() const {
   return (unsigned)get<int>(*this, GL_MAJOR_VERSION);
 }
 
-unsigned BaseContext::minor_version() const {
+unsigned Context::minor_version() const {
   return (unsigned)get<int>(*this, GL_MINOR_VERSION);
 }
 
-BaseContext::~BaseContext() {
+Context::~Context() {
   delete _impl;
 }
 
@@ -162,32 +162,32 @@ void Context_impl::on_made_not_current() {
 }
 
 
-void BaseContext::clear() {
+void Context::clear() {
   GL_CALL(glClear(_impl->_clear_mask));
 }
 
-void BaseContext::clear(GLbitfield mask) {
+void Context::clear(GLbitfield mask) {
   GL_CALL(glClear(mask));
 }
 
-void BaseContext::clear_color(color const& color) {
+void Context::clear_color(color const& color) {
   GL_CALL(glClearColor(color.r, color.g, color.b, color.a));
 }
 
 
-BaseContext::BaseContext() {}
+Context::Context() {}
 
-Context_impl::Context_impl(BaseContext& context, void* handle): _context(context), _handle(handle) {}
+Context_impl::Context_impl(Context& context, void* handle): _context(context), _handle(handle) {}
 
 Context_impl::~Context_impl() {
 }
 
-MonoContext_impl::MonoContext_impl(BaseContext& context, void* handle): Context_impl(context, handle) {
+MonoContext_impl::MonoContext_impl(Context& context, void* handle): Context_impl(context, handle) {
   make_current();
 }
 
 
-MonoContext::MonoContext(void* handle): BaseContext() {
+MonoContext::MonoContext(void* handle): Context() {
   _impl = new MonoContext_impl(*this, handle);
 }
 
@@ -253,11 +253,11 @@ MultiContext_impl::~MultiContext_impl() {
 }
 
 
-bool BaseContext::current() const {
+bool Context::current() const {
   return _impl->current();
 }
 
-void BaseContext::make_current() {
+void Context::make_current() {
   _impl->make_current();
 }
 
@@ -267,26 +267,26 @@ MonoContext::~MonoContext() {}
 
 
 template<GLenum capability>
-void BaseContext::enable() {
+void Context::enable() {
   GL_CALL(glEnable(capability));
 }
 
 template<GLenum capability>
-void BaseContext::disable() {
+void Context::disable() {
   GL_CALL(glDisable(capability));
 }
 
 template<GLenum capability>
-bool BaseContext::is_enabled() {
+bool Context::is_enabled() {
   auto rv = GL_CALL(glIsEnabled(capability));
   return rv;
 }
 
 
 #define INSTANTIATE_ENABLE(MODE) \
-  template void BaseContext::enable< MODE >(); \
-  template void BaseContext::disable< MODE >(); \
-  template bool BaseContext::is_enabled<MODE>();
+  template void Context::enable< MODE >(); \
+  template void Context::disable< MODE >(); \
+  template bool Context::is_enabled<MODE>();
 
 INSTANTIATE_ENABLE(GL_BLEND);
 INSTANTIATE_ENABLE(GL_COLOR_LOGIC_OP);

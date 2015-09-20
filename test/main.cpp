@@ -32,15 +32,15 @@ void expect(const char* name, bool result) {
 
 
 
-void test_enable_disable(gl::BaseContext& context) {
-  using enable_f = void(gl::BaseContext::*)();
-  using disable_f = void(gl::BaseContext::*)();
-  using is_enabled_f = bool(gl::BaseContext::*)();
+void test_enable_disable(gl::Context& context) {
+  using enable_f = void(gl::Context::*)();
+  using disable_f = void(gl::Context::*)();
+  using is_enabled_f = bool(gl::Context::*)();
   using threeway = std::tuple<const char*, enable_f, disable_f, is_enabled_f>;
 
 #define FTUPLE(CAP) \
   std::make_tuple<const char*, enable_f, disable_f, is_enabled_f>( \
-    #CAP, &gl::BaseContext::enable< CAP >, &gl::BaseContext::disable< CAP >, &gl::BaseContext::is_enabled< CAP > \
+    #CAP, &gl::Context::enable< CAP >, &gl::Context::disable< CAP >, &gl::Context::is_enabled< CAP > \
   )
 
   static const std::vector<threeway> funcs {
@@ -112,10 +112,10 @@ int main(int argc, const char* const argv[]) {
   //  CONTEXT TESTS
   //
   //
-  gl::Context context1(&app);
+  gl::MonoContext context1(&app);
   expect("after creating context1, context1 is current", context1.current());
 
-  gl::Context context2(&app);
+  gl::MonoContext context2(&app);
   expect("after creating context2, context2 is current", context2.current());
   expect("after creating context2, context1 is not current", !context1.current());
 
