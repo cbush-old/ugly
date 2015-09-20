@@ -7,6 +7,8 @@
 #include <thread>
 #include <chrono>
 #include <cmath>
+#include <functional>
+#include <tuple>
 
 template<typename T, typename U>
 void expect(const char* name, T result, U expected) {
@@ -26,6 +28,80 @@ void expect(const char* name, bool result) {
   bool threw = false; \
   try { stmt; } catch(...) { threw = true; } \
   expect(name, threw); }
+
+
+
+
+void test_enable_disable(gl::BaseContext& context) {
+  using enable_f = void(gl::BaseContext::*)();
+  using disable_f = void(gl::BaseContext::*)();
+  using is_enabled_f = bool(gl::BaseContext::*)();
+  using threeway = std::tuple<const char*, enable_f, disable_f, is_enabled_f>;
+
+#define FTUPLE(CAP) \
+  std::make_tuple<const char*, enable_f, disable_f, is_enabled_f>( \
+    #CAP, &gl::BaseContext::enable< CAP >, &gl::BaseContext::disable< CAP >, &gl::BaseContext::is_enabled< CAP > \
+  )
+
+  static const std::vector<threeway> funcs {
+    FTUPLE(GL_BLEND),
+    FTUPLE(GL_COLOR_LOGIC_OP),
+    FTUPLE(GL_CULL_FACE),
+    FTUPLE(GL_DEPTH_CLAMP),
+    FTUPLE(GL_DEPTH_TEST),
+    FTUPLE(GL_DITHER),
+    FTUPLE(GL_FRAMEBUFFER_SRGB),
+    FTUPLE(GL_LINE_SMOOTH),
+    FTUPLE(GL_MULTISAMPLE),
+    FTUPLE(GL_POLYGON_OFFSET_FILL),
+    FTUPLE(GL_POLYGON_OFFSET_LINE),
+    FTUPLE(GL_POLYGON_OFFSET_POINT),
+    FTUPLE(GL_POLYGON_SMOOTH),
+    FTUPLE(GL_PRIMITIVE_RESTART),
+    FTUPLE(GL_RASTERIZER_DISCARD),
+    FTUPLE(GL_SAMPLE_ALPHA_TO_COVERAGE),
+    FTUPLE(GL_SAMPLE_ALPHA_TO_ONE),
+    FTUPLE(GL_SAMPLE_COVERAGE),
+    FTUPLE(GL_SAMPLE_SHADING),
+    FTUPLE(GL_SAMPLE_MASK),
+    FTUPLE(GL_SCISSOR_TEST),
+    FTUPLE(GL_STENCIL_TEST),
+    FTUPLE(GL_TEXTURE_CUBE_MAP_SEAMLESS),
+    FTUPLE(GL_PROGRAM_POINT_SIZE),
+  };
+
+  for (auto const& t : funcs) {
+    auto name = std::get<0>(t);
+    auto enable = std::get<1>(t);
+    auto disable = std::get<2>(t);
+    auto is_enabled = std::get<3>(t);
+    bool enabled = (context.*is_enabled)();
+    logi("%s %s enabled", name, enabled ? "is" : "is not");
+
+    for (int i = 0; i < 2; ++i) {
+      if (enabled) {
+        (context.*disable)();
+        enabled = (context.*is_enabled)();
+        expect("after 'disable', disabled", !enabled);
+      } else {
+        (context.*enable)();
+        enabled = (context.*is_enabled)();
+        expect("after 'enable', enabled", enabled);
+        (context.*enable)();
+      }
+    }
+  }
+
+
+
+
+}
+
+
+
+
+
+
 
 
 int main(int argc, const char* const argv[]) {
@@ -105,6 +181,9 @@ int main(int argc, const char* const argv[]) {
   color.set(vec);
 
   gl::Texture tex0;
+
+
+  test_enable_disable(context1);
 
   gl::color c (0.f, 0.f, 0.f, 1.f);
   float i = 0;
