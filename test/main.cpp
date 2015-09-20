@@ -70,6 +70,8 @@ void test_enable_disable(gl::Context& context) {
     FTUPLE(GL_PROGRAM_POINT_SIZE),
   };
 
+#undef FTUPLE
+
   for (auto const& t : funcs) {
     auto name = std::get<0>(t);
     auto enable = std::get<1>(t);
@@ -94,6 +96,99 @@ void test_enable_disable(gl::Context& context) {
 
 
 
+
+}
+
+
+
+void test_unsigned_gets(gl::Context const& context) {
+  using getf = unsigned(gl::Context::*)() const;
+  using name_and_func = std::tuple<const char*, getf>;
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_unsigned<NAME>)
+  static const std::vector<name_and_func> funcs {
+    F(GL_CONTEXT_FLAGS),
+    F(GL_MAX_3D_TEXTURE_SIZE),
+    F(GL_MAX_ARRAY_TEXTURE_LAYERS),
+    F(GL_MAX_CLIP_DISTANCES),
+    F(GL_MAX_COLOR_TEXTURE_SAMPLES),
+    F(GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS),
+    F(GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS),
+    F(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+    F(GL_MAX_COMBINED_UNIFORM_BLOCKS),
+    F(GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS),
+    F(GL_MAX_CUBE_MAP_TEXTURE_SIZE),
+    F(GL_MAX_DEPTH_TEXTURE_SAMPLES),
+    F(GL_MAX_DRAW_BUFFERS),
+    F(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS),
+    F(GL_MAX_ELEMENTS_INDICES),
+    F(GL_MAX_ELEMENTS_VERTICES),
+    F(GL_MAX_FRAGMENT_INPUT_COMPONENTS),
+    F(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS),
+    F(GL_MAX_FRAGMENT_UNIFORM_VECTORS),
+    F(GL_MAX_FRAGMENT_UNIFORM_BLOCKS),
+    F(GL_MAX_GEOMETRY_INPUT_COMPONENTS),
+    F(GL_MAX_GEOMETRY_OUTPUT_COMPONENTS),
+    F(GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS),
+    F(GL_MAX_GEOMETRY_UNIFORM_BLOCKS),
+    F(GL_MAX_GEOMETRY_UNIFORM_COMPONENTS),
+    F(GL_MAX_INTEGER_SAMPLES),
+    F(GL_MAX_RECTANGLE_TEXTURE_SIZE),
+    F(GL_MAX_RENDERBUFFER_SIZE),
+    F(GL_MAX_SAMPLE_MASK_WORDS),
+    F(GL_MAX_SERVER_WAIT_TIMEOUT),
+    F(GL_MAX_TEXTURE_BUFFER_SIZE),
+    F(GL_MAX_TEXTURE_IMAGE_UNITS),
+    F(GL_MAX_TEXTURE_SIZE),
+    F(GL_MAX_UNIFORM_BUFFER_BINDINGS),
+    F(GL_MAX_UNIFORM_BLOCK_SIZE),
+    F(GL_MAX_VARYING_VECTORS),
+    F(GL_MAX_VARYING_FLOATS),
+    F(GL_MAX_VERTEX_ATTRIBS),
+    F(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+    F(GL_MAX_VERTEX_UNIFORM_COMPONENTS),
+    F(GL_MAX_VERTEX_UNIFORM_VECTORS),
+    F(GL_MAX_VERTEX_OUTPUT_COMPONENTS),
+    F(GL_MAX_VERTEX_UNIFORM_BLOCKS),
+    F(GL_MAX_VIEWPORT_DIMS),
+    F(GL_MAX_VIEWPORTS),
+    F(GL_MINOR_VERSION),
+    F(GL_NUM_COMPRESSED_TEXTURE_FORMATS),
+    F(GL_NUM_EXTENSIONS),
+    F(GL_NUM_PROGRAM_BINARY_FORMATS),
+    F(GL_NUM_SHADER_BINARY_FORMATS),
+    F(GL_PACK_ALIGNMENT),
+    F(GL_PACK_IMAGE_HEIGHT),
+    F(GL_PACK_ROW_LENGTH),
+    F(GL_PACK_SKIP_IMAGES),
+    F(GL_PACK_SKIP_PIXELS),
+    F(GL_PACK_SKIP_ROWS),
+    F(GL_POINT_FADE_THRESHOLD_SIZE),
+    F(GL_PRIMITIVE_RESTART_INDEX),
+    F(GL_POINT_SIZE),
+    F(GL_POINT_SIZE_GRANULARITY),
+    F(GL_STENCIL_BACK_VALUE_MASK),
+    F(GL_STENCIL_BACK_WRITEMASK),
+    F(GL_STENCIL_CLEAR_VALUE),
+    F(GL_STENCIL_VALUE_MASK),
+    F(GL_STENCIL_WRITEMASK),
+    F(GL_SUBPIXEL_BITS),
+    F(GL_TRANSFORM_FEEDBACK_BUFFER_START),
+    F(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT),
+    F(GL_UNIFORM_BUFFER_START),
+    F(GL_UNPACK_ALIGNMENT),
+    F(GL_UNPACK_IMAGE_HEIGHT),
+    F(GL_UNPACK_ROW_LENGTH),
+    F(GL_UNPACK_SKIP_IMAGES),
+    F(GL_UNPACK_SKIP_PIXELS),
+    F(GL_UNPACK_SKIP_ROWS),
+    F(GL_VIEWPORT_SUBPIXEL_BITS),
+  };
+  for (auto const& t : funcs) {
+    auto name = std::get<0>(t);
+    auto f = std::get<1>(t);
+    auto value = (context.*f)();
+    logi("%s = %u", name, value);
+  }
 
 }
 
@@ -184,18 +279,22 @@ int main(int argc, const char* const argv[]) {
 
 
   test_enable_disable(context1);
+  test_unsigned_gets(context1);
+  expect("blend enabled", context1.get_bool<GL_BLEND>());
 
-  auto b = context1.get<GL_BLEND, bool>();
-  
+  context1.get_bool<GL_BLEND>();
 
   gl::color c (0.f, 0.f, 0.f, 1.f);
+  context1.clear_color(c);
+  gl::color curr = context1.get_color<GL_COLOR_CLEAR_VALUE>();
+  expect("GL_COLOR_CLEAR_VALUE == set color", curr == c);
   float i = 0;
   while (!app.done()) {
     context1.clear();
-    i += 0.01;
+    i += 0.01f;
     c.r = 0.5 + std::sin(i) * 0.5;
     c.g = 0.5 + std::sin(i + M_PI_2) * 0.5;
-    c.b = 0.5 + std::sin(i + M_PI_2 * 2.f) * 0.5;
+    c.g = 0.5 + std::sin(i + M_PI_2 * 2.f) * 0.5;
     context1.clear_color(c);
     app.update();
   }

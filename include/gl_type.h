@@ -31,6 +31,13 @@ struct vec4_t {
   union { T y, g; };
   union { T z, b; };
   union { T w, a; };
+
+  bool operator==(vec4_t const& o) {
+    return x == o.x
+      && y == o.y
+      && z == o.z
+      && w == o.w;
+  }
 };
 
 using range = vec2_t<float>;

@@ -130,6 +130,11 @@ inline int get<int>(Context const& context, GLenum param) {
 }
 
 template<>
+inline unsigned get<unsigned>(Context const& context, GLenum param) {
+  return get<GLint, glGetIntegerv>(context, param);
+}
+
+template<>
 inline int64_t get<int64_t>(Context const& context, GLenum param) {
   return get<GLint64, glGetInteger64v>(context, param);
 }
@@ -154,6 +159,19 @@ inline color get<color>(Context const& context, GLenum param) {
   color c;
   get<GLfloat, glGetFloatv>(context, param, reinterpret_cast<GLfloat*>(&c));
   return c;
+}
+
+template<>
+inline range get<range>(Context const& context, GLenum param) {
+  range r;
+  get<GLfloat, glGetFloatv>(context, param, reinterpret_cast<GLfloat*>(&r));
+  return r;
+}
+
+inline std::vector<int> get(Context const& context, GLenum param, size_t size) {
+  std::vector<int> v (size);
+  get<GLint, glGetIntegerv>(context, param, v.data());
+  return v;
 }
 
 
@@ -293,49 +311,68 @@ bool Context::is_enabled() const {
   return rv;
 }
 
-template<GLenum P, typename T>
-T Context::get() const {
-  return gl::get<T>(*this, P);
+template<GLenum param>
+bool Context::get_bool() const {
+  return gl::get<bool>(*this, param);
+}
+
+template<GLenum param>
+int Context::get_int() const {
+  return gl::get<int>(*this, param);
+}
+
+template<GLenum param>
+color Context::get_color() const {
+  return gl::get<color>(*this, param);
+}
+
+template<GLenum param>
+GLenum Context::get_enum() const {
+  return gl::get<GLenum>(*this, param);
+}
+
+template<GLenum param>
+unsigned Context::get_unsigned() const {
+  return gl::get<unsigned>(*this, param);
+}
+
+template<GLenum param>
+int64_t Context::get_int64() const {
+  return gl::get<int64_t>(*this, param);
+}
+
+template<GLenum param>
+float Context::get_float() const {
+  return gl::get<float>(*this, param);
+}
+
+template<GLenum param>
+std::vector<int> Context::get_list() const {
+  return gl::get<std::vector<int>>(*this, param);
+}
+
+template<GLenum param>
+range Context::get_range() const {
+  return gl::get<range>(*this, param);
+}
+
+template<GLenum param, GLenum size_key>
+std::vector<int> Context::get() const {
+  size_t size = get_unsigned<size_key>();
+  return gl::get(*this, param, size);
 }
 
 
-#define INSTANTIATE_ENABLE(MODE) \
-  template void Context::enable< MODE >(); \
-  template void Context::disable< MODE >(); \
-  template bool Context::is_enabled<MODE>() const;
+template<GLenum mode>
+void Context::draw_arrays(int, GLsizei) {
+  // TODO
+}
 
-INSTANTIATE_ENABLE(GL_BLEND);
-INSTANTIATE_ENABLE(GL_COLOR_LOGIC_OP);
-INSTANTIATE_ENABLE(GL_CULL_FACE);
-INSTANTIATE_ENABLE(GL_DEPTH_CLAMP);
-INSTANTIATE_ENABLE(GL_DEPTH_TEST);
-INSTANTIATE_ENABLE(GL_DITHER);
-INSTANTIATE_ENABLE(GL_FRAMEBUFFER_SRGB);
-INSTANTIATE_ENABLE(GL_LINE_SMOOTH);
-INSTANTIATE_ENABLE(GL_MULTISAMPLE);
-INSTANTIATE_ENABLE(GL_POLYGON_OFFSET_FILL);
-INSTANTIATE_ENABLE(GL_POLYGON_OFFSET_LINE);
-INSTANTIATE_ENABLE(GL_POLYGON_OFFSET_POINT);
-INSTANTIATE_ENABLE(GL_POLYGON_SMOOTH);
-INSTANTIATE_ENABLE(GL_PRIMITIVE_RESTART);
-INSTANTIATE_ENABLE(GL_RASTERIZER_DISCARD);
-INSTANTIATE_ENABLE(GL_SAMPLE_ALPHA_TO_COVERAGE);
-INSTANTIATE_ENABLE(GL_SAMPLE_ALPHA_TO_ONE);
-INSTANTIATE_ENABLE(GL_SAMPLE_COVERAGE);
-INSTANTIATE_ENABLE(GL_SAMPLE_SHADING);
-INSTANTIATE_ENABLE(GL_SAMPLE_MASK);
-INSTANTIATE_ENABLE(GL_SCISSOR_TEST);
-INSTANTIATE_ENABLE(GL_STENCIL_TEST);
-INSTANTIATE_ENABLE(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-INSTANTIATE_ENABLE(GL_PROGRAM_POINT_SIZE);
-#if GL_4_5
-INSTANTIATE_ENABLE(GL_DEBUG_OUTPUT);
-INSTANTIATE_ENABLE(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-INSTANTIATE_ENABLE(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-#endif
 
-#undef INSTANTIATE_ENABLE
 
+#define INTERN
+#include "context_instantiations.inl"
+#undef INTERN
 
 
 } // namespace gl
