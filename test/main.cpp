@@ -142,14 +142,12 @@ void test_unsigned_gets(gl::Context const& context) {
     F(GL_MAX_UNIFORM_BUFFER_BINDINGS),
     F(GL_MAX_UNIFORM_BLOCK_SIZE),
     F(GL_MAX_VARYING_VECTORS),
-    F(GL_MAX_VARYING_FLOATS),
     F(GL_MAX_VERTEX_ATTRIBS),
     F(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS),
     F(GL_MAX_VERTEX_UNIFORM_COMPONENTS),
     F(GL_MAX_VERTEX_UNIFORM_VECTORS),
     F(GL_MAX_VERTEX_OUTPUT_COMPONENTS),
     F(GL_MAX_VERTEX_UNIFORM_BLOCKS),
-    F(GL_MAX_VIEWPORT_DIMS),
     F(GL_MAX_VIEWPORTS),
     F(GL_MINOR_VERSION),
     F(GL_NUM_COMPRESSED_TEXTURE_FORMATS),
@@ -172,9 +170,7 @@ void test_unsigned_gets(gl::Context const& context) {
     F(GL_STENCIL_VALUE_MASK),
     F(GL_STENCIL_WRITEMASK),
     F(GL_SUBPIXEL_BITS),
-    F(GL_TRANSFORM_FEEDBACK_BUFFER_START),
     F(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT),
-    F(GL_UNIFORM_BUFFER_START),
     F(GL_UNPACK_ALIGNMENT),
     F(GL_UNPACK_IMAGE_HEIGHT),
     F(GL_UNPACK_ROW_LENGTH),
@@ -182,12 +178,138 @@ void test_unsigned_gets(gl::Context const& context) {
     F(GL_UNPACK_SKIP_PIXELS),
     F(GL_UNPACK_SKIP_ROWS),
     F(GL_VIEWPORT_SUBPIXEL_BITS),
+    //F(GL_MAX_VARYING_FLOATS),
+    //F(GL_MAX_VIEWPORT_DIMS),
+    //F(GL_TRANSFORM_FEEDBACK_BUFFER_START),
+    //F(GL_UNIFORM_BUFFER_START),
   };
+#undef F
   for (auto const& t : funcs) {
     auto name = std::get<0>(t);
     auto f = std::get<1>(t);
     auto value = (context.*f)();
     logi("%s = %u", name, value);
+  }
+
+}
+
+
+void test_float_gets(gl::Context const& context) {
+  using getf = float(gl::Context::*)() const;
+  using name_and_func = std::tuple<const char*, getf>;
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_float<NAME>)
+  static const std::vector<name_and_func> funcs {
+    F(GL_LINE_WIDTH),
+    F(GL_MAX_TEXTURE_LOD_BIAS),
+    F(GL_POLYGON_OFFSET_FACTOR),
+    F(GL_POLYGON_OFFSET_UNITS),
+    F(GL_SAMPLE_COVERAGE_VALUE),
+    F(GL_STENCIL_BACK_REF),
+    F(GL_STENCIL_REF),
+    F(GL_SMOOTH_LINE_WIDTH_GRANULARITY),
+  };
+#undef F
+  logi("test float gets");
+  for (auto const& t : funcs) {
+    auto name = std::get<0>(t);
+    auto f = std::get<1>(t);
+    auto value = (context.*f)();
+    logi("%s = %f", name, value);
+  }
+
+}
+
+
+void test_range_gets(gl::Context const& context) {
+  using getf = gl::range(gl::Context::*)() const;
+  using name_and_func = std::tuple<const char*, getf>;
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_range<NAME>)
+  static const std::vector<name_and_func> funcs {
+    F(GL_DEPTH_RANGE),
+    F(GL_POINT_SIZE_RANGE),
+    F(GL_SMOOTH_LINE_WIDTH_RANGE),
+    F(GL_ALIASED_LINE_WIDTH_RANGE),
+  };
+#undef F
+  logi("test range gets");
+  for (auto const& t : funcs) {
+    auto name = std::get<0>(t);
+    auto f = std::get<1>(t);
+    auto value = (context.*f)();
+    logi("%s = %f - %f", name, value.low, value.high);
+  }
+
+}
+
+
+void test_int_gets(gl::Context const& context) {
+  using getf = int(gl::Context::*)() const;
+  using name_and_func = std::tuple<const char*, getf>;
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_int<NAME>)
+  static const std::vector<name_and_func> funcs {
+    F(GL_MAJOR_VERSION),
+    F(GL_MAX_PROGRAM_TEXEL_OFFSET),
+    F(GL_MIN_PROGRAM_TEXEL_OFFSET),
+    F(GL_SAMPLE_BUFFERS),
+    F(GL_SAMPLES),
+    //F(GL_TRANSFORM_FEEDBACK_BUFFER_SIZE),
+    //F(GL_UNIFORM_BUFFER_SIZE),
+    F(GL_DEPTH_CLEAR_VALUE),
+  };
+#undef F
+  logi("test int gets");
+  for (auto const& t : funcs) {
+    auto name = std::get<0>(t);
+    auto f = std::get<1>(t);
+    auto value = (context.*f)();
+    logi("%s = %d", name, value);
+  }
+
+}
+
+
+void test_enum_gets(gl::Context const& context) {
+  using getf = GLenum(gl::Context::*)() const;
+  using name_and_func = std::tuple<const char*, getf>;
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_enum<NAME>)
+  static const std::vector<name_and_func> funcs {
+    F(GL_BLEND_DST_ALPHA),
+    F(GL_BLEND_DST_RGB),
+    F(GL_BLEND_EQUATION_RGB),
+    F(GL_BLEND_EQUATION_ALPHA),
+    F(GL_BLEND_SRC_ALPHA),
+    F(GL_BLEND_SRC_RGB),
+    F(GL_DEPTH_FUNC),
+    F(GL_DRAW_BUFFER),
+    F(GL_FRAGMENT_SHADER_DERIVATIVE_HINT),
+    F(GL_IMPLEMENTATION_COLOR_READ_FORMAT),
+    F(GL_IMPLEMENTATION_COLOR_READ_TYPE),
+    F(GL_LINE_SMOOTH_HINT),
+    F(GL_LAYER_PROVOKING_VERTEX),
+    F(GL_LOGIC_OP_MODE),
+    F(GL_PIXEL_PACK_BUFFER_BINDING),
+    F(GL_PIXEL_UNPACK_BUFFER_BINDING),
+    F(GL_PROVOKING_VERTEX),
+    F(GL_POLYGON_SMOOTH_HINT),
+    F(GL_READ_BUFFER),
+    F(GL_STENCIL_BACK_FAIL),
+    F(GL_STENCIL_BACK_FUNC),
+    F(GL_STENCIL_BACK_PASS_DEPTH_FAIL),
+    F(GL_STENCIL_BACK_PASS_DEPTH_PASS),
+    F(GL_STENCIL_FAIL),
+    F(GL_STENCIL_FUNC),
+    F(GL_STENCIL_PASS_DEPTH_FAIL),
+    F(GL_STENCIL_PASS_DEPTH_PASS),
+    F(GL_TEXTURE_COMPRESSION_HINT),
+    F(GL_VIEWPORT_INDEX_PROVOKING_VERTEX),
+  };
+#undef F
+  logi("test enum gets");
+  for (auto const& t : funcs) {
+    auto name = std::get<0>(t);
+    auto f = std::get<1>(t);
+    auto value = (context.*f)();
+    logi("%s = %x (%s)", name, value, gl::to_string(value));
   }
 
 }
@@ -280,6 +402,11 @@ int main(int argc, const char* const argv[]) {
 
   test_enable_disable(context1);
   test_unsigned_gets(context1);
+  test_float_gets(context1);
+  test_range_gets(context1);
+  test_int_gets(context1);
+  test_enum_gets(context1);
+
   expect("blend enabled", context1.get_bool<GL_BLEND>());
 
   context1.get_bool<GL_BLEND>();

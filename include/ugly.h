@@ -6,5 +6,6 @@
 #include "shader.h"
 #include "uniform.h"
 #include "texture.h"
+#include "enum.h"
 
 #endif
