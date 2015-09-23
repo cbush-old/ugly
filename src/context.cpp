@@ -321,6 +321,17 @@ void Context::draw_arrays(int, GLsizei) {
 }
 
 
+void Context::active_texture(size_t i) {
+  GL_CALL(glActiveTexture(GL_TEXTURE0 + i));
+}
+
+size_t Context::active_texture() const {
+  GL_CALL(unsigned rv = get<unsigned, GL_ACTIVE_TEXTURE>() - GL_TEXTURE0);
+  return rv;
+}
+
+
+
 
 #define INTERN
 #include "context_instantiations.inl"

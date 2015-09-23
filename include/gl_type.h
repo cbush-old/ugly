@@ -47,12 +47,12 @@ using color = vec4;
 using attribute = GLint;
 
 
-#define GL_CALL(x) \
-    x; {\
+#define GL_CALL(...) \
+    __VA_ARGS__; {\
     GLenum error = glGetError(); \
     if (error != GL_NO_ERROR) { \
-      loge(#x " failed: %d", error); \
-      throw gl::exception("gl call " #x " failed: %d", error); \
+      loge(#__VA_ARGS__ " failed: %d", error); \
+      throw gl::exception("gl call " #__VA_ARGS__ " failed: %d", error); \
     } \
   }
 

@@ -404,9 +404,18 @@ int main(int argc, const char* const argv[]) {
   test_int_gets(context1);
   test_enum_gets(context1);
 
-  expect("blend enabled", context1.get<bool, GL_BLEND>());
 
-  context1.get<bool, GL_BLEND>();
+
+
+
+  auto active_texture = context1.active_texture();
+  expect("initial active texture == 0", active_texture, 0);
+  context1.active_texture(55);
+  active_texture = context1.active_texture();
+  expect("after setting active texture unit, active texture unit == 55", active_texture, 55);
+
+
+
 
   gl::color c (0.f, 0.f, 0.f, 1.f);
   context1.clear_color(c);

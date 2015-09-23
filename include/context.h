@@ -101,6 +101,15 @@ class Context {
     template<GLenum target>
     void bind(Buffer& buffer);
 
+
+
+  public: // Texture
+    void active_texture(size_t i);
+    size_t active_texture() const;
+
+
+
+
   private:
     template<typename T>
     T get(GLenum) const;
