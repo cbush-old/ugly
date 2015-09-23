@@ -7,6 +7,7 @@
 
 class glfwApp {
   private:
+    static unsigned _refs;
     static bool _done;
     static void key_callback(GLFWwindow*, int, int, int, int);
     static void on_error(int, const char*);
@@ -18,6 +19,7 @@ class glfwApp {
   public:
     void update();
     bool done() const;
+    void make_current();
 
   private:
     GLFWwindow* _window { nullptr };

@@ -107,9 +107,6 @@ class Context {
     void active_texture(size_t i);
     size_t active_texture() const;
 
-
-
-
   private:
     template<typename T>
     T get(GLenum) const;

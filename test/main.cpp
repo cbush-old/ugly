@@ -321,6 +321,7 @@ void test_enum_gets(gl::Context const& context) {
 int main(int argc, const char* const argv[]) {
   try {
 
+  glfwApp app2;
   glfwApp app;
 
   //  CONTEXT TESTS
@@ -329,7 +330,7 @@ int main(int argc, const char* const argv[]) {
   gl::MonoContext context1(&app);
   expect("after creating context1, context1 is current", context1.current());
 
-  gl::MonoContext context2(&app);
+  gl::MonoContext context2(&app2);
   expect("after creating context2, context2 is current", context2.current());
   expect("after creating context2, context1 is not current", !context1.current());
 
@@ -415,7 +416,13 @@ int main(int argc, const char* const argv[]) {
   expect("after setting active texture unit, active texture unit == 55", active_texture, 55);
 
 
+  app2.make_current(); // cheating
+  context2.make_current();
+  expect("context2 made current", context2.current());
+  expect("context2's active texture unit is still 0", context2.active_texture(), 0);
 
+  app.make_current(); // cheating
+  context1.make_current();
 
   gl::color c (0.f, 0.f, 0.f, 1.f);
   context1.clear_color(c);

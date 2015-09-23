@@ -2,6 +2,7 @@
 #include "log.h"
 
 bool glfwApp::_done { true };
+unsigned glfwApp::_refs { 0 };
 
 void glfwApp::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   _done = true;
@@ -13,8 +14,11 @@ void glfwApp::on_error(int err, const char* message) {
 }
 
 glfwApp::glfwApp(int major, int minor) {
-  glfwSetErrorCallback(on_error);
-  glfwInit();
+  if (!_refs) {
+    glfwSetErrorCallback(on_error);
+    glfwInit();
+  }
+  ++_refs;
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
@@ -29,12 +33,19 @@ glfwApp::glfwApp(int major, int minor) {
 
 glfwApp::~glfwApp() {
   glfwDestroyWindow(_window);
-  glfwTerminate();
+  --_refs;
+  if (!_refs) {
+    glfwTerminate();
+  }
 }
 
 void glfwApp::update() {
   glfwPollEvents();
   glfwSwapBuffers(_window);
+}
+
+void glfwApp::make_current() {
+  glfwMakeContextCurrent(_window);
 }
 
 bool glfwApp::done() const {
