@@ -100,11 +100,10 @@ void test_enable_disable(gl::Context& context) {
 }
 
 
-/*
 void test_unsigned_gets(gl::Context const& context) {
   using getf = unsigned(gl::Context::*)() const;
   using name_and_func = std::tuple<const char*, getf>;
-#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_unsigned<NAME>)
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get<unsigned, NAME>)
   static const std::vector<name_and_func> funcs {
     F(GL_CONTEXT_FLAGS),
     F(GL_MAX_3D_TEXTURE_SIZE),
@@ -197,7 +196,7 @@ void test_unsigned_gets(gl::Context const& context) {
 void test_float_gets(gl::Context const& context) {
   using getf = float(gl::Context::*)() const;
   using name_and_func = std::tuple<const char*, getf>;
-#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_float<NAME>)
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get<float, NAME>)
   static const std::vector<name_and_func> funcs {
     F(GL_LINE_WIDTH),
     F(GL_MAX_TEXTURE_LOD_BIAS),
@@ -223,7 +222,7 @@ void test_float_gets(gl::Context const& context) {
 void test_range_gets(gl::Context const& context) {
   using getf = gl::range(gl::Context::*)() const;
   using name_and_func = std::tuple<const char*, getf>;
-#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_range<NAME>)
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get<gl::range, NAME>)
   static const std::vector<name_and_func> funcs {
     F(GL_DEPTH_RANGE),
     F(GL_POINT_SIZE_RANGE),
@@ -245,7 +244,7 @@ void test_range_gets(gl::Context const& context) {
 void test_int_gets(gl::Context const& context) {
   using getf = int(gl::Context::*)() const;
   using name_and_func = std::tuple<const char*, getf>;
-#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_int<NAME>)
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get<int, NAME>)
   static const std::vector<name_and_func> funcs {
     F(GL_MAJOR_VERSION),
     F(GL_MAX_PROGRAM_TEXEL_OFFSET),
@@ -271,7 +270,7 @@ void test_int_gets(gl::Context const& context) {
 void test_enum_gets(gl::Context const& context) {
   using getf = GLenum(gl::Context::*)() const;
   using name_and_func = std::tuple<const char*, getf>;
-#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get_enum<NAME>)
+#define F(NAME) std::make_tuple<const char*, getf>(#NAME, &gl::Context::get<GLenum, NAME>)
   static const std::vector<name_and_func> funcs {
     F(GL_BLEND_DST_ALPHA),
     F(GL_BLEND_DST_RGB),
@@ -313,7 +312,6 @@ void test_enum_gets(gl::Context const& context) {
   }
 
 }
-*/
 
 
 
@@ -400,13 +398,11 @@ int main(int argc, const char* const argv[]) {
 
 
   test_enable_disable(context1);
-  /*
   test_unsigned_gets(context1);
   test_float_gets(context1);
   test_range_gets(context1);
   test_int_gets(context1);
   test_enum_gets(context1);
-  */
 
   expect("blend enabled", context1.get<bool, GL_BLEND>());
 
