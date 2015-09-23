@@ -6,6 +6,11 @@
 
 namespace gl {
 
+
+
+
+
+
 class Pipeline;
 class Buffer;
 class Framebuffer;
@@ -85,15 +90,10 @@ class Context {
 
     void line_width(float);
 
-    template<GLenum param> bool get_bool() const;
-    template<GLenum param> int get_int() const;
-    template<GLenum param> color get_color() const;
-    template<GLenum param> GLenum get_enum() const;
-    template<GLenum param> unsigned get_unsigned() const;
-    template<GLenum param> int64_t get_int64() const;
-    template<GLenum param> float get_float() const;
-    template<GLenum param> std::vector<int> get_list() const;
-    template<GLenum param> range get_range() const;
+    template<typename T, GLenum param>
+    T get() const {
+      return get<T>(param);
+    }
 
     /**
      * @brief bind buffer to target
@@ -102,6 +102,9 @@ class Context {
     void bind(Buffer& buffer);
 
   private:
+    template<typename T>
+    T get(GLenum) const;
+
     template<GLenum param, GLenum size_key>
     std::vector<int> get() const;
 
@@ -110,6 +113,14 @@ class Context {
 
 };
 
+
+template<> bool Context::get<bool>(GLenum) const;
+template<> int Context::get<int>(GLenum) const;
+template<> unsigned Context::get<unsigned>(GLenum) const;
+template<> int64_t Context::get<int64_t>(GLenum) const;
+template<> GLenum Context::get<GLenum>(GLenum) const;
+template<> range Context::get<range>(GLenum) const;
+template<> color Context::get<color>(GLenum) const;
 
 #include "context_instantiations.inl"
 

@@ -121,66 +121,63 @@ inline T get(Context const& context, GLenum param) { // get single
   return rv;
 }
 
-template<typename T>
-inline T get(Context const& context, GLenum param);
-
 template<>
-inline int get<int>(Context const& context, GLenum param) {
-  return get<GLint, glGetIntegerv>(context, param);
+int Context::get<int>(GLenum param) const {
+  return gl::get<GLint, glGetIntegerv>(*this, param);
 }
 
 template<>
-inline unsigned get<unsigned>(Context const& context, GLenum param) {
-  return get<GLint, glGetIntegerv>(context, param);
+unsigned Context::get<unsigned>(GLenum param) const {
+  return gl::get<GLint, glGetIntegerv>(*this, param);
 }
 
 template<>
-inline int64_t get<int64_t>(Context const& context, GLenum param) {
-  return get<GLint64, glGetInteger64v>(context, param);
+inline int64_t Context::get<int64_t>(GLenum param) const {
+  return gl::get<GLint64, glGetInteger64v>(*this, param);
 }
 
 template<>
-inline bool get<bool>(Context const& context, GLenum param) {
-  return get<GLboolean, glGetBooleanv>(context, param);
+bool Context::get<bool>(GLenum param) const {
+  return gl::get<GLboolean, glGetBooleanv>(*this, param);
 }
 
 template<>
-inline double get<double>(Context const& context, GLenum param) {
-  return get<GLdouble, glGetDoublev>(context, param);
+double Context::get<double>(GLenum param) const {
+  return gl::get<GLdouble, glGetDoublev>(*this, param);
 }
 
 template<>
-inline float get<float>(Context const& context, GLenum param) {
-  return get<GLfloat, glGetFloatv>(context, param);
+float Context::get<float>(GLenum param) const {
+  return gl::get<GLfloat, glGetFloatv>(*this, param);
 }
 
 template<>
-inline color get<color>(Context const& context, GLenum param) {
+color Context::get<color>(GLenum param) const {
   color c;
-  get<GLfloat, glGetFloatv>(context, param, reinterpret_cast<GLfloat*>(&c));
+  gl::get<GLfloat, glGetFloatv>(*this, param, reinterpret_cast<GLfloat*>(&c));
   return c;
 }
 
 template<>
-inline range get<range>(Context const& context, GLenum param) {
+range Context::get<range>(GLenum param) const {
   range r;
-  get<GLfloat, glGetFloatv>(context, param, reinterpret_cast<GLfloat*>(&r));
+  gl::get<GLfloat, glGetFloatv>(*this, param, reinterpret_cast<GLfloat*>(&r));
   return r;
 }
 
 inline std::vector<int> get(Context const& context, GLenum param, size_t size) {
   std::vector<int> v (size);
-  get<GLint, glGetIntegerv>(context, param, v.data());
+  gl::get<GLint, glGetIntegerv>(context, param, v.data());
   return v;
 }
 
 
 unsigned Context::major_version() const {
-  return (unsigned)gl::get<int>(*this, GL_MAJOR_VERSION);
+  return get<unsigned>(GL_MAJOR_VERSION);
 }
 
 unsigned Context::minor_version() const {
-  return (unsigned)gl::get<int>(*this, GL_MINOR_VERSION);
+  return get<unsigned>(GL_MINOR_VERSION);
 }
 
 Context::~Context() {
@@ -311,54 +308,9 @@ bool Context::is_enabled() const {
   return rv;
 }
 
-template<GLenum param>
-bool Context::get_bool() const {
-  return gl::get<bool>(*this, param);
-}
-
-template<GLenum param>
-int Context::get_int() const {
-  return gl::get<int>(*this, param);
-}
-
-template<GLenum param>
-color Context::get_color() const {
-  return gl::get<color>(*this, param);
-}
-
-template<GLenum param>
-GLenum Context::get_enum() const {
-  return gl::get<GLenum>(*this, param);
-}
-
-template<GLenum param>
-unsigned Context::get_unsigned() const {
-  return gl::get<unsigned>(*this, param);
-}
-
-template<GLenum param>
-int64_t Context::get_int64() const {
-  return gl::get<int64_t>(*this, param);
-}
-
-template<GLenum param>
-float Context::get_float() const {
-  return gl::get<float>(*this, param);
-}
-
-template<GLenum param>
-std::vector<int> Context::get_list() const {
-  return gl::get<std::vector<int>>(*this, param);
-}
-
-template<GLenum param>
-range Context::get_range() const {
-  return gl::get<range>(*this, param);
-}
-
 template<GLenum param, GLenum size_key>
 std::vector<int> Context::get() const {
-  size_t size = get_unsigned<size_key>();
+  size_t size = get<unsigned>(size_key);
   return gl::get(*this, param, size);
 }
 
