@@ -10,6 +10,17 @@
 #include <functional>
 #include <tuple>
 
+
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+
+
+
 template<typename T, typename U>
 void expect(const char* name, T result, U expected) {
   if (!(result == expected)) {
@@ -429,14 +440,46 @@ int main(int argc, const char* const argv[]) {
   gl::color curr = context1.get<gl::color, GL_COLOR_CLEAR_VALUE>();
   expect("GL_COLOR_CLEAR_VALUE == set color", curr == c);
   float i = 0;
+
+
+
+
+
+
+  GLfloat x = 0.5, y = 0.5;
+  gl::Buffer vbo;
+  vbo.data(std::vector<GLfloat>({
+    -x, -y,
+    +x, -y,
+    -x, +y,
+    +x, +y,
+  }), GL_STATIC_DRAW);
+  context1.bind(GL_ARRAY_BUFFER, vbo);
+
+  program1.use(context1);
+  GLint vpos = program1.attrib_location("position");
+
+  // to be moved to libugly
+  GL_CALL(glViewport(0, 0, 640, 480));
+
+  GLuint vao;
+  GL_CALL(glGenVertexArrays(1, &vao));
+  GL_CALL(glBindVertexArray(vao));
+
+  GL_CALL(glVertexAttribPointer(vpos, 2, GL_FLOAT, GL_FALSE, 0, (void*)0));
+  GL_CALL(glEnableVertexAttribArray(vpos));
+
   while (!app.done()) {
-    context1.clear();
     i += 0.01f;
     c.r = 0.5 + std::sin(i) * 0.5;
     c.g = 0.5 + std::sin(i + M_PI_2) * 0.5;
     c.g = 0.5 + std::sin(i + M_PI_2 * 2.f) * 0.5;
     context1.clear_color(c);
+
+    GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 8));
+
     app.update();
+    context1.clear();
   }
 
   } catch(gl::exception const& e) {

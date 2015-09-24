@@ -2,8 +2,7 @@ CC= clang++
 CFLAGS=-c -Wall -Werror -std=c++14 -O3 -Wno-unknown-pragmas
 
 INCLUDE= -Iinclude \
-	-I/System/Library/Frameworks/OpenGL.framework/Headers \
-	-Ithird-party/glm
+	-I/System/Library/Frameworks/OpenGL.framework/Headers
 
 LDFLAGS= -L/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries
 TEST_LDFLAGS= $(LDFLAGS) -L.
@@ -35,7 +34,7 @@ SOURCES= \
 	src/viewport.cpp
 
 
-TEST_INCLUDE= $(INCLUDE) -Itest
+TEST_INCLUDE= $(INCLUDE) -Itest -I/opt/local/include
 
 TEST_SOURCES= \
 	test/main.cpp \
@@ -69,7 +68,7 @@ demo: lib $(DEMO_OBJECTS)
 	$(CC) $(TEST_INCLUDE) $(TEST_LDFLAGS) $(TEST_LIBS) $(DEMO_OBJECTS) -o demo
 
 .cpp.o:
-	$(CC) $(CFLAGS) $(INCLUDE) $< -o $@
+	$(CC) $(CFLAGS) $(TEST_INCLUDE) $< -o $@
 
 clean:
 	rm -f $(OBJECTS) $(OUTPUT_SO)

@@ -46,6 +46,8 @@ class Program {
   public:
     GLint uniform_location(const char* name) const;
     GLint uniform_location(std::string const& name) const;
+    GLint attrib_location(const char* name) const;
+    GLint attrib_location(std::string const& name) const;
 
   private:
     void attach() {}

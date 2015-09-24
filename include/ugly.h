@@ -7,5 +7,6 @@
 #include "uniform.h"
 #include "texture.h"
 #include "enum.h"
+#include "buffer.h"
 
 #endif

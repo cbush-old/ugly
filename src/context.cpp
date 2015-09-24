@@ -7,6 +7,8 @@
 #include <vector>
 #include <functional>
 
+#include "buffer.h"
+
 namespace gl {
 
 /*
@@ -328,6 +330,20 @@ void Context::active_texture(size_t i) {
 size_t Context::active_texture() const {
   GL_CALL(unsigned rv = get<unsigned, GL_ACTIVE_TEXTURE>() - GL_TEXTURE0);
   return rv;
+}
+
+
+//
+//
+//    Buffers
+//
+//
+void Context::bind(GLenum target, Buffer const& buffer) {
+  GL_CALL(glBindBuffer(target, buffer.name()));
+}
+
+void Context::unbind(GLenum target) {
+  GL_CALL(glBindBuffer(target, 0));
 }
 
 

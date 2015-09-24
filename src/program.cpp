@@ -12,7 +12,7 @@ static inline void print_log(GLuint id) {
 }
 
 // Not much point to using pImpl while the only data member is _name.
-// For now, treat _impl as reserved, but use it as _name.
+// For now, treat _impl as reserved, but use it as _name. \m/ SATAN \m/
 
 class Program_impl;
 
@@ -70,6 +70,16 @@ GLint Program::uniform_location(const char* uniform_name) const {
 
 GLint Program::uniform_location(std::string const& uniform_name) const {
   GL_CALL(GLint location = glGetUniformLocation(_name, uniform_name.c_str()));
+  return location;
+}
+
+GLint Program::attrib_location(const char* attrib_name) const {
+  GL_CALL(GLint location = glGetAttribLocation(_name, attrib_name));
+  return location;
+}
+
+GLint Program::attrib_location(std::string const& attrib_name) const {
+  GL_CALL(GLint location = glGetAttribLocation(_name, attrib_name.c_str()));
   return location;
 }
 

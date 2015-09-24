@@ -98,11 +98,12 @@ class Context {
     }
 
     /**
-     * @brief bind buffer to target
+     * @brief bind target with buffer
      **/
-    template<GLenum target>
-    void bind(Buffer& buffer);
-
+    void bind(GLenum target, Buffer const& buffer);
+    void unbind(GLenum target);
+    bool is_bound(GLenum target) const;
+    bool is_bound(GLenum target, Buffer const& buffer) const;
 
 
   public: // Texture

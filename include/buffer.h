@@ -12,18 +12,21 @@ class Buffer {
     Buffer();
 
   public:
-    virtual ~Buffer() =0;
+    virtual ~Buffer();
     Buffer(Buffer const&) = delete;
     Buffer& operator=(Buffer const&) = delete;
 
   public:
     template<typename T>
-    void data(std::vector<T> const&);
+    void data(std::vector<T> const&, GLenum usage);
+
+    GLuint name() const;
 
   private:
     class Buffer_impl* _impl;
 
 };
+
 
 
 
