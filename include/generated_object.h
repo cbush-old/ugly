@@ -11,8 +11,12 @@ class GeneratedObject {
     GeneratedObject(GLuint name);
     virtual ~GeneratedObject() =0;
 
-  protected:
+  public:
+    inline GLuint name() const { return _name; }
+
+  private:
     GLuint _name;
+    bool _owner { false };
 
 };
 

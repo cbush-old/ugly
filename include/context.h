@@ -2,11 +2,13 @@
 #define CONTEXT_H
 
 #include "gl_type.h"
-
+#include <functional>
 
 namespace gl {
 
-
+struct OS_Bridge {
+  std::function<void(void*)> make_current;
+};
 
 
 

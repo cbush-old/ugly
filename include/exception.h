@@ -45,6 +45,7 @@ inline void exception::format(std::ostream& os, const char* fmt, T const& value,
       if (fmt[1] == '%') {
         ++fmt;
       } else {
+        // TODO: %x, %02d, etc.
         os << value;
         fmt += 2;
         format(os, fmt, args...);

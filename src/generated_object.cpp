@@ -6,17 +6,20 @@ typedef void(*glGenFunc)(GLsizei, GLuint*);
 typedef void(*glDeleteFunc)(GLsizei, GLuint const*);
 
 template<glGenFunc GenFunc, glDeleteFunc DeleteFunc>
-GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject() {
+GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject()
+  : _owner(true) {
   GL_CALL(GenFunc(1, &_name));
 }
 
 template<glGenFunc GenFunc, glDeleteFunc DeleteFunc>
-GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject(GLuint name): _name(name) {}
+GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject(GLuint name): _name(name), _owner(false) {}
 
 
 template<glGenFunc GenFunc, glDeleteFunc DeleteFunc>
 GeneratedObject<GenFunc, DeleteFunc>::~GeneratedObject() {
-  GL_CALL(DeleteFunc(1, &_name));
+  if (_owner) {
+    GL_CALL_NOTHROW(DeleteFunc(1, &_name));
+  }
 }
 
 #define INSTANTIATE(Type) template class GeneratedObject< glGen##Type , glDelete##Type >;
@@ -31,6 +34,7 @@ INSTANTIATE(Textures);
 INSTANTIATE(TransformFeedbacks);
 INSTANTIATE(VertexArrays);
 
+#undef INSTANTIATE
 
 }
 

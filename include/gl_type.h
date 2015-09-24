@@ -56,6 +56,14 @@ using attribute = GLint;
     } \
   }
 
+#define GL_CALL_NOTHROW(...) \
+    __VA_ARGS__; {\
+    GLenum error = glGetError(); \
+    if (error != GL_NO_ERROR) { \
+      loge(#__VA_ARGS__ " failed: %d", error); \
+    } \
+  }
+
 #define GL_VALIDATE(Type, name) {\
   GL_CALL(bool valid = glIs##Type(name)) \
   if (!valid) { throw gl::exception("%u is not a " #Type "!", name); } \
