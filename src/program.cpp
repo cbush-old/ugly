@@ -94,6 +94,34 @@ void Program::binary(Program::Binary const& binary) {
   GL_CALL(glProgramBinary(_name, binary.format, binary.buffer.data(), binary.buffer.size()));
 }
 
+GLint Program::stage(GLenum shadertype, GLenum param) const {
+  GLint value;
+  GL_CALL(glGetProgramStageiv(_name, shadertype, param, &value));
+  return value;
+}
+
+void Program::parameter(GLenum param, GLint value) {
+  GL_CALL(glProgramParameteri(_name, param, value));
+}
+
+bool Program::validate() const {
+  GL_CALL(glValidateProgram(_name));
+  return get(GL_VALIDATE_STATUS);
+}
+
+std::string Program::info_log() const {
+  GLsizei length { get(GL_INFO_LOG_LENGTH) };
+  if (!length) {
+    return "";
+  }
+  char *buffer = new char[length];
+  GL_CALL(glGetProgramInfoLog(_name, length, nullptr, buffer));
+  std::string s (buffer, length);
+  delete[] buffer;
+  return s;
+}
+
+
 
 
 } // namespace gl

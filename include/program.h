@@ -62,6 +62,20 @@ class Program {
     Binary binary() const;
     void binary(Binary const&);
 
+    /**
+     * @brief retrieve properties corresponding to a specified shader stage
+     **/
+    GLint stage(GLenum shader_type, GLenum param) const;
+
+    /**
+     * @brief specify a parameter
+     **/
+    void parameter(GLenum param, GLint value);
+
+    bool validate() const;
+
+    std::string info_log() const;
+
   private:
     void attach() {}
 
