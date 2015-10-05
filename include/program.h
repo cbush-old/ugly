@@ -10,6 +10,15 @@ namespace gl {
 
 class Program {
   public:
+    struct Binary {
+      std::vector<uint8_t> buffer;
+      GLenum format;
+      Binary() {}
+      Binary(GLsizei size): buffer(size) {}
+    };
+
+
+  public:
     Program();
 
   public: // convenience constructors
@@ -50,6 +59,8 @@ class Program {
 
   public:
     GLint get(GLenum) const;
+    Binary binary() const;
+    void binary(Binary const&);
 
   private:
     void attach() {}

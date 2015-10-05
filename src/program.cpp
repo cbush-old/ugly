@@ -83,6 +83,16 @@ GLint Program::get(GLenum param) const {
   return params[0]; // fixme: GL_COMPUTE_WORK_GROUP_SIZE returns an array
 }
 
+Program::Binary Program::binary() const {
+  GLsizei size { get(GL_PROGRAM_BINARY_LENGTH) }, length { 0 };
+  Binary binary (size);
+  GL_CALL(glGetProgramBinary(_name, size, &length, &binary.format, binary.buffer.data()));
+  return binary;
+}
+
+void Program::binary(Program::Binary const& binary) {
+  GL_CALL(glProgramBinary(_name, binary.format, binary.buffer.data(), binary.buffer.size()));
+}
 
 
 
