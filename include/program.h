@@ -48,6 +48,9 @@ class Program {
     GLint attrib_location(const char* name) const;
     GLint attrib_location(std::string const& name) const;
 
+  public:
+    GLint get(GLenum) const;
+
   private:
     void attach() {}
 

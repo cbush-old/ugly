@@ -77,6 +77,13 @@ GLint Program::attrib_location(std::string const& attrib_name) const {
 }
 
 
+GLint Program::get(GLenum param) const {
+  GLint params[3];
+  GL_CALL(glGetProgramiv(_name, param, params));
+  return params[0]; // fixme: GL_COMPUTE_WORK_GROUP_SIZE returns an array
+}
+
+
 
 
 } // namespace gl
