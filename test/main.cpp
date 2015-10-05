@@ -19,6 +19,27 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+uint32_t rgba_from_hue(double h, double s, double v) {
+  h *= 359.999999;
+  h /= 60.0;
+  float c = v * s;
+  float x = c * (1.0 - (std::fmod(h, 2) - 1));
+  float m = v - c;
+  glm::vec3 rgb;
+  if (0 <= h && h < 1) rgb = { c, x, 0 };
+  else if (1 <= h && h < 2) rgb = { x, c, 0 };
+  else if (2 <= h && h < 3) rgb = { 0, c, x };
+  else if (3 <= h && h < 4) rgb = { 0, x, c };
+  else if (4 <= h && h < 5) rgb = { x, 0, c };
+  else if (5 <= h && h < 6) rgb = { c, 0, x };
+  else rgb = { 0, 0, 0 };
+  uint8_t r, g, b;
+  r = std::max(0, std::min(int((rgb.r + m) * 0xff), 255));
+  g = std::max(0, std::min(int((rgb.g + m) * 0xff), 255));
+  b = std::max(0, std::min(int((rgb.b + m) * 0xff), 255));
+  return (r << 24) | (g << 16) | (b << 8) | 0xff;
+}
+
 
 
 template<typename T, typename U>
@@ -376,7 +397,7 @@ int main(int argc, const char* const argv[]) {
   gl::VertexShader vert ("test/shaders/vert.glsl");
   gl::FragmentShader frag ("test/shaders/frag.glsl");
   gl::Program program1 (vert, frag);
-  program1.use(context1);
+  context1.use(program1);
 
 
   gl::Program program2 (
@@ -419,7 +440,7 @@ int main(int argc, const char* const argv[]) {
 
 
 
-
+/*
   auto active_texture = context1.active_texture();
   expect("initial active texture == 0", active_texture, 0);
   context1.active_texture(55);
@@ -434,6 +455,8 @@ int main(int argc, const char* const argv[]) {
 
   app.make_current(); // cheating
   context1.make_current();
+  context1.active_texture(1);
+*/
 
   gl::color c (0.f, 0.f, 0.f, 1.f);
   context1.clear_color(c);
@@ -446,37 +469,74 @@ int main(int argc, const char* const argv[]) {
 
 
 
-  GLfloat x = 0.5, y = 0.5;
+  GLfloat x = 1.0, y = 1.0;
   gl::Buffer vbo;
   vbo.data(std::vector<GLfloat>({
     -x, -y,
     +x, -y,
     -x, +y,
     +x, +y,
+    0.f, 0.f,
+    1.f, 0.f,
+    0.f, 1.f,
+    1.f, 1.f,
   }), GL_STATIC_DRAW);
   context1.bind(GL_ARRAY_BUFFER, vbo);
 
-  program1.use(context1);
+  context1.use(program1);
   GLint vpos = program1.attrib_location("position");
+  GLint texcoord = program1.attrib_location("texcoord_in");
 
   // to be moved to libugly
-  GL_CALL(glViewport(0, 0, 640, 480));
-
+  GL_CALL(glViewport(0, 0, 1440, 900));
   GLuint vao;
   GL_CALL(glGenVertexArrays(1, &vao));
   GL_CALL(glBindVertexArray(vao));
-
   GL_CALL(glVertexAttribPointer(vpos, 2, GL_FLOAT, GL_FALSE, 0, (void*)0));
+  GL_CALL(glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(8 * sizeof(GLfloat))));
   GL_CALL(glEnableVertexAttribArray(vpos));
 
+  GLuint tex;
+  GL_CALL(glGenTextures(1, &tex));
+  int tw = 512;
+  std::vector<uint32_t> pixels (tw * tw);
+  GL_CALL(glBindTexture(GL_TEXTURE_2D, tex));
+  GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+  GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+  GL_CALL(glEnableVertexAttribArray(texcoord));
+
   while (!app.done()) {
-    i += 0.01f;
+    for (size_t y = 0; y < tw; ++y) {
+      for (size_t x = 0; x < tw; ++x) {
+        float h = 
+          ((0.5 + std::sin(x + i) * 0.5)
+          + (0.5 + (y + i) * 0.5))
+          / 2.f;
+        float s = 1.0;
+        float v = 0.5;
+        pixels[y * tw + x]
+          = rgba_from_hue(h, s, v);
+      }
+    }
+    GL_CALL(glTexImage2D(
+      GL_TEXTURE_2D,
+      0,
+      GL_RGBA,
+      tw,
+      tw,
+      0,
+      GL_RGBA,
+      GL_UNSIGNED_INT_8_8_8_8,
+      (const GLvoid*)pixels.data()
+    ));
+
+    i += 0.1f;
     c.r = 0.5 + std::sin(i) * 0.5;
     c.g = 0.5 + std::sin(i + M_PI_2) * 0.5;
     c.g = 0.5 + std::sin(i + M_PI_2 * 2.f) * 0.5;
     context1.clear_color(c);
 
-    GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 8));
+    GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 
     app.update();
     context1.clear();

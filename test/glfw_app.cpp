@@ -25,7 +25,7 @@ glfwApp::glfwApp(int major, int minor) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
-  _window = glfwCreateWindow(640, 480, "libugly test", NULL, NULL);
+  _window = glfwCreateWindow(1440, 900, "libugly test", NULL, NULL);
   _done = false;
 
   glfwSetKeyCallback(_window, key_callback);

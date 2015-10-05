@@ -8,6 +8,7 @@
 #include <functional>
 
 #include "buffer.h"
+#include "program.h"
 
 namespace gl {
 
@@ -344,6 +345,16 @@ void Context::bind(GLenum target, Buffer const& buffer) {
 
 void Context::unbind(GLenum target) {
   GL_CALL(glBindBuffer(target, 0));
+}
+
+
+//
+//
+//    Programs
+//
+//
+void Context::use(Program const& program) {
+  GL_CALL(glUseProgram(program.name()));
 }
 
 

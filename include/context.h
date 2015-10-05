@@ -15,6 +15,7 @@ struct OS_Bridge {
 
 class Pipeline;
 class Buffer;
+class Program;
 class Framebuffer;
 
 class Context {
@@ -109,6 +110,11 @@ class Context {
   public: // Texture
     void active_texture(size_t i);
     size_t active_texture() const;
+
+
+  public: // Program
+    void use(Program const&);
+
 
   private:
     template<typename T>

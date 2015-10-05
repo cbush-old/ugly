@@ -52,13 +52,6 @@ void Program::link() {
   }
 }
 
-void Program::use(Context const& context) {
-  if (!context.current()) {
-    throw gl::exception("attempt to use program with non-current context");
-  }
-  GL_CALL(glUseProgram(_name));
-}
-
 GLuint Program::name() const {
   return _name;
 }

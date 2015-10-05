@@ -23,7 +23,7 @@ class Program {
      * @brief construct a program with attached shaders, then use the program with context
      **/
     template<typename... ShaderT>
-    Program(Context const&, Shader const&, ShaderT const&...);
+    Program(Context&, Shader const&, ShaderT const&...);
 
   public:
     ~Program();
@@ -34,7 +34,6 @@ class Program {
     void attach(Shader const&);
     void detach(Shader const&);
     void link();
-    void use(Context const&);
 
   public:
     template<typename ShaderT, typename... ShaderV>
@@ -65,8 +64,9 @@ inline Program::Program(Shader const& shader, ShaderT const&... shaders): Progra
 
 
 template<typename... ShaderT>
-inline Program::Program(Context const& context, Shader const& shader, ShaderT const&... shaders): Program(shader, shaders...) {
-  use(context);
+inline Program::Program(Context& context, Shader const& shader, ShaderT const&... shaders)
+  : Program(shader, shaders...) {
+  context.use(*this);
 }
 
 template<typename ShaderT, typename... ShaderV>
