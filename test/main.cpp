@@ -422,6 +422,10 @@ int main(int argc, const char* const argv[]) {
 
   gl::uniform4<float> color (program2, "color");
 
+
+  auto info = program1.active_uniform(0);
+  logi("active uniform info: %s", info.name.c_str());
+
   struct {
     int x, y, z, w;
   } vec;

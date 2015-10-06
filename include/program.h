@@ -8,6 +8,14 @@
 
 namespace gl {
 
+struct uniform_info {
+  GLuint index;
+  GLenum type;
+  GLint size;
+  std::string name;
+};
+
+
 class Program {
   public:
     struct Binary {
@@ -51,9 +59,11 @@ class Program {
   public:
     GLuint name() const;
 
-  public:
+  public: // uniforms
     GLint uniform_location(const char* name) const;
     GLint uniform_location(std::string const& name) const;
+    uniform_info active_uniform(GLuint index) const;
+
     GLint attrib_location(const char* name) const;
     GLint attrib_location(std::string const& name) const;
 
@@ -75,6 +85,7 @@ class Program {
     bool validate() const;
 
     std::string info_log() const;
+
 
   private:
     void attach() {}

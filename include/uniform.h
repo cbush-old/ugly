@@ -10,7 +10,7 @@ namespace gl {
 class Program;
 
 /**
- * @brief handle to a uniform location
+ * @brief handle to a uniform
  **/
 template<typename... T>
 class uniform {

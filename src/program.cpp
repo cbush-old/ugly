@@ -121,6 +121,15 @@ std::string Program::info_log() const {
   return s;
 }
 
+uniform_info Program::active_uniform(GLuint index) const {
+  GLsizei bufSize = get(GL_ACTIVE_UNIFORM_MAX_LENGTH), length;
+  uniform_info info;
+  char* name = new char[bufSize];
+  GL_CALL(glGetActiveUniform(_name, index, bufSize, &length, &info.size, &info.type, name));
+  info.name = name;
+  delete[] name;
+  return info;
+}
 
 
 
