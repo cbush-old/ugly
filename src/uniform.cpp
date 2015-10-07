@@ -11,8 +11,20 @@
 
 namespace gl {
 
+namespace detail {
 
-// What is this madness? Well, it's a very C++y way to provide a bit of type safety
+basic_uniform::basic_uniform(Program const& program, GLint location): _program(program), _location(location) {}
+
+GLint basic_uniform::location() const {
+  return _location;
+}
+
+template<typename T>
+uniform<T>::uniform(Program const& program, GLint location): basic_uniform(program, location) {}
+
+
+
+// What is this madness? Well, it's a rather C++y way to provide a bit of type safety
 // and translate to the glUniform1f, -2i, -3ui, etc., function names in a compact cpp file.
 // Variadic templates are explicitly instantiated only for the types accepted by OpenGL
 // while template specializations, aided by macros, do the translation to the appropriate
@@ -21,67 +33,14 @@ namespace gl {
 
 
 template<typename... T>
-uniform<T...>::uniform() {}
-
-
-template<typename... T>
-uniform<T...>::uniform(GLint location)
-  : _location(location)
+uniform<T...>::uniform(Program const& program, GLint location)
+  : basic_uniform(program, location)
   {}
-
-
-template<typename... T>
-uniform<T...>::uniform(Program const& program, const char* name)
-  : _location(program.uniform_location(name))
-  {}
-
-
-template<typename... T>
-uniform<T...>::uniform(Program const& program, std::string const& name)
-  : _location(program.uniform_location(name))
-  {}
-
-
-template<typename... T>
-uniform<T...>::uniform(uniform<T...> const& other)
-  : _location(other._location)
-  {}
-
-
-template<typename... T>
-uniform<T...>& uniform<T...>::operator=(uniform<T...> const& other) {
-  _location = other._location;
-  return *this;
-}
-
-
-template<typename... T>
-uniform<T...>::~uniform() {}
-
-template<typename... T>
-bool uniform<T...>::operator==(uniform<T...> const& other) const {
-  return _location == other._location;
-}
-
-template<typename... T>
-bool uniform<T...>::operator!=(uniform<T...> const& other) const {
-  return !(*this == other);
-}
-
-template<typename... T>
-GLint uniform<T...>::location() const {
-  return _location;
-}
 
 
 #define SPECIALIZE_STEP1(...) template<> void uniform<__VA_ARGS__>
 #define SPECIALIZE_STEP2(...) ::set(__VA_ARGS__)
 #define SPECIALIZE_STEP3(Count, Suffix, ...) { GL_CALL(glUniform##Count##Suffix(_location, __VA_ARGS__ )); }
-
-#define SPECIALIZE1(Type, Suffix) \
-  SPECIALIZE_STEP1(Type) \
-  SPECIALIZE_STEP2(Type v0) \
-  SPECIALIZE_STEP3(1, Suffix, v0)
 
 #define SPECIALIZE2(Type, Suffix) \
   SPECIALIZE_STEP1(Type, Type) \
@@ -99,7 +58,6 @@ GLint uniform<T...>::location() const {
   SPECIALIZE_STEP3(4, Suffix, v0, v1, v2, v3)
 
 #define SPECIALIZE_TYPE(Type, Suffix) \
-  SPECIALIZE1(Type, Suffix) \
   SPECIALIZE2(Type, Suffix) \
   SPECIALIZE3(Type, Suffix) \
   SPECIALIZE4(Type, Suffix)
@@ -111,13 +69,31 @@ GLint uniform<T...>::location() const {
   INSTANTIATE(T, T, T); \
   INSTANTIATE(T, T, T, T);
 
-#define SPECIALIZE_AND_INSTANTIATE(Type, Suffix) \
-  SPECIALIZE_TYPE(Type, Suffix) \
-  INSTANTIATE_TYPE(Type);
+INSTANTIATE_TYPE(GLfloat);
+INSTANTIATE_TYPE(GLint);
+INSTANTIATE_TYPE(GLuint);
 
-SPECIALIZE_AND_INSTANTIATE(GLfloat, f);
-SPECIALIZE_AND_INSTANTIATE(GLint, i);
-SPECIALIZE_AND_INSTANTIATE(GLuint, ui);
+
+}
+
+
+
+#define SPECIALIZE(Type, Suffix) \
+  template<> void uniform2<Type>::set(vec2<Type> const& v) { GL_CALL(glUniform2##Suffix(_location, v.x, v.y)); } \
+  template<> void uniform3<Type>::set(vec3<Type> const& v) { GL_CALL(glUniform3##Suffix(_location, v.x, v.y, v.z)); } \
+  template<> void uniform4<Type>::set(vec4<Type> const& v) { GL_CALL(glUniform4##Suffix(_location, v.x, v.y, v.z, v.w)); } \
+  template<> void uniform2<Type>::set(Type v0, Type v1) { GL_CALL(glUniform2##Suffix(_location, v0, v1)); } \
+  template<> void uniform3<Type>::set(Type v0, Type v1, Type v2) { GL_CALL(glUniform3##Suffix(_location, v0, v1, v2)); } \
+  template<> void uniform4<Type>::set(Type v0, Type v1, Type v2, Type v3) { GL_CALL(glUniform4##Suffix(_location, v0, v1, v2, v3)); } \
+  template<> vec2<Type> uniform2<Type>::get() const { Type params[2]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec2<Type>(params[0], params[1]); } \
+  template<> vec3<Type> uniform3<Type>::get() const { Type params[3]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec3<Type>(params[0], params[1], params[2]); } \
+  template<> vec4<Type> uniform4<Type>::get() const { Type params[4]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec4<Type>(params[0], params[1], params[2], params[3]); } \
+
+
+
+SPECIALIZE(GLfloat, f);
+SPECIALIZE(GLint, i);
+SPECIALIZE(GLuint, ui);
 
 
 }

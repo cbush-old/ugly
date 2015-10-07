@@ -399,7 +399,6 @@ int main(int argc, const char* const argv[]) {
   gl::Program program1 (vert, frag);
   context1.use(program1);
 
-
   gl::Program program2 (
     context1,
     gl::VertexShader("test/shaders/vert.glsl"),
@@ -407,32 +406,27 @@ int main(int argc, const char* const argv[]) {
   );
 
   {
-    gl::uniform<int> a (program2, "blah");
+    gl::uniform<int> a (program2, program2.uniform_location("blah"));
     expect("non-existent uniform not found", a.location(), -1);
   }
 
   {
-    gl::uniform<int> a (program2, "color");
+    gl::uniform<int> a (program2, program2.uniform_location("color"));
     expect("existent uniform found", a.location() != -1);
-
-    gl::uniform<int> b = a;
-    expect("uniform copy succeeded", a.location() == b.location());
-    expect("uniform equality works", a == b);
   }
 
-  gl::uniform4<float> color (program2, "color");
+  gl::uniform4<float> color (program2, program2.uniform_location("color"));
 
 
   auto info = program1.active_uniform(0);
   logi("active uniform info: %s", info.name.c_str());
 
-  struct {
-    int x, y, z, w;
-  } vec;
+  gl::vec4<float> vec (0.1f, 0.2f, 0.3f, 1.f);
   color.set(vec);
 
+  std::cout << color.get() << std::endl;
+  
   gl::Texture tex0;
-
 
   test_enable_disable(context1);
   test_unsigned_gets(context1);
@@ -440,7 +434,6 @@ int main(int argc, const char* const argv[]) {
   test_range_gets(context1);
   test_int_gets(context1);
   test_enum_gets(context1);
-
 
 
 

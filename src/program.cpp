@@ -58,6 +58,7 @@ GLuint Program::name() const {
 
 GLint Program::uniform_location(const char* uniform_name) const {
   GL_CALL(GLint location = glGetUniformLocation(_name, uniform_name));
+  std::cout << "LOCATION: " << location << std::endl;
   return location;
 }
 

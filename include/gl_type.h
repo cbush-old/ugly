@@ -17,32 +17,59 @@
 
 namespace gl {
 
-template<typename T>
-struct vec2_t {
-  union { T x, low, near; };
-  union { T y, high, far; };
+template<typename... T>
+struct vec;
+
+template<typename U>
+struct vec<U, U> {
+  U x, y;
+  vec() {}
+  vec(U x, U y): x(x), y(y) {}
 };
 
-template<typename T>
-struct vec4_t {
-  vec4_t() {}
-  vec4_t(T x, T y, T z, T w): x(x), y(y), z(z), w(w) {} 
-  union { T x, r; };
-  union { T y, g; };
-  union { T z, b; };
-  union { T w, a; };
+template<typename U>
+struct vec<U, U, U> {
+  U x, y, z;
+  vec() {}
+  vec(U x, U y, U z): x(x), y(y), z(z) {}
+};
 
-  bool operator==(vec4_t const& o) {
-    return x == o.x
-      && y == o.y
-      && z == o.z
-      && w == o.w;
+template<typename U>
+struct vec<U, U, U, U> {
+  U x, y, z, w;
+  vec() {}
+  vec(U x, U y, U z, U w): x(x), y(y), z(z), w(w) {}
+};
+
+
+template<typename T> using vec2 = vec<T, T>;
+template<typename T> using vec3 = vec<T, T, T>;
+template<typename T> using vec4 = vec<T, T, T, T>;
+
+
+template<typename T>
+std::ostream& operator<<(std::ostream& o, gl::vec4<T> v) {
+  o << v.x << ", "
+    << v.y << ", "
+    << v.z << ", "
+    << v.w;
+  return o;
+}
+
+
+struct color {
+  float r, g, b, a;
+  color() {}
+  color(float r, float g, float b, float a): r(r), g(g), b(b), a(a) {}
+  bool operator==(color const& o) const {
+    return r == o.r && g == o.g && b == o.b && a == o.a;
   }
 };
 
-using range = vec2_t<float>;
-using vec4 = vec4_t<float>;
-using color = vec4;
+struct range {
+  float low, high;
+};
+
 
 using attribute = GLint;
 

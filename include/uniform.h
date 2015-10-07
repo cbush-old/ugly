@@ -9,92 +9,63 @@ namespace gl {
 
 class Program;
 
-/**
- * @brief handle to a uniform
- **/
-template<typename... T>
-class uniform {
-  public:
-    uniform();
-    uniform(GLint location);
+namespace detail {
 
-    /**
-     * @brief retrieve the uniform by name from the given program
-     **/
-    uniform(Program const& program, const char* name);
-    uniform(Program const& program, std::string const& name);
-
-  public:
-    uniform(uniform<T...> const&);
-    uniform<T...>& operator=(uniform<T...> const&);
-    virtual ~uniform();
-
-  public:
-    bool operator==(uniform<T...> const&) const;
-    bool operator!=(uniform<T...> const&) const;
-
-  public:
-    void set(T... values);
-
-    template<typename U>
-    void set(U const& vec);
+class basic_uniform {
+  protected:
+    basic_uniform(Program const& _program, GLint location);
 
   public:
     GLint location() const;
 
-  private:
+  protected:
+    Program const& _program;
     GLint _location { -1 };
-
 };
 
-template<typename T, int Dimensions = 1>
-class uniform_vector {
-  public:
-    uniform_vector();
-    uniform_vector(GLint location);
-    uniform_vector(Program const& program, const char* name);
-    uniform_vector(Program const& program, std::string const& name);
+template<typename... T>
+class uniform : public basic_uniform {
+  using vec_t = vec<T...>;
 
   public:
-    void set(T const*, size_t count);
-    void set(std::vector<T> const&);
+    uniform(Program const& program, GLint location);
+
+  public:
+    void set(T... values);
+    void set(vec_t const& vec);
+    vec_t get() const;
 
 };
 
 
-class uniform_matrix {
+template<typename T>
+class uniform<T> : public basic_uniform {
+  public:
+    uniform(Program const& program, GLint location);
+
+  public:
+    void set(T value);
+    T get() const;
 
 };
 
 
-template<typename T> 
-using uniform1 = uniform<T>;
+}
+
 
 template<typename T>
-using uniform2 = uniform<T, T>;
+using uniform = detail::uniform<T>;
 
 template<typename T>
-using uniform3 = uniform<T, T, T>;
+using uniform2 = detail::uniform<T, T>;
 
 template<typename T>
-using uniform4 = uniform<T, T, T, T>;
+using uniform3 = detail::uniform<T, T, T>;
+
+template<typename T>
+using uniform4 = detail::uniform<T, T, T, T>;
 
 
-#define SPECIALIZE1(...) template<> template<typename U> void uniform<__VA_ARGS__>
-#define SPECIALIZE2(...) ::set(U const& vec) { set(__VA_ARGS__); }
-#define SPECIALIZE(T) \
-  SPECIALIZE1(T) SPECIALIZE2(vec.x) \
-  SPECIALIZE1(T, T) SPECIALIZE2(vec.x, vec.y) \
-  SPECIALIZE1(T, T, T) SPECIALIZE2(vec.x, vec.y, vec.z) \
-  SPECIALIZE1(T, T, T, T) SPECIALIZE2(vec.x, vec.y, vec.z, vec.w)
-
-SPECIALIZE(GLfloat);
-SPECIALIZE(GLint);
-SPECIALIZE(GLuint);
-
-#undef SPECIALIZE
-#undef SPECIALIZE1
-#undef SPECIALIZE2
 
 
 } // namespace gl
