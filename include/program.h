@@ -1,10 +1,13 @@
 #ifndef OGL_PROGRAM_H
 #define OGL_PROGRAM_H
 
+#include <memory>
+
 #include "gl_type.h"
 #include "shader.h"
 #include "uniform.h"
 #include "context.h"
+
 
 namespace gl {
 
@@ -14,6 +17,7 @@ struct uniform_info {
   GLint size;
   std::string name;
 };
+
 
 
 class Program {
@@ -64,6 +68,7 @@ class Program {
     GLint uniform_location(std::string const& name) const;
     uniform_info active_uniform(GLuint index) const;
 
+  public:
     GLint attrib_location(const char* name) const;
     GLint attrib_location(std::string const& name) const;
 

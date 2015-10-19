@@ -9,6 +9,7 @@ namespace gl {
 
 class Program;
 
+
 namespace detail {
 
 class basic_uniform {

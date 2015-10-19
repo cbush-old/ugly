@@ -6,9 +6,6 @@
 
 #include <functional>
 
-#define glUniformNTv(N, T) glUniformNT(N, T)v
-#define glUniformMatrixN(NxN) glUniformMatrix##NxN##fv
-
 namespace gl {
 
 namespace detail {
@@ -36,6 +33,8 @@ template<typename... T>
 uniform<T...>::uniform(Program const& program, GLint location)
   : basic_uniform(program, location)
   {}
+
+
 
 
 #define SPECIALIZE_STEP1(...) template<> void uniform<__VA_ARGS__>
@@ -74,17 +73,20 @@ INSTANTIATE_TYPE(GLint);
 INSTANTIATE_TYPE(GLuint);
 
 
-}
+} // namespace detail
+
+
 
 
 
 #define SPECIALIZE(Type, Suffix) \
-  template<> void uniform2<Type>::set(vec2<Type> const& v) { GL_CALL(glUniform2##Suffix(_location, v.x, v.y)); } \
-  template<> void uniform3<Type>::set(vec3<Type> const& v) { GL_CALL(glUniform3##Suffix(_location, v.x, v.y, v.z)); } \
-  template<> void uniform4<Type>::set(vec4<Type> const& v) { GL_CALL(glUniform4##Suffix(_location, v.x, v.y, v.z, v.w)); } \
-  template<> void uniform2<Type>::set(Type v0, Type v1) { GL_CALL(glUniform2##Suffix(_location, v0, v1)); } \
-  template<> void uniform3<Type>::set(Type v0, Type v1, Type v2) { GL_CALL(glUniform3##Suffix(_location, v0, v1, v2)); } \
-  template<> void uniform4<Type>::set(Type v0, Type v1, Type v2, Type v3) { GL_CALL(glUniform4##Suffix(_location, v0, v1, v2, v3)); } \
+  template<> void uniform2<Type>::set(vec2<Type> const& v) { GL_CALL(glProgramUniform2##Suffix(_program.name(), _location, v.x, v.y)); } \
+  template<> void uniform3<Type>::set(vec3<Type> const& v) { GL_CALL(glProgramUniform3##Suffix(_program.name(), _location, v.x, v.y, v.z)); } \
+  template<> void uniform4<Type>::set(vec4<Type> const& v) { GL_CALL(glProgramUniform4##Suffix(_program.name(), _location, v.x, v.y, v.z, v.w)); } \
+  template<> void uniform<Type>::set(Type v0) { GL_CALL(glProgramUniform1##Suffix(_program.name(), _location, v0)); } \
+  template<> void uniform2<Type>::set(Type v0, Type v1) { GL_CALL(glProgramUniform2##Suffix(_program.name(), _location, v0, v1)); } \
+  template<> void uniform3<Type>::set(Type v0, Type v1, Type v2) { GL_CALL(glProgramUniform3##Suffix(_program.name(), _location, v0, v1, v2)); } \
+  template<> void uniform4<Type>::set(Type v0, Type v1, Type v2, Type v3) { GL_CALL(glProgramUniform4##Suffix(_program.name(), _location, v0, v1, v2, v3)); } \
   template<> vec2<Type> uniform2<Type>::get() const { Type params[2]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec2<Type>(params[0], params[1]); } \
   template<> vec3<Type> uniform3<Type>::get() const { Type params[3]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec3<Type>(params[0], params[1], params[2]); } \
   template<> vec4<Type> uniform4<Type>::get() const { Type params[4]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec4<Type>(params[0], params[1], params[2], params[3]); } \

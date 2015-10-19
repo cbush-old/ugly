@@ -423,6 +423,7 @@ int main(int argc, const char* const argv[]) {
 
   gl::vec4<float> vec (0.1f, 0.2f, 0.3f, 1.f);
   color.set(vec);
+  color.set(1.f, 0.f, 0.5f, 1.f);
 
   std::cout << color.get() << std::endl;
   

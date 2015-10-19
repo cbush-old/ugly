@@ -20,6 +20,8 @@ class glfwApp {
     void update();
     bool done() const;
     void make_current();
+    int width() const;
+    int height() const;
 
   private:
     GLFWwindow* _window { nullptr };
