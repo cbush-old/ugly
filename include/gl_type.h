@@ -48,6 +48,22 @@ template<typename T> using vec4 = vec<T, T, T, T>;
 
 
 template<typename T>
+bool operator==(vec2<T> const& a, vec2<T> const& b) {
+  return a.x == b.x && a.y == b.y;
+}
+
+template<typename T>
+bool operator==(vec3<T> const& a, vec3<T> const& b) {
+  return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+
+template<typename T>
+bool operator==(vec4<T> const& a, vec4<T> const& b) {
+  return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+}
+
+
+template<typename T>
 std::ostream& operator<<(std::ostream& o, gl::vec4<T> v) {
   o << v.x << ", "
     << v.y << ", "

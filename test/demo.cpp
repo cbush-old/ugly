@@ -168,8 +168,8 @@ int main(int argc, const char* const argv[]) {
 
     gl::Program program (
       context,
-      gl::VertexShader("test/shaders/demo/vert.glsl"),
-      gl::FragmentShader("test/shaders/demo/frag.glsl")
+      gl::VertexShader("shaders/demo/vert.glsl"),
+      gl::FragmentShader("shaders/demo/frag.glsl")
     );
 
     gl::uniform4<float> ambient (program, program.uniform_location("ambient"));

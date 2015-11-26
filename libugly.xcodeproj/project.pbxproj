@@ -46,7 +46,6 @@
 		0B4EB8831C078E290086BDD9 /* vertex_array.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B4EB8231C0788F00086BDD9 /* vertex_array.h */; };
 		0B4EB8841C078E290086BDD9 /* viewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B4EB8241C0788F00086BDD9 /* viewport.h */; };
 		0B4EB8851C0791110086BDD9 /* glfw_app.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB8281C0788FE0086BDD9 /* glfw_app.cpp */; };
-		0B4EB8861C0791110086BDD9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB82B1C0788FE0086BDD9 /* main.cpp */; };
 		0B4EB8881C07912E0086BDD9 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB86E1C078E150086BDD9 /* OpenGL.framework */; };
 		0B4EB88A1C0791C70086BDD9 /* libglfw.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB8891C0791C70086BDD9 /* libglfw.dylib */; };
 		0B4EB88C1C0791D50086BDD9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB88B1C0791D50086BDD9 /* Cocoa.framework */; };
@@ -60,6 +59,7 @@
 		0B4EB8A91C079B8A0086BDD9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB88B1C0791D50086BDD9 /* Cocoa.framework */; };
 		0B4EB8AA1C079B920086BDD9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB88D1C0791DB0086BDD9 /* CoreVideo.framework */; };
 		0B4EB8AB1C079B990086BDD9 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB88F1C0791E10086BDD9 /* IOKit.framework */; };
+		0B4EB8AD1C07B0620086BDD9 /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB8AC1C07B0620086BDD9 /* demo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +151,7 @@
 		0B4EB89B1C07954E0086BDD9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B4EB89C1C07954E0086BDD9 /* ugly_tests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ugly_tests.mm; sourceTree = "<group>"; };
 		0B4EB8A51C079B4C0086BDD9 /* libugly.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libugly.xcodeproj; sourceTree = "<group>"; };
+		0B4EB8AC1C07B0620086BDD9 /* demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = demo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +262,7 @@
 		0B4EB8251C0788FE0086BDD9 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				0B4EB8AC1C07B0620086BDD9 /* demo.cpp */,
 				0B4EB8281C0788FE0086BDD9 /* glfw_app.cpp */,
 				0B4EB8291C0788FE0086BDD9 /* glfw_app.h */,
 				0B4EB82B1C0788FE0086BDD9 /* main.cpp */,
@@ -358,9 +360,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		0B4EB8461C0789C30086BDD9 /* test */ = {
+		0B4EB8461C0789C30086BDD9 /* demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B4EB84B1C0789C30086BDD9 /* Build configuration list for PBXNativeTarget "test" */;
+			buildConfigurationList = 0B4EB84B1C0789C30086BDD9 /* Build configuration list for PBXNativeTarget "demo" */;
 			buildPhases = (
 				0B4EB8431C0789C30086BDD9 /* Sources */,
 				0B4EB8441C0789C30086BDD9 /* Frameworks */,
@@ -371,7 +373,7 @@
 			dependencies = (
 				0B4EB8921C07938A0086BDD9 /* PBXTargetDependency */,
 			);
-			name = test;
+			name = demo;
 			productName = test;
 			productReference = 0B4EB8471C0789C30086BDD9 /* test */;
 			productType = "com.apple.product-type.tool";
@@ -448,7 +450,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				0B4EB8461C0789C30086BDD9 /* test */,
+				0B4EB8461C0789C30086BDD9 /* demo */,
 				0B4EB8591C078CD10086BDD9 /* ugly */,
 				0B4EB8971C07954E0086BDD9 /* ugly tests */,
 			);
@@ -471,7 +473,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B4EB8851C0791110086BDD9 /* glfw_app.cpp in Sources */,
-				0B4EB8861C0791110086BDD9 /* main.cpp in Sources */,
+				0B4EB8AD1C07B0620086BDD9 /* demo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -877,7 +879,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B4EB84B1C0789C30086BDD9 /* Build configuration list for PBXNativeTarget "test" */ = {
+		0B4EB84B1C0789C30086BDD9 /* Build configuration list for PBXNativeTarget "demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B4EB84C1C0789C30086BDD9 /* Debug */,

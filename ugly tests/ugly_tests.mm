@@ -110,6 +110,47 @@ gl::Context *context;
   
 }
 
+- (void)testProgram {
+  gl::VertexShader vert ("shaders/vert.glsl");
+  gl::FragmentShader frag ("shaders/frag.glsl");
+  gl::Program program (vert, frag);
+  context->use(program);
+  
+  gl::Program program2 (*context, gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/frag.glsl"));
+  
+}
+
+- (void)testUniforms {
+  gl::VertexShader vert ("shaders/vert.glsl");
+  gl::FragmentShader frag ("shaders/frag.glsl");
+  gl::Program program (*context, vert, frag);
+  
+  {
+    gl::uniform<int> a (program, program.uniform_location("blah"));
+    XCTAssert(a.location() == -1, @"Non-existent uniform shouldn't be found");
+  }
+  
+  {
+    gl::uniform<int> a (program, program.uniform_location("color"));
+    XCTAssert(a.location() != -1, @"Non-existent uniform 'color' should have be found");
+  }
+  
+  {
+    gl::uniform<int> a (program, program.uniform_location("color"));
+    XCTAssert(a.location() != -1, @"Non-existent uniform 'color' should have be found");
+    EXPECT_THROW(a.set(2), @"Expected throw when trying to set vec4 with a uniform<int>");
+  }
+  
+  {
+    gl::uniform4<float> color (program, program.uniform_location("color"));
+    gl::vec4<float> val(0.1f, 0.2f, 0.3f, 0.4f);
+    color.set(val);
+    XCTAssert(color.get() == val, @"uniform 'color' should match value after set by vec4");
+    color.set(0.1f, 0.2f, 0.3f, 0.4f);
+    XCTAssert(color.get() == val, @"uniform 'color' should match value after set by 4 floats");
+  }
+  
+}
 
 
 
