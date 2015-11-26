@@ -2,7 +2,7 @@
 #include "log.h"
 
 bool glfwApp::_done { true };
-unsigned glfwApp::_refs { 0 };
+std::atomic<int> glfwApp::_refs { 0 };
 
 void glfwApp::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   _done = true;

@@ -2,12 +2,14 @@
 #define UGLY_TEST_GLFWAPP_H
 
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
+
+#include <atomic>
 
 
 class glfwApp {
   private:
-    static unsigned _refs;
+    static std::atomic<int> _refs;
     static bool _done;
     static void key_callback(GLFWwindow*, int, int, int, int);
     static void on_error(int, const char*);
