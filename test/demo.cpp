@@ -12,7 +12,6 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 
-
 class VertexArray {
   public:
     VertexArray() {
@@ -230,17 +229,19 @@ int main(int argc, const char* const argv[]) {
       c += 0x30;
 
       pixels[i] =
-       i /*
+        i << 9;/*
         (c << 24) |
         (c << 16) |
         (c << 8) |
-        0xff; */;
+        0xff;*/
 
     }
     GL_CALL(glGenTextures(1, &texture));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, texture));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
     GL_CALL(glTexImage2D(
       GL_TEXTURE_2D, 
       0, 
@@ -263,24 +264,16 @@ int main(int argc, const char* const argv[]) {
     float angle = 0.f;
     glm::vec3 position (0.f, 0.f, -2.5f);
 
+    float light_angle = 1.f;
+    glm::vec3 direction = glm::rotate(glm::vec3(0.f, 0.f, 1.f), light_angle, glm::vec3(0.f, 1.f, 0.f));
+    light_direction.set(direction.x, direction.y, direction.z);
+
+    glm::vec3 hv = glm::normalize((direction + glm::vec3(0.f, 0.f, 1.f)) / 2.f);
+    half_vector.set(hv.x, hv.y, hv.z);
+
     while (!app.done()) {
 
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-      float light_angle = 1.f;
-      glm::vec3 direction = glm::rotate(glm::vec3(0.f, 0.f, 1.f), light_angle, glm::vec3(0.f, 1.f, 0.f));
-      light_direction.set(direction.x, direction.y, direction.z);
-
-      glm::vec3 hv = glm::normalize((direction + glm::vec3(0.f, 0.f, 1.f)) / 2.f);
-      half_vector.set(hv.x, hv.y, hv.z);
-
-      static bool logged = false;
-      if (!logged) {
-        float dot = glm::dot(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 0.f, 1.f));
-        std::printf("dot: %f\n", dot);
-        logged = true;
-      }
-
 
       glm::mat4 modelview_matrix {
         glm::translate(
