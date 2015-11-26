@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-
+#include <unistd.h>
 
 namespace gl {
 
@@ -29,7 +29,8 @@ Shader::~Shader() {
 std::string load_file(std::string const& path) {
   std::ifstream f(path);
   if (!f.good()) {
-    throw 1;
+    char buf[256];
+    throw gl::exception("file %s not found; pwd=%s", path.c_str(), getcwd(buf, sizeof(buf)));
   }
   return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 }

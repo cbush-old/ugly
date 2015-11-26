@@ -14,6 +14,14 @@
 
 #include "glfw_app.h"
 
+
+
+#define EXPECT_THROW(stmt, ...) {\
+  bool threw = false; \
+  try { stmt; } catch(...) { threw = true; } \
+  XCTAssert(threw, __VA_ARGS__); }
+
+
 @interface ugly_tests : XCTestCase
 
 @end
@@ -80,6 +88,26 @@ gl::Context *context;
   auto minor = context->minor_version();
   XCTAssert(major == 4u, @"GL major version is %u, expected 4", major);
   XCTAssert(minor == 1u, @"GL minor version is %u, expected 1", minor);
+}
+
+- (void)testShaders {
+  try {
+    gl::VertexShader vert ("shaders/vert.glsl");
+    XCTAssert(vert.compiled(), @"Shader compilation failed");
+  } catch(gl::exception const& e) {
+    XCTAssert(false, @"Shader construction threw exception: %s", e.what());
+  }
+  
+  EXPECT_THROW(gl::VertexShader bad_path("garbage"), @"Bad file path didn't fail");
+  EXPECT_THROW(gl::VertexShader syntax_error_vert("shaders/bad_syntax.glsl"),
+    @"Shader with bad syntax compiled");
+
+  gl::VertexShader shader;
+  shader.set_source({
+    "hello", "cruel", "world",
+  });
+  XCTAssert(shader.get_source() == "hellocruelworld\n", @"shader set source doesn't match input");
+  
 }
 
 
