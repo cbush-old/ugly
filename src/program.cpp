@@ -92,7 +92,7 @@ Program::Binary Program::binary() const {
 }
 
 void Program::binary(Program::Binary const& binary) {
-  GL_CALL(glProgramBinary(_name, binary.format, binary.buffer.data(), binary.buffer.size()));
+  GL_CALL(glProgramBinary(_name, binary.format, binary.buffer.data(), (GLsizei)binary.buffer.size()));
 }
 
 GLint Program::stage(GLenum shadertype, GLenum param) const {

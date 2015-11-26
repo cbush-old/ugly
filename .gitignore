@@ -7,4 +7,8 @@ demo
 doc/
 .depends
 *.bak
+.DS_Store
+DerivedData/
+project.xcworkspace
+xcuserdata
 

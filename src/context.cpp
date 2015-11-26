@@ -325,7 +325,7 @@ void Context::draw_arrays(int, GLsizei) {
 
 
 void Context::active_texture(size_t i) {
-  GL_CALL(glActiveTexture(GL_TEXTURE0 + i));
+  GL_CALL(glActiveTexture(GLenum(GL_TEXTURE0 + i)));
 }
 
 size_t Context::active_texture() const {

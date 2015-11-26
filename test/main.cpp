@@ -378,11 +378,11 @@ int main(int argc, const char* const argv[]) {
   //
   //
   {
-    gl::VertexShader vert ("test/shaders/vert.glsl");
+    gl::VertexShader vert ("shaders/vert.glsl");
     expect("shader compiled", vert.compiled());
 
     EXPECT_THROW("bad file path threw", gl::VertexShader bad_path("garbage"))
-    EXPECT_THROW("compiling shader with bad syntax failed", gl::VertexShader syntax_error_vert("test/shaders/bad_syntax.glsl"));
+    EXPECT_THROW("compiling shader with bad syntax failed", gl::VertexShader syntax_error_vert("shaders/bad_syntax.glsl"));
 
     gl::VertexShader shader;
     shader.set_source("hello");
@@ -394,15 +394,15 @@ int main(int argc, const char* const argv[]) {
     expect("after setting multiple shader source, source matches input", shader.get_source(), "hellocruelworld\n");
   }
 
-  gl::VertexShader vert ("test/shaders/vert.glsl");
-  gl::FragmentShader frag ("test/shaders/frag.glsl");
+  gl::VertexShader vert ("shaders/vert.glsl");
+  gl::FragmentShader frag ("shaders/frag.glsl");
   gl::Program program1 (vert, frag);
   context1.use(program1);
 
   gl::Program program2 (
     context1,
-    gl::VertexShader("test/shaders/vert.glsl"),
-    gl::FragmentShader("test/shaders/frag.glsl")
+    gl::VertexShader("shaders/vert.glsl"),
+    gl::FragmentShader("shaders/frag.glsl")
   );
 
   {

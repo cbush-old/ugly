@@ -98,7 +98,7 @@ void Shader::set_source(std::vector<std::string> const& sources) {
   }
 
   try {
-    GL_CALL(glShaderSource(_name, sources.size(), source, NULL));
+    GL_CALL(glShaderSource(_name, (GLsizei)sources.size(), source, NULL));
   } catch(...) {
     delete[] source;
     throw;
