@@ -50,6 +50,21 @@ class uniform<T> : public basic_uniform {
 
 };
 
+  
+  
+template<unsigned N, unsigned M = N>
+class uniform_matrix : public basic_uniform {
+  public:
+    uniform_matrix(Program const& program, GLint location, GLsizei count = 1);
+  
+  public:
+    void set(GLfloat const*, bool transpose = false);
+  
+  private:
+    GLsizei _count;
+
+};
+
 
 }
 
@@ -66,7 +81,15 @@ using uniform3 = detail::uniform<T, T, T>;
 template<typename T>
 using uniform4 = detail::uniform<T, T, T, T>;
 
-
+using uniform_mat2 = detail::uniform_matrix<2>;
+using uniform_mat3 = detail::uniform_matrix<3>;
+using uniform_mat4 = detail::uniform_matrix<4>;
+using uniform_mat2x3 = detail::uniform_matrix<2, 3>;
+using uniform_mat3x2 = detail::uniform_matrix<3, 2>;
+using uniform_mat2x4 = detail::uniform_matrix<2, 4>;
+using uniform_mat4x2 = detail::uniform_matrix<4, 2>;
+using uniform_mat3x4 = detail::uniform_matrix<3, 4>;
+using uniform_mat4x3 = detail::uniform_matrix<4, 3>;
 
 
 } // namespace gl

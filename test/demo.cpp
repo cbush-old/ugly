@@ -234,7 +234,6 @@ int main(int argc, const char* const argv[]) {
         (c << 16) |
         (c << 8) |
         0xff;*/
-
     }
     GL_CALL(glGenTextures(1, &texture));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, texture));

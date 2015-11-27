@@ -36,7 +36,7 @@ uniform<T...>::uniform(Program const& program, GLint location)
 
 
 
-
+// uniform scalar specialization
 #define SPECIALIZE_STEP1(...) template<> void uniform<__VA_ARGS__>
 #define SPECIALIZE_STEP2(...) ::set(__VA_ARGS__)
 #define SPECIALIZE_STEP3(Count, Suffix, ...) { GL_CALL(glUniform##Count##Suffix(_location, __VA_ARGS__ )); }
@@ -71,6 +71,45 @@ uniform<T...>::uniform(Program const& program, GLint location)
 INSTANTIATE_TYPE(GLfloat);
 INSTANTIATE_TYPE(GLint);
 INSTANTIATE_TYPE(GLuint);
+#undef INSTANTIATE
+#undef INSTANTIATE_TYPE
+#undef SPECIALIZE_STEP1
+#undef SPECIALIZE_STEP2
+#undef SPECIALIZE_STEP3
+#undef SPECIALIZE2
+#undef SPECIALIZE3
+#undef SPECIALIZE4
+
+
+
+
+template<unsigned N, unsigned M>
+uniform_matrix<N, M>::uniform_matrix(Program const& program, GLint location, GLsizei count /* = 1 */)
+  : basic_uniform(program, location)
+  , _count(count) {}
+
+#define SPECIALIZE_AND_INSTANTIATE(N, M, SUFFIX) \
+  template<> \
+  void uniform_matrix<N, M>::set(GLfloat const* value, bool transpose) { \
+    GL_CALL(glUniformMatrix##SUFFIX##fv(_location, _count, (GLboolean)transpose, value)); \
+  } \
+  template class uniform_matrix< N, M >;
+
+
+SPECIALIZE_AND_INSTANTIATE(2, 2, 2);
+SPECIALIZE_AND_INSTANTIATE(3, 3, 3);
+SPECIALIZE_AND_INSTANTIATE(4, 4, 4);
+SPECIALIZE_AND_INSTANTIATE(2, 3, 2x3);
+SPECIALIZE_AND_INSTANTIATE(3, 2, 3x2);
+SPECIALIZE_AND_INSTANTIATE(2, 4, 2x4);
+SPECIALIZE_AND_INSTANTIATE(4, 2, 4x2);
+
+
+
+#undef SPECIALIZE_AND_INSTANTIATE
+
+
+
 
 
 } // namespace detail
@@ -92,10 +131,13 @@ INSTANTIATE_TYPE(GLuint);
   template<> vec4<Type> uniform4<Type>::get() const { Type params[4]; GL_CALL(glGetUniform##Suffix##v(_program.name(), _location, params)); return vec4<Type>(params[0], params[1], params[2], params[3]); } \
 
 
-
 SPECIALIZE(GLfloat, f);
 SPECIALIZE(GLint, i);
 SPECIALIZE(GLuint, ui);
+
+
+
+
 
 
 }

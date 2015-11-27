@@ -140,7 +140,7 @@
 		0B4EB8341C0788FE0086BDD9 /* tess_control.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = tess_control.glsl; sourceTree = "<group>"; };
 		0B4EB8351C0788FE0086BDD9 /* tess_eval.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = tess_eval.glsl; sourceTree = "<group>"; };
 		0B4EB8361C0788FE0086BDD9 /* vert.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = vert.glsl; sourceTree = "<group>"; };
-		0B4EB8471C0789C30086BDD9 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B4EB8471C0789C30086BDD9 /* demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = demo; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B4EB85A1C078CD10086BDD9 /* libugly.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libugly.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B4EB86E1C078E150086BDD9 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		0B4EB8891C0791C70086BDD9 /* libglfw.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.dylib; path = ../../../opt/local/lib/libglfw.dylib; sourceTree = "<group>"; };
@@ -297,7 +297,7 @@
 		0B4EB83C1C07895F0086BDD9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0B4EB8471C0789C30086BDD9 /* test */,
+				0B4EB8471C0789C30086BDD9 /* demo */,
 				0B4EB85A1C078CD10086BDD9 /* libugly.dylib */,
 				0B4EB8981C07954E0086BDD9 /* ugly tests.xctest */,
 			);
@@ -375,7 +375,7 @@
 			);
 			name = demo;
 			productName = test;
-			productReference = 0B4EB8471C0789C30086BDD9 /* test */;
+			productReference = 0B4EB8471C0789C30086BDD9 /* demo */;
 			productType = "com.apple.product-type.tool";
 		};
 		0B4EB8591C078CD10086BDD9 /* ugly */ = {
@@ -886,6 +886,7 @@
 				0B4EB84D1C0789C30086BDD9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0B4EB85B1C078CD10086BDD9 /* Build configuration list for PBXNativeTarget "ugly" */ = {
 			isa = XCConfigurationList;
@@ -894,6 +895,7 @@
 				0B4EB85D1C078CD10086BDD9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0B4EB8A11C07954E0086BDD9 /* Build configuration list for PBXNativeTarget "ugly tests" */ = {
 			isa = XCConfigurationList;
@@ -902,6 +904,7 @@
 				0B4EB8A31C07954E0086BDD9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

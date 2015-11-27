@@ -15,6 +15,15 @@
 #include "glfw_app.h"
 
 
+#define GLM_FORCE_RADIANS
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtx/rotate_vector.hpp"
+
+
 
 #define EXPECT_THROW(stmt, ...) {\
   bool threw = false; \
@@ -149,7 +158,27 @@ gl::Context *context;
     color.set(0.1f, 0.2f, 0.3f, 0.4f);
     XCTAssert(color.get() == val, @"uniform 'color' should match value after set by 4 floats");
   }
+}
+
+- (void)testUniformMatrix {
+  gl::VertexShader vert ("shaders/vert.glsl");
+  gl::FragmentShader frag ("shaders/frag.glsl");
+  gl::Program program (*context, vert, frag);
+
+  glm::mat4 projection_matrix {
+    glm::perspective<GLfloat>(
+      -45,
+      float(theApp->width()) / float(theApp->height()),
+      1.0,
+      2500.0
+    )
+  };
   
+  {
+    gl::uniform_mat4 p (program, program.uniform_location("projection"));
+    p.set(glm::value_ptr(projection_matrix));
+  }
+
 }
 
 
