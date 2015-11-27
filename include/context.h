@@ -17,6 +17,31 @@ class Pipeline;
 class Buffer;
 class Program;
 class Framebuffer;
+class Texture;
+class Context;
+
+
+// maybe...
+template<GLenum Target>
+class TextureBindingPoint {
+  public:
+    TextureBindingPoint(Context& owner);
+
+  public:
+    void bind(Texture&);
+    void unbind();
+  
+  public:
+    void storage(GLsizei levels, GLenum internalFormat, GLsizei width);
+    void storage(GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height);
+    void storage(GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth);
+
+  private:
+    Context& _context;
+
+};
+
+
 
 class Context {
   public:

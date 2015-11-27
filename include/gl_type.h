@@ -114,6 +114,12 @@ using attribute = GLint;
   }
 
 
+#define GL_ASSERT(X, ...) \
+  if (!(X)) { \
+    throw gl::exception(__VA_ARGS__); \
+  }
+
+
 
 enum BufferIndex {
   BUFFER_INDEX_ARRAY = 0,

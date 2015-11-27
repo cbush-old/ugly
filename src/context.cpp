@@ -9,33 +9,14 @@
 
 #include "buffer.h"
 #include "program.h"
+#include "texture.h"
 
 namespace gl {
 
-/*
-// Lookup table for BufferIndex to GL_TARGET_BUFFER enums.
-// Obviously, BufferIndex order must match this table order.
-// Have you updated either table recently? Do the orders 
-// still match? Well, do they? Did you double check...?!
-static const GLenum buffer_target[BUFFER_INDEX_MAX] {
-  GL_ARRAY_BUFFER,
-  // GL_ATOMIC_COUNTER_BUFFER,
-  GL_COPY_READ_BUFFER,
-  GL_COPY_WRITE_BUFFER,
-  // GL_DISPATCH_INDIRECT_BUFFER,
-  GL_DRAW_INDIRECT_BUFFER,
-  GL_ELEMENT_ARRAY_BUFFER,
-  GL_PIXEL_PACK_BUFFER,
-  GL_PIXEL_UNPACK_BUFFER,
-  // GL_QUERY_BUFFER,
-  // GL_SHADER_STORAGE_BUFFER,
-  GL_TEXTURE_BUFFER,
-  GL_TRANSFORM_FEEDBACK_BUFFER,
-  GL_UNIFORM_BUFFER,
-};
-*/
 
-// My policy with the impl so far is only to forward function calls where I actually 
+
+
+// My policy with the impl so far is only to forward function calls where I actually
 // need polymorphism. Mostly, I'll use impl class as an opaque data storage type.
 // And I'm using pimpl at all, rather than pure virtual interface inheritance,
 // because:
@@ -333,19 +314,6 @@ size_t Context::active_texture() const {
   return rv;
 }
 
-
-//
-//
-//    Buffers
-//
-//
-void Context::bind(GLenum target, Buffer const& buffer) {
-  GL_CALL(glBindBuffer(target, buffer.name()));
-}
-
-void Context::unbind(GLenum target) {
-  GL_CALL(glBindBuffer(target, 0));
-}
 
 
 //

@@ -14,9 +14,11 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
   public:
     Texture(Texture const&) = delete;
     Texture& operator=(Texture const&) = delete;
-    ~Texture();
+    virtual ~Texture() =0;
 
 };
+
+
 
 } // namespace gl
 

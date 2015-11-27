@@ -181,6 +181,30 @@ gl::Context *context;
 
 }
 
+- (void)testBufferMapping {
+  gl::Buffer buffer;
+  std::vector<float> v { 97.f, 98.f, 99.f, 100.f };
+  buffer.data(v, GL_STATIC_READ);
+  
+  float* mapping = reinterpret_cast<float*>(buffer.map(GL_ARRAY_BUFFER, GL_READ_WRITE));
+  
+  EXPECT_THROW(buffer.map(GL_ARRAY_BUFFER, GL_READ_WRITE), @"re-mapping buffer should throw");
+  
+  XCTAssert(mapping[0] == 97.f, @"mapping[0] (%f) does not match input value!", mapping[0]);
+  
+  mapping[0] = 999.f;
+  
+  buffer.unmap();
+  
+  EXPECT_THROW(buffer.unmap(), @"re-unmapping unmapped buffer should throw");
+  
+  float o;
+  buffer.get(0, sizeof(float), &o);
+  XCTAssert(o = 999.f, @"output of subdata read (%f) should have matched mapping write", o);
+  
+}
+
+
 
 
 @end

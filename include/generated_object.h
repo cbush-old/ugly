@@ -1,4 +1,5 @@
 #ifndef UGLY_GENERATED_OBJECT_H
+#define UGLY_GENERATED_OBJECT_H
 
 #include "gl_type.h"
 

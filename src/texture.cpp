@@ -2,9 +2,7 @@
 
 namespace gl {
 
-Texture::Texture() {
-
-}
+Texture::Texture() {}
 
 Texture::Texture(GLuint name): GeneratedObject(name) {}
 

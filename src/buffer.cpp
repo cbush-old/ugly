@@ -1,52 +1,74 @@
 #include "buffer.h"
-#include "generated_object.h"
 
 namespace gl {
 
-class Buffer_impl : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
+class Bindguard {
   public:
-    ~Buffer_impl() {}
+    Bindguard(GLenum target, GLuint name)
+      : _target(target)
+      , _name(name) {
+      GL_CALL(glBindBuffer(_target, _name));
+    }
 
-  public:
-    template<typename T>
-    inline void data(std::vector<T> const&, GLenum usage);
+    ~Bindguard() {
+      GL_CALL(glBindBuffer(_target, 0));
+    }
+
+  private:
+    GLenum _target;
+    GLuint _name;
 
 };
 
 
-template<typename T>
-inline void Buffer_impl::data(std::vector<T> const& v, GLenum usage) {
+
+void Buffer::data(size_t size, void const* data, GLenum usage, GLenum target) {
   // 4.5: see glNamedBufferData
-  GL_CALL(glBindBuffer(GL_COPY_WRITE_BUFFER, name()));
-  GL_CALL(glBufferData(
-    GL_COPY_WRITE_BUFFER,
-    v.size() * sizeof(T),
-    v.data(),
-    usage
-  ));
-  GL_CALL(glBindBuffer(GL_COPY_WRITE_BUFFER, 0));
+  Bindguard guard(target, name());
+  GL_CALL(glBufferData(target, size, data, usage));
 }
 
 
-Buffer::Buffer()
-  : _impl(new Buffer_impl)
-  {}
-
-Buffer::~Buffer() {
-  delete _impl;
-}
-
-GLuint Buffer::name() const {
-  return _impl->name();
-}
-
-template<typename T>
-void Buffer::data(std::vector<T> const& data, GLenum usage) {
-  _impl->data(data, usage);
+void Buffer::subdata(size_t offset, size_t size, void const* data) {
+  Bindguard guard(GL_COPY_WRITE_BUFFER, name());
+  GL_CALL(glBufferSubData(GL_COPY_WRITE_BUFFER, offset, size, data));
 }
 
 
-template void Buffer::data<GLfloat>(std::vector<GLfloat> const&, GLenum);
+void* Buffer::map(GLenum target, GLenum access) {
+  GL_ASSERT(!_mapped, "mapping already-mapped buffer %p", this);
+  void* p;
+  Bindguard guard(target, name());
+  GL_CALL(p = glMapBuffer(target, access));
+  if (p) {
+    _target = target;
+    _mapped = true;
+  }
+  return p;
+}
+
+bool Buffer::unmap() {
+  GL_ASSERT(_mapped, "unmapping buffer %p, which is not mapped", this);
+  bool rv;
+  Bindguard guard(_target, name());
+  GL_CALL(rv = glUnmapBuffer(_target));
+  if (rv) {
+    _mapped = false;
+  }
+  return rv;
+}
+
+
+void Buffer::get(size_t offset, size_t size, void* data) const {
+  Bindguard guard(GL_COPY_READ_BUFFER, name());
+  glGetBufferSubData(GL_COPY_READ_BUFFER, offset, size, data);
+}
+
+
+
+Buffer::Buffer() {}
+
+Buffer::~Buffer() {}
 
 
 
