@@ -220,10 +220,11 @@ gl::Context *context;
     
     gl::Buffer buffer;
     buffer.data(pixels, GL_STATIC_READ);
-    t.unpack(0, buffer, desc, 0);
+    t.image(0, buffer, desc, 0);
+    t.subimage(0, 0, 0, buffer, desc, 0);
     
     t.copy(0, buffer, 0, 0, 2, 2);
-
+    t.subcopy(0, 1, 1, buffer, 0, 0, 1, 1);
 
   } catch(gl::exception const& e) {
     XCTAssert(false, @"exception: %s", e.what());

@@ -48,6 +48,8 @@ template<typename T> using vec3 = vec<T, T, T>;
 template<typename T> using vec4 = vec<T, T, T, T>;
 
 
+
+
 template<typename T>
 bool operator==(vec2<T> const& a, vec2<T> const& b) {
   return a.x == b.x && a.y == b.y;

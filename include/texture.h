@@ -70,6 +70,7 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
 };
 
 
+
 class Texture2D : public Texture {
   public:
     Texture2D(GLenum internal_format = GL_RGBA);
@@ -78,18 +79,38 @@ class Texture2D : public Texture {
     void image(int level, ImageDesc2D const&);
     void subimage(int level, unsigned xoffset, unsigned yoffset, ImageDesc2D const&);
 
-
   public:
     /**
      * @brief specify image data using the given buffer the pixel unpack buffer.
      **/
-    void unpack(int level, Buffer const&, ImageDesc2D const&, size_t offset);
-  
+    void image(int level, Buffer const&, ImageDesc2D const&, size_t offset);
+    void subimage(int level, unsigned xoffset, unsigned yoffset, Buffer const&, ImageDesc2D const&, size_t offset);
 
   public:
     void copy(int level, Buffer const& buffer, int x, int y, GLsizei w, GLsizei h);
     void subcopy(int level, unsigned xoffset, unsigned yoffset, Buffer const&, int x, int y, GLsizei w, GLsizei h);
   
+};
+
+
+class Texture3D : public Texture {
+  public:
+    Texture3D(GLenum internal_format = GL_RGBA);
+
+  public:
+    void image(int level, ImageDesc3D const&);
+    void subimage(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset, ImageDesc3D const&);
+
+  public:
+    /**
+     * @brief specify image data using the given buffer the pixel unpack buffer.
+     **/
+    void unpack(int level, Buffer const&, ImageDesc3D const&, size_t offset);
+
+  public:
+    void subcopy(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset,
+      Buffer const&, int x, int y, GLsizei w, GLsizei h);
+
 };
 
 
