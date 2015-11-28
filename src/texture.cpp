@@ -55,7 +55,7 @@ namespace gl {
 #define IMPLEMENT_COPY(ND, ...) \
   BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer.name()); \
   TextureBindguard texture_guard(_target, name()); \
-  GL_CALL(glCopyTexImage2D( \
+  GL_CALL(glCopyTexImage##ND( \
     _target, \
     level, \
     _internal_format, \
@@ -66,7 +66,7 @@ namespace gl {
 #define IMPLEMENT_SUBCOPY(ND, OFFSETS, ...) \
   BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer.name()); \
   TextureBindguard texture_guard(_target, name()); \
-  GL_CALL(glCopyTexSubImage2D( \
+  GL_CALL(glCopyTexSubImage##ND( \
     _target, \
     level, \
     OFFSETS, \
@@ -87,6 +87,39 @@ Texture::Texture(GLuint name, GLenum target, GLenum internal_format)
   {}
 
 Texture::~Texture() {}
+
+
+
+
+Texture1D::Texture1D(GLenum internal_format /* = GL_RGBA */)
+  : Texture(GL_TEXTURE_1D, internal_format)
+  {}
+
+
+void Texture1D::image(int level, ImageDesc1D const& desc) {
+  IMPLEMENT_IMAGE(1D, DIMENSIONS1);
+}
+
+void Texture1D::subimage(int level, unsigned xoffset, ImageDesc1D const& desc) {
+  IMPLEMENT_SUBIMAGE(1D, OFFSETS1, DIMENSIONS1);
+}
+
+void Texture1D::image(int level, Buffer const& buffer, ImageDesc1D const& desc, size_t offset) {
+  IMPLEMENT_UNPACK(1D, DIMENSIONS1);
+}
+
+void Texture1D::subimage(int level, unsigned xoffset, Buffer const& buffer, ImageDesc1D const& desc, size_t offset) {
+  IMPLEMENT_SUB_UNPACK(1D, OFFSETS1, DIMENSIONS1);
+}
+
+void Texture1D::copy(int level, Buffer const& buffer, int x, int y, GLsizei w) {
+  IMPLEMENT_COPY(1D, x, y, w);
+}
+
+void Texture1D::subcopy(int level, unsigned xoffset, Buffer const& buffer, int x, int y, GLsizei w) {
+  IMPLEMENT_SUBCOPY(1D, OFFSETS1, x, y, w);
+}
+
 
 
 
@@ -131,57 +164,24 @@ Texture3D::Texture3D(GLenum internal_format /* = GL_RGBA */)
 
 
 void Texture3D::image(int level, ImageDesc3D const& desc) {
-  TextureBindguard guard(_target, name());
-  GL_CALL(glTexImage3D(
-    _target,
-    level,
-    _internal_format,
-    desc.width,
-    desc.height,
-    desc.depth,
-    0, // border: always 0
-    desc.format,
-    desc.type,
-    desc.data
-  ));
+  IMPLEMENT_IMAGE(3D, DIMENSIONS3);
 }
 
 void Texture3D::subimage(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset, ImageDesc3D const& desc) {
   IMPLEMENT_SUBIMAGE(3D, OFFSETS3, DIMENSIONS3);
 }
 
-void Texture3D::unpack(int level, Buffer const& buffer, ImageDesc3D const& desc, size_t offset) {
-  BufferBindguard buffer_guard(GL_PIXEL_UNPACK_BUFFER, buffer.name());
-  TextureBindguard texture_guard(_target, name());
-  GL_CALL(glTexImage3D(
-    _target,
-    level,
-    _internal_format,
-    desc.width,
-    desc.height,
-    desc.depth,
-    0, // border: always 0
-    desc.format,
-    desc.type,
-    (void const*)offset
-  ));
+void Texture3D::image(int level, Buffer const& buffer, ImageDesc3D const& desc, size_t offset) {
+  IMPLEMENT_UNPACK(3D, DIMENSIONS3);
+}
+
+void Texture3D::subimage(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset, Buffer const& buffer, ImageDesc3D const& desc, size_t offset) {
+  IMPLEMENT_SUB_UNPACK(3D, OFFSETS3, DIMENSIONS3);
 }
 
 void Texture3D::subcopy(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset,
   Buffer const& buffer, int x, int y, GLsizei w, GLsizei h) {
-  BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer.name());
-  TextureBindguard texture_guard(_target, name());
-  GL_CALL(glCopyTexSubImage3D(
-    _target,
-    level,
-    xoffset,
-    yoffset,
-    zoffset,
-    x,
-    y,
-    w,
-    h
-  ));
+  IMPLEMENT_SUBCOPY(3D, OFFSETS3, x, y, w, h);
 }
 
 

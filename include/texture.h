@@ -22,6 +22,8 @@ struct ImageDesc {
     GLsizei width { 0 };
 };
 
+using ImageDesc1D = ImageDesc;
+
 struct ImageDesc2D : public ImageDesc {
   public:
     ImageDesc2D() {}
@@ -71,23 +73,47 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
 
 
 
+class Texture1D : public Texture {
+  public:
+    Texture1D(GLenum internal_format = GL_RGBA);
+
+  public:
+    void image(int level, ImageDesc1D const&);
+
+    /**
+     * @brief specify image data using the given buffer the pixel unpack buffer.
+     **/
+    void image(int level, Buffer const&, ImageDesc1D const&, size_t offset);
+
+    void subimage(int level, unsigned xoffset, ImageDesc1D const&);
+
+    void subimage(int level, unsigned xoffset, Buffer const&, ImageDesc1D const&, size_t offset);
+
+    void copy(int level, Buffer const& buffer, int x, int y, GLsizei w);
+
+    void subcopy(int level, unsigned xoffset, Buffer const&, int x, int y, GLsizei w);
+  
+};
+
+
 class Texture2D : public Texture {
   public:
     Texture2D(GLenum internal_format = GL_RGBA);
 
   public:
     void image(int level, ImageDesc2D const&);
-    void subimage(int level, unsigned xoffset, unsigned yoffset, ImageDesc2D const&);
 
-  public:
     /**
      * @brief specify image data using the given buffer the pixel unpack buffer.
      **/
     void image(int level, Buffer const&, ImageDesc2D const&, size_t offset);
+
+    void subimage(int level, unsigned xoffset, unsigned yoffset, ImageDesc2D const&);
+
     void subimage(int level, unsigned xoffset, unsigned yoffset, Buffer const&, ImageDesc2D const&, size_t offset);
 
-  public:
     void copy(int level, Buffer const& buffer, int x, int y, GLsizei w, GLsizei h);
+
     void subcopy(int level, unsigned xoffset, unsigned yoffset, Buffer const&, int x, int y, GLsizei w, GLsizei h);
   
 };
@@ -99,13 +125,15 @@ class Texture3D : public Texture {
 
   public:
     void image(int level, ImageDesc3D const&);
-    void subimage(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset, ImageDesc3D const&);
 
-  public:
     /**
      * @brief specify image data using the given buffer the pixel unpack buffer.
      **/
-    void unpack(int level, Buffer const&, ImageDesc3D const&, size_t offset);
+    void image(int level, Buffer const&, ImageDesc3D const&, size_t offset);
+
+    void subimage(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset, ImageDesc3D const&);
+
+    void subimage(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset, Buffer const&, ImageDesc3D const&, size_t offset);
 
   public:
     void subcopy(int level, unsigned xoffset, unsigned yoffset, unsigned zoffset,
