@@ -200,7 +200,34 @@ gl::Context *context;
   
   float o;
   buffer.get(0, sizeof(float), &o);
-  XCTAssert(o = 999.f, @"output of subdata read (%f) should have matched mapping write", o);
+  XCTAssert(o == 999.f, @"output of subdata read (%f) should have matched mapping write", o);
+
+}
+
+
+- (void)testTextures {
+  try {
+    std::vector<uint32_t> pixels {
+      0xff0000ff, 0x00ff00ff,
+      0x000000ff, 0x0000ffff,
+    };
+    gl::ImageDesc2D desc (2, 2, pixels.data());
+    gl::Texture2D t;
+    t.image(0, desc);
+
+    gl::ImageDesc2D desc2 (1, 2, pixels.data() + 1);
+    t.subimage(0, 1, 0, desc2);
+    
+    gl::Buffer buffer;
+    buffer.data(pixels, GL_STATIC_READ);
+    t.unpack(0, buffer, desc, 0);
+    
+    t.copy(0, buffer, 0, 0, 2, 2);
+
+
+  } catch(gl::exception const& e) {
+    XCTAssert(false, @"exception: %s", e.what());
+  }
   
 }
 

@@ -7,10 +7,14 @@ namespace gl {
 
 template<void(*glGenFunc)(GLsizei, GLuint*), void(*glDeleteFunc)(GLsizei, GLuint const*)>
 class GeneratedObject {
-  public:
+  protected:
     GeneratedObject();
     GeneratedObject(GLuint name);
-    virtual ~GeneratedObject() =0;
+  
+  public:
+    GeneratedObject(GeneratedObject const&) = delete;
+    GeneratedObject& operator=(GeneratedObject const&) = delete;
+    ~GeneratedObject();
 
   public:
     inline GLuint name() const { return _name; }

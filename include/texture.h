@@ -6,16 +6,90 @@
 
 namespace gl {
 
-class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
+
+class Buffer;
+
+
+struct ImageDesc {
   public:
-    Texture();
-    Texture(GLuint name);
+    ImageDesc() {}
+    ImageDesc(GLsizei width, void const* data): data(data), width(width) {}
+
+  public:
+    void const* data;
+    GLenum format { GL_RGBA };
+    GLenum type { GL_UNSIGNED_INT_8_8_8_8 };
+    GLsizei width { 0 };
+};
+
+struct ImageDesc2D : public ImageDesc {
+  public:
+    ImageDesc2D() {}
+    ImageDesc2D(GLsizei width, GLsizei height, void const* data)
+      : ImageDesc(width, data), height(height)
+      {}
+
+  public:
+    GLsizei height { 0 };
+};
+
+struct ImageDesc3D : public ImageDesc2D {
+  public:
+    ImageDesc3D() {}
+    ImageDesc3D(GLsizei width, GLsizei height, GLsizei depth, void const* data)
+      : ImageDesc2D(width, height, data), depth(height)
+      {}
+  
+  public:
+    GLsizei depth { 0 };
+};
+
+
+
+
+class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
+  protected:
+    Texture(GLenum target, GLenum internal_format);
+    Texture(GLuint name, GLenum target, GLenum internal_format);
 
   public:
     Texture(Texture const&) = delete;
     Texture& operator=(Texture const&) = delete;
-    virtual ~Texture() =0;
+    ~Texture();
 
+  public:
+    void parameter(GLenum pname, float);
+    void parameter(GLenum pname, int);
+    void parameter(GLenum pname, float const*);
+    void parameter(GLenum pname, int const*);
+  
+  protected:
+    GLenum const _target;
+    GLenum _internal_format;
+
+};
+
+
+class Texture2D : public Texture {
+  public:
+    Texture2D(GLenum internal_format = GL_RGBA);
+
+  public:
+    void image(int level, ImageDesc2D const&);
+    void subimage(int level, unsigned xoffset, unsigned yoffset, ImageDesc2D const&);
+
+
+  public:
+    /**
+     * @brief specify image data using the given buffer the pixel unpack buffer.
+     **/
+    void unpack(int level, Buffer const&, ImageDesc2D const&, size_t offset);
+  
+
+  public:
+    void copy(int level, Buffer const& buffer, int x, int y, GLsizei w, GLsizei h);
+    void subcopy(int level, unsigned xoffset, unsigned yoffset, Buffer const&, int x, int y, GLsizei w, GLsizei h);
+  
 };
 
 

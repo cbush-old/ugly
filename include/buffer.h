@@ -58,25 +58,26 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
       subdata(offset, container.data(), container.size() * sizeof(T));
     }
   
+
   public:
     void* map(GLenum target, GLenum access);
     bool unmap();
   
+
   public:
     void get(size_t offset, size_t size, void* data) const;
+
 
   private:
     void data(size_t size, void const* data, GLenum usage, GLenum target);
     void subdata(size_t offset, size_t size, void const* data);
+
 
   private:
     GLenum _target;
     bool _mapped { false };
 
 };
-
-
-
 
 
 

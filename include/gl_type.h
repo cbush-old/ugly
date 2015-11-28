@@ -17,6 +17,7 @@
 
 namespace gl {
 
+
 template<typename... T>
 struct vec;
 
@@ -138,6 +139,29 @@ enum BufferIndex {
   BUFFER_INDEX_UNIFORM,
   BUFFER_INDEX_MAX
 };
+
+
+
+template<void(*BindFunction)(GLenum, GLuint)>
+class Bindguard {
+  public:
+    Bindguard(GLenum target, GLuint name)
+      : _target(target) {
+      GL_CALL(BindFunction(_target, name));
+    }
+
+    ~Bindguard() {
+      GL_CALL_NOTHROW(BindFunction(_target, 0));
+    }
+
+  private:
+    GLenum _target;
+
+};
+
+using BufferBindguard = Bindguard<glBindBuffer>;
+using TextureBindguard = Bindguard<glBindTexture>;
+
 
 
 
