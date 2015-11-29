@@ -232,6 +232,24 @@ gl::Context *context;
   
 }
 
+- (void)testCubemap {
+  try {
+    std::vector<uint32_t> pixels {
+      0xff0000ff, 0x00ff00ff,
+      0x000000ff, 0x0000ffff,
+    };
+    
+    gl::ImageDesc2D desc (2, 2, pixels.data());
+
+    gl::Cubemap t;
+    t[gl::Cubemap::POSITIVE_X].image(0, desc);
+    
+  } catch(gl::exception const& e) {
+    XCTAssert(false, @"exception: %s", e.what());
+  }
+}
+
+
 
 
 

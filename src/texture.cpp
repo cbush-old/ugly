@@ -235,5 +235,16 @@ Cubemap::Cubemap(GLenum internal_format /* = GL_RGBA */)
   }
   {}
 
+Cubemap::Face& Cubemap::operator[](Cubemap::FaceIndex i) {
+  GL_BOUNDS_CHECK(i, 6);
+  return _faces[i];
+}
+
+Cubemap::Face const& Cubemap::operator[](Cubemap::FaceIndex i) const {
+  GL_BOUNDS_CHECK(i, 6);
+  return _faces[i];
+}
+
+
 
 } // namespace gl

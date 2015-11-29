@@ -123,6 +123,8 @@ using attribute = GLint;
   }
 
 
+#define GL_BOUNDS_CHECK(I, LIMIT) GL_ASSERT(0 <= I && I < LIMIT, "index out of bounds!")
+
 
 enum BufferIndex {
   BUFFER_INDEX_ARRAY = 0,
