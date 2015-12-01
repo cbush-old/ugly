@@ -14,7 +14,7 @@ class GeneratedObject {
   public:
     GeneratedObject(GeneratedObject const&) = delete;
     GeneratedObject& operator=(GeneratedObject const&) = delete;
-    ~GeneratedObject();
+    /* no virtual */ ~GeneratedObject();
 
   public:
     inline GLuint name() const { return _name; }

@@ -2,6 +2,9 @@
 #define CONTEXT_H
 
 #include "gl_type.h"
+#include "generated_object.h"
+
+
 #include <functional>
 
 namespace gl {

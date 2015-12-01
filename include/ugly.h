@@ -8,5 +8,6 @@
 #include "texture.h"
 #include "enum.h"
 #include "buffer.h"
+#include "vertex_array.h"
 
 #endif

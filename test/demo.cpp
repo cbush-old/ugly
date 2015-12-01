@@ -12,26 +12,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 
-class VertexArray {
-  public:
-    VertexArray() {
-      GL_CALL(glGenVertexArrays(1, &_name));
-    }
-
-    ~VertexArray() {
-      GL_CALL(glDeleteVertexArrays(1, &_name));
-    }
-
-    void bind() {
-      GL_CALL(glBindVertexArray(_name));
-    }
-
-  private:
-    GLuint _name;
-};
-
-
-void set_vertex_data(GLuint vbo, GLuint program) {
+void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
 
   float scale = 1.f;
   #define MAKE3D(x, y, z) x * scale * 0.5f, y * scale * 0.5f, z * scale * 0.5f
@@ -129,25 +110,19 @@ void set_vertex_data(GLuint vbo, GLuint program) {
 
   #undef MAKE3D
 
-  GL_CALL(glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(GLfloat), vertex_data.data(), GL_STATIC_DRAW));
+  buffer.data(vertex_data, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
 
-  GLint position = glGetAttribLocation(program, "position");
-  GLint texcoord = glGetAttribLocation(program, "texcoord_in");
-  GLint normal = glGetAttribLocation(program, "normal_in");
+  gl::attrib position (program, "position");
+  gl::attrib texcoord (program, "texcoord_in");
+  gl::attrib normal (program, "normal_in");
 
-  std::printf("position: %d\ntexcoord: %d\nnormal: %d\n", position, texcoord, normal);
+  vao.pointer(buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  vao.pointer(buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
+  vao.pointer(buffer, normal, 3, GL_FLOAT, GL_FALSE, 0, 26 * 5 * sizeof(GLfloat));
 
-  size_t offset = 0;
-  GL_CALL(glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 0, (void*)offset));
-  offset += (26 * 3) * sizeof(GLfloat);
-  GL_CALL(glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)offset));
-  offset += (26 * 2) * sizeof(GLfloat);
-  GL_CALL(glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, (void*)offset));
-
-  GL_CALL(glEnableVertexAttribArray(position));
-  GL_CALL(glEnableVertexAttribArray(texcoord));
-  GL_CALL(glEnableVertexAttribArray(normal));
-
+  vao.enable(position);
+  vao.enable(texcoord);
+  vao.enable(normal);
 
 }
 
@@ -205,17 +180,11 @@ int main(int argc, const char* const argv[]) {
     ));
 
 
-    VertexArray vao;
-    vao.bind();
+    gl::VertexArray vao;
+    gl::Buffer buffer;
 
-
-    GLuint vbo;
-    GL_CALL(glGenBuffers(1, &vbo));
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    set_vertex_data(vbo, program.name());
-
-
-
+    set_vertex_data(buffer, vao, program);
+    
     // Set up texture
     //
     //
@@ -303,7 +272,7 @@ int main(int argc, const char* const argv[]) {
         glm::value_ptr(modelview_matrix)
       ));
 
-      GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 26));
+      vao.draw(GL_TRIANGLE_STRIP, 26);
       app.update();
     }
 
