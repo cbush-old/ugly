@@ -27,7 +27,7 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
 
 
   public:
-    virtual ~Buffer();
+    ~Buffer();
     Buffer(Buffer const&) = delete;
     Buffer& operator=(Buffer const&) = delete;
 

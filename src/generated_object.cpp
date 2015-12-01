@@ -12,7 +12,10 @@ GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject()
 }
 
 template<glGenFunc GenFunc, glDeleteFunc DeleteFunc>
-GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject(GLuint name): _name(name), _owner(false) {}
+GeneratedObject<GenFunc, DeleteFunc>::GeneratedObject(GLuint name)
+  : _name(name)
+  , _owner(false)
+  {}
 
 
 template<glGenFunc GenFunc, glDeleteFunc DeleteFunc>

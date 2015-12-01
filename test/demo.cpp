@@ -129,8 +129,6 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const
 
 int main(int argc, const char* const argv[]) {
 
-  GLuint texture;
-
   try {
 
     glfwApp app;
@@ -159,9 +157,9 @@ int main(int argc, const char* const argv[]) {
     shininess.set(20.f);
     strength.set(200.f);
 
-    auto modelview = program.uniform_location("modelview");
-    auto normal_matrix = program.uniform_location("normal_matrix");
-    auto projection = program.uniform_location("projection");
+    gl::uniform_mat4 modelview (program, program.uniform_location("modelview"));
+    gl::uniform_mat4 normal_matrix (program, program.uniform_location("normal_matrix"));
+    gl::uniform_mat4 projection (program, program.uniform_location("projection"));
 
     glm::mat4 projection_matrix {
       glm::perspective<GLfloat>(
@@ -172,23 +170,17 @@ int main(int argc, const char* const argv[]) {
       )
     };
 
-    GL_CALL(glUniformMatrix4fv(
-      projection,
-      1,
-      GL_FALSE,
-      glm::value_ptr(projection_matrix)
-    ));
+    projection.set(glm::value_ptr(projection_matrix));
 
 
     gl::VertexArray vao;
     gl::Buffer buffer;
-
     set_vertex_data(buffer, vao, program);
     
     // Set up texture
     //
     //
-    int tw = 512;
+    int tw = 16;
     std::vector<uint32_t> pixels (tw * tw);
     unsigned check_size = 64;
     for (size_t i = 0; i < pixels.size(); ++i) {
@@ -196,33 +188,19 @@ int main(int argc, const char* const argv[]) {
       c = (((i / tw) / check_size) & 1) ? (c ? 0 : 0xff) : c;
       c >>= 1;
       c += 0x30;
+      pixels[i] = uint32_t(i << 9);
 
-      pixels[i] =
-        i << 9;/*
-        (c << 24) |
-        (c << 16) |
-        (c << 8) |
-        0xff;*/
     }
-    GL_CALL(glGenTextures(1, &texture));
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture));
+    
+    gl::Texture2D texture;
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-    GL_CALL(glTexImage2D(
-      GL_TEXTURE_2D, 
-      0, 
-      GL_RGBA, 
-      tw,
-      tw,
-      0,
-      GL_RGBA,
-      GL_UNSIGNED_INT_8_8_8_8, 
-      (const GLvoid*)pixels.data()
-    ));
-
-
+    gl::ImageDesc2D desc (tw, tw, pixels.data());
+    texture.image(0, desc);
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
 
     // Background color
     GL_CALL(glClearColor(0.5f, 0.2f, 0.3f, 1.f));
@@ -258,19 +236,9 @@ int main(int argc, const char* const argv[]) {
       modelview_matrix = modelview_matrix * rotation;
 
 
-      GL_CALL(glUniformMatrix4fv(
-        normal_matrix,
-        1,
-        GL_FALSE,
-        glm::value_ptr(rotation)
-      ));
+      normal_matrix.set(glm::value_ptr(rotation));
 
-      GL_CALL(glUniformMatrix4fv(
-        modelview,
-        1,
-        GL_FALSE,
-        glm::value_ptr(modelview_matrix)
-      ));
+      modelview.set(glm::value_ptr(modelview_matrix));
 
       vao.draw(GL_TRIANGLE_STRIP, 26);
       app.update();
@@ -279,7 +247,5 @@ int main(int argc, const char* const argv[]) {
   } catch(gl::exception const& e) {
     std::cout << e.what() << std::endl;
   }
-
-  GL_CALL(glDeleteTextures(1, &texture));
 
 }
