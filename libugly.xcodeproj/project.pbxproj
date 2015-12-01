@@ -92,6 +92,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0B126F631C0D582C00F96CA0 /* geo.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = geo.glsl; sourceTree = "<group>"; };
+		0B126F641C0D587500F96CA0 /* tess_eval.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tess_eval.glsl; sourceTree = "<group>"; };
+		0B126F651C0D588A00F96CA0 /* tess_control.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tess_control.glsl; sourceTree = "<group>"; };
 		0B4EB7EE1C0788D40086BDD9 /* buffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = buffer.cpp; sourceTree = "<group>"; };
 		0B4EB7F01C0788D40086BDD9 /* context.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = context.cpp; sourceTree = "<group>"; };
 		0B4EB7F21C0788D40086BDD9 /* enum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = enum.cpp; sourceTree = "<group>"; };
@@ -289,7 +292,10 @@
 			isa = PBXGroup;
 			children = (
 				0B4EB8301C0788FE0086BDD9 /* frag.glsl */,
+				0B126F631C0D582C00F96CA0 /* geo.glsl */,
 				0B4EB8311C0788FE0086BDD9 /* vert.glsl */,
+				0B126F641C0D587500F96CA0 /* tess_eval.glsl */,
+				0B126F651C0D588A00F96CA0 /* tess_control.glsl */,
 			);
 			path = demo;
 			sourceTree = "<group>";

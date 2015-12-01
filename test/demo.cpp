@@ -15,99 +15,91 @@
 void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
 
   float scale = 1.f;
+  float t = 1.f;
   #define MAKE3D(x, y, z) x * scale * 0.5f, y * scale * 0.5f, z * scale * 0.5f
+
   std::vector<GLfloat> vertex_data {
-    // Front face
-    MAKE3D(-1, -1, +1),
-    MAKE3D(+1, -1, +1),
-    MAKE3D(-1, +1, +1),
-    MAKE3D(+1, +1, +1),
+
+    // Left face
+    MAKE3D(+1, -1, -1), // LTB
+    MAKE3D(+1, +1, -1), // LBB
+    MAKE3D(+1, +1, +1), // LBF
+    MAKE3D(+1, -1, +1), // LTF
+
+    // Bottom Face
+    MAKE3D(+1, +1, +1), // LBF
+    MAKE3D(+1, +1, -1), // LBB
+    MAKE3D(-1, +1, -1), // RBB
+    MAKE3D(-1, +1, +1), // RBF
 
     // Right face
-    MAKE3D(+1, +1, +1),
-    MAKE3D(+1, -1, +1),
-    MAKE3D(+1, +1, -1),
-    MAKE3D(+1, -1, -1),
-    
-    // Back face
-    MAKE3D(+1, -1, -1),
-    MAKE3D(-1, -1, -1),
-    MAKE3D(+1, +1, -1),
-    MAKE3D(-1, +1, -1),
-    
-    // Left face
-    MAKE3D(-1, +1, -1),
-    MAKE3D(-1, -1, -1),
-    MAKE3D(-1, +1, +1),
-    MAKE3D(-1, -1, +1),
-    
-    // Bottom face
-    MAKE3D(-1, -1, +1),
-    MAKE3D(-1, -1, -1),
-    MAKE3D(+1, -1, +1),
-    MAKE3D(+1, -1, -1),
-    
-    // Move to top
-    MAKE3D(+1, -1, -1),
-    MAKE3D(-1, +1, +1),
+    MAKE3D(-1, -1, +1), // RTF
+    MAKE3D(-1, +1, +1), // RBF
+    MAKE3D(-1, +1, -1), // RBB
+    MAKE3D(-1, -1, -1), // RTB
 
-    // Top Face
-    MAKE3D(-1, +1, +1),
-    MAKE3D(+1, +1, +1),
-    MAKE3D(-1, +1, -1),
-    MAKE3D(+1, +1, -1),
-
-    // Front face
-    0,0, 1,0, 0,1, 1,1,
-    // Right face
-    0,1, 0,0, 1,1, 1,0,
-    // Back face
-    0,0, 1,0, 0,1, 1,1,
-    // Left face
-    0,1, 0,0, 1,1, 1,0,
-    // Bottom face
-    0,1, 0,0, 1,1, 1,0,
-    // Move to top
-    1,0, 0,0,
     // Top face
-    0,0, 1,0, 0,1, 1,1,
+    MAKE3D(+1, -1, -1), // LTB
+    MAKE3D(+1, -1, +1), // LTF
+    MAKE3D(-1, -1, +1), // RTF
+    MAKE3D(-1, -1, -1), // RTB
+
+    // Back face
+    MAKE3D(-1, -1, -1), // RTB
+    MAKE3D(-1, +1, -1), // RBB
+    MAKE3D(+1, +1, -1), // LBB
+    MAKE3D(+1, -1, -1), // LTB
+
+    // Front face
+    MAKE3D(+1, -1, +1), // LTF
+    MAKE3D(+1, +1, +1), // LBF
+    MAKE3D(-1, +1, +1), // RBF
+    MAKE3D(-1, -1, +1), // RTF
+
+    0, 0, 0, t, t, t, t, 0, // Left
+    0, 0, 0, t, t, t, t, 0, // Top
+    0, 0, 0, t, t, t, t, 0, // Right
+    0, 0, 0, t, t, t, t, 0, // Bottom
+    0, 0, 0, t, t, t, t, 0, // Back
+    0, 0, 0, t, t, t, t, 0, // Front
+
+    // Left
+    +0.000000f, -0.333333f, +0.000000f, // LTB
+    -0.333333f, -0.333333f, +0.333333f, // LTF
+    +0.000000f, +0.000000f, -0.333333f, // LBB
+    -0.333333f, +0.000000f, +0.000000f, // LBF
+
+    // Bottom
+    -0.333333f, +0.000000f, +0.000000f, // LBF
+    +0.000000f, +0.000000f, -0.333333f, // LBB
+    +0.333333f, +0.333333f, -0.333333f, // RBB
+    +0.000000f, +0.333333f, +0.000000f, // RBF
+
+    // Right
+    +0.000000f, +0.000000f, +0.333333f, // RTF
+    +0.000000f, +0.333333f, +0.000000f, // RBF
+    +0.333333f, +0.333333f, -0.333333f, // RBB
+    +0.333333f, +0.000000f, +0.000000f, // RTB
+
+    // Top
+    +0.000000f, -0.333333f, +0.000000f, // LTB
+    -0.333333f, -0.333333f, +0.333333f, // LTF
+    +0.000000f, +0.000000f, +0.333333f, // RTF
+    +0.333333f, +0.000000f, +0.000000f, // RTB
+
+    // Back
+    +0.333333f, +0.000000f, +0.000000f, // RTB
+    +0.333333f, +0.333333f, -0.333333f, // RBB
+    +0.000000f, +0.000000f, -0.333333f, // LBB
+    +0.000000f, -0.333333f, +0.000000f, // LTB
 
     // Front
-    0.0f, 0.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,
-    // Right
-    1.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    // Back
-    0.0f, 0.0f, -1.0f,
-    0.0f, 0.0f, -1.0f,
-    0.0f, 0.0f, -1.0f,
-    0.0f, 0.0f, -1.0f,
-    // Left
-    -1.0f, 0.0f, 0.0f,
-    -1.0f, 0.0f, 0.0f,
-    -1.0f, 0.0f, 0.0f,
-    -1.0f, 0.0f, 0.0f,
-    // Bottom
-    0.0f, -1.0f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    // To top
-    0.0f, -1.0f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    // Top
-    0.0f, +1.0f, 0.0f,
-    0.0f, +1.0f, 0.0f,
-    0.0f, +1.0f, 0.0f,
-    0.0f, +1.0f, 0.0f,
+    -0.333333f, -0.333333f, +0.333333f, // LTF
+    -0.333333f, +0.000000f, +0.000000f, // LBF
+    +0.000000f, +0.333333f, +0.000000f, // RBF
+    +0.000000f, +0.000000f, +0.333333f, // RTF
 
   };
-
   #undef MAKE3D
 
   buffer.data(vertex_data, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
@@ -116,9 +108,10 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const
   gl::attrib texcoord (program, "texcoord_in");
   gl::attrib normal (program, "normal_in");
 
+  GL_CALL(glPatchParameteri(GL_PATCH_VERTICES, 4));
   vao.pointer(buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  vao.pointer(buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
-  vao.pointer(buffer, normal, 3, GL_FLOAT, GL_FALSE, 0, 26 * 5 * sizeof(GLfloat));
+  vao.pointer(buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 24 * 3 * sizeof(GLfloat));
+  vao.pointer(buffer, normal, 3, GL_FLOAT, GL_FALSE, 0, (24 * 3 + 8 * 6) * sizeof(GLfloat));
 
   vao.enable(position);
   vao.enable(texcoord);
@@ -142,6 +135,9 @@ int main(int argc, const char* const argv[]) {
     gl::Program program (
       context,
       gl::VertexShader("shaders/demo/vert.glsl"),
+      gl::TessControlShader("shaders/demo/tess_control.glsl"),
+      gl::TessEvaluationShader("shaders/demo/tess_eval.glsl"),
+      gl::GeometryShader("shaders/demo/geo.glsl"),
       gl::FragmentShader("shaders/demo/frag.glsl")
     );
 
@@ -152,8 +148,8 @@ int main(int argc, const char* const argv[]) {
     gl::uniform<float> shininess (program, program.uniform_location("shininess"));
     gl::uniform<float> strength (program, program.uniform_location("strength"));
 
-    ambient.set(0.2f, 0.2f, 0.2f, 1.f);
-    light_color.set(1.f, 1.f, 1.f, 1.f);
+    ambient.set(0.5f, 0.5f, 0.5f, 1.f);
+    light_color.set(0.5f, 1.f, 1.f, 1.f);
     shininess.set(20.f);
     strength.set(200.f);
 
@@ -182,14 +178,8 @@ int main(int argc, const char* const argv[]) {
     //
     int tw = 16;
     std::vector<uint32_t> pixels (tw * tw);
-    unsigned check_size = 64;
     for (size_t i = 0; i < pixels.size(); ++i) {
-      uint8_t c = (((i % tw) / check_size) & 1) * 0xff;
-      c = (((i / tw) / check_size) & 1) ? (c ? 0 : 0xff) : c;
-      c >>= 1;
-      c += 0x30;
-      pixels[i] = uint32_t(i << 9);
-
+      pixels[i] = rand();
     }
     
     gl::Texture2D texture;
@@ -202,13 +192,9 @@ int main(int argc, const char* const argv[]) {
     texture.image(0, desc);
     GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
 
-    // Background color
-    GL_CALL(glClearColor(0.5f, 0.2f, 0.3f, 1.f));
-
-
     // Properties of the displayed object
     float angle = 0.f;
-    glm::vec3 position (0.f, 0.f, -2.5f);
+    glm::vec3 position (0.f, 0.f, -2.0f);
 
     float light_angle = 1.f;
     glm::vec3 direction = glm::rotate(glm::vec3(0.f, 0.f, 1.f), light_angle, glm::vec3(0.f, 1.f, 0.f));
@@ -217,7 +203,14 @@ int main(int argc, const char* const argv[]) {
     glm::vec3 hv = glm::normalize((direction + glm::vec3(0.f, 0.f, 1.f)) / 2.f);
     half_vector.set(hv.x, hv.y, hv.z);
 
+    float tick = 0.f;
     while (!app.done()) {
+      tick += 0.01f;
+      context.clear_color(
+        0.5f + sin(tick) * 0.5f,
+        0.5f + sin(tick + 1.f) * 0.5f,
+        0.5f + sin(tick + 2.f) * 0.5f
+      );
 
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
@@ -240,7 +233,7 @@ int main(int argc, const char* const argv[]) {
 
       modelview.set(glm::value_ptr(modelview_matrix));
 
-      vao.draw(GL_TRIANGLE_STRIP, 26);
+      vao.draw(GL_PATCHES, 24);
       app.update();
     }
 

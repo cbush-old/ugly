@@ -21,28 +21,6 @@ class Buffer;
 class Program;
 class Framebuffer;
 class Texture;
-class Context;
-
-
-// maybe...
-template<GLenum Target>
-class TextureBindingPoint {
-  public:
-    TextureBindingPoint(Context& owner);
-
-  public:
-    void bind(Texture&);
-    void unbind();
-  
-  public:
-    void storage(GLsizei levels, GLenum internalFormat, GLsizei width);
-    void storage(GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height);
-    void storage(GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth);
-
-  private:
-    Context& _context;
-
-};
 
 
 
@@ -96,6 +74,7 @@ class Context {
      * @brief set the color buffer value
      **/
     void clear_color(color const&);
+    void clear_color(float r, float g, float b, float a = 1.f);
     void color_mask(color const&);
     void color_mask(GLuint buf, color const&);
 

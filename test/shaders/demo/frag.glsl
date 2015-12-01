@@ -7,32 +7,30 @@ uniform sampler2D texture_unit;
 uniform vec4 ambient;
 uniform vec4 light_color;
 uniform vec3 light_direction;
-uniform vec3 half_vector;
 uniform float shininess;
 uniform float strength;
 
-in vec2 texcoord;
-in vec3 normal;
-in vec3 pos;
+in vec2 texcoord4;
+in vec4 pos;
+in vec3 surfacenormal;
+uniform vec3 hv;
 
 void main() {
+  float distance = max(0.0, 1.0 - length(pos) / 500.0);
+  vec4 texel = texture(texture_unit, texcoord4);
+  texel.a = 1.0;
 
-  float diffuse = max(0.0, dot(normal, light_direction));
-  float specular = max(0.0, dot(normal, half_vector));
+  float diffuse = max(0.0, dot(surfacenormal, light_direction));
+  float fog = max(0.0, min(1.0, length(pos) / 1500.0));
 
-  if (diffuse == 0.0) {
-    specular = 0.0;
-  } else {
-    specular = pow(specular, shininess);
-  }
+  const vec4 reflect_color = vec4(0.9);
 
-  vec3 scattered = ambient.rgb + light_color.rgb * diffuse;
-  vec3 reflected = light_color.rgb * specular * strength;
-
-  vec3 mess = noise3(reflect(pos, normal));
-  vec3 rgb = min(mess + texture(texture_unit, texcoord).rgb * scattered + reflected, vec3(1.0));
-  vec4 texel = vec4(rgb, 1.f);
-
-  fragColor = texel;
-
+  float reflection = max(0.0, dot(vec3(0.0, 0.0, 1.0), surfacenormal));
+  fragColor = max(vec4(0.0), min(
+    mix(texel * (
+        min(vec4(1.0), vec4(ambient.rgb * min(1.0, diffuse), 1.0))
+      ) + reflect_color * pow(reflection, shininess),
+      light_color,
+      fog)
+    , vec4(1.0)));
 }

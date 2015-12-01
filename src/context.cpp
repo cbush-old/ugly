@@ -184,6 +184,10 @@ void Context::clear_color(color const& color) {
   GL_CALL(glClearColor(color.r, color.g, color.b, color.a));
 }
 
+void Context::clear_color(float r, float g, float b, float a /* = 1.f */) {
+  GL_CALL(glClearColor(r, g, b, a));
+}
+
 
 Context::Context() {}
 

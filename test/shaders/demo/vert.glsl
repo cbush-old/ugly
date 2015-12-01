@@ -8,19 +8,12 @@ in vec4 position;
 in vec2 texcoord_in;
 in vec4 normal_in;
 
-out vec3 pos;
-out vec2 texcoord;
-out vec3 normal;
+out vec2 vs_texcoord;
+out vec4 vs_normal;
 
 void main() {
-
-  vec4 tmp = modelview * position;
-
-  pos = (modelview * position).xyz;
-
-  pos.xy = tmp.xy / length(tmp.xyz);
-  texcoord = texcoord_in;
-  normal = normalize(normal_matrix * normal_in).xyz;
-  gl_Position = projection * vec4(pos, 1.0);
-
+  vs_texcoord = texcoord_in;
+  vs_normal = normal_in;
+  gl_Position = position;
 }
+
