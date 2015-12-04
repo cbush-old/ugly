@@ -148,10 +148,10 @@ int main(int argc, const char* const argv[]) {
     gl::uniform<float> shininess (program, program.uniform_location("shininess"));
     gl::uniform<float> strength (program, program.uniform_location("strength"));
 
-    ambient.set(0.5f, 0.5f, 0.5f, 1.f);
+    ambient.set(0.2f, 0.2f, 0.2f, 1.f);
     light_color.set(0.5f, 1.f, 1.f, 1.f);
     shininess.set(20.f);
-    strength.set(200.f);
+    strength.set(20.f);
 
     gl::uniform_mat4 modelview (program, program.uniform_location("modelview"));
     gl::uniform_mat4 normal_matrix (program, program.uniform_location("normal_matrix"));
@@ -179,19 +179,20 @@ int main(int argc, const char* const argv[]) {
     int tw = 16;
     std::vector<uint32_t> pixels (tw * tw);
     for (size_t i = 0; i < pixels.size(); ++i) {
-      pixels[i] = rand();
+      pixels[i] = 0xffffffff; //rand();
     }
-    
-    gl::Texture2D texture;
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+
+    gl::TextureParams params {
+      { GL_TEXTURE_MIN_FILTER, GL_LINEAR },
+      { GL_TEXTURE_MAG_FILTER, GL_LINEAR },
+      { GL_TEXTURE_WRAP_S, GL_REPEAT },
+      { GL_TEXTURE_WRAP_T, GL_REPEAT },
+    };
+
+    gl::Texture2D texture (params);
     gl::ImageDesc2D desc (tw, tw, pixels.data());
     texture.image(0, desc);
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
-
+  
     // Properties of the displayed object
     float angle = 0.f;
     glm::vec3 position (0.f, 0.f, -2.0f);
@@ -221,17 +222,19 @@ int main(int argc, const char* const argv[]) {
         )
       };
 
-      angle += 0.015f;
+      angle += 0.025f;
       glm::mat4 rotation;
-      rotation = glm::rotate(rotation, angle, glm::vec3(1.f, 0.f, 0.f));
-      rotation = glm::rotate(rotation, angle * 0.5f, glm::vec3(0.f, 0.f, 1.f));
-      rotation = glm::rotate(rotation, angle, glm::vec3(0.f, 1.f, 0.f));
+      rotation = glm::rotate(rotation, angle, glm::vec3(0.5f, 0.5f, 0.f));
+//      rotation = glm::rotate(rotation, angle * 0.5f, glm::vec3(0.f, 0.f, 1.f));
+
       modelview_matrix = modelview_matrix * rotation;
 
 
       normal_matrix.set(glm::value_ptr(rotation));
 
       modelview.set(glm::value_ptr(modelview_matrix));
+
+      GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
 
       vao.draw(GL_PATCHES, 24);
       app.update();

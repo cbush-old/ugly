@@ -60,6 +60,8 @@
 		0B4EB8AA1C079B920086BDD9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB88D1C0791DB0086BDD9 /* CoreVideo.framework */; };
 		0B4EB8AB1C079B990086BDD9 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4EB88F1C0791E10086BDD9 /* IOKit.framework */; };
 		0B4EB8AD1C07B0620086BDD9 /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB8AC1C07B0620086BDD9 /* demo.cpp */; };
+		0BA992021C113FF5007F55BE /* texture_unit.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BA992011C113FF5007F55BE /* texture_unit.h */; };
+		0BA992041C114018007F55BE /* texture_unit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BA992031C114018007F55BE /* texture_unit.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +157,8 @@
 		0B4EB89C1C07954E0086BDD9 /* ugly_tests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ugly_tests.mm; sourceTree = "<group>"; };
 		0B4EB8A51C079B4C0086BDD9 /* libugly.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libugly.xcodeproj; sourceTree = "<group>"; };
 		0B4EB8AC1C07B0620086BDD9 /* demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = demo.cpp; sourceTree = "<group>"; };
+		0BA992011C113FF5007F55BE /* texture_unit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_unit.h; sourceTree = "<group>"; };
+		0BA992031C114018007F55BE /* texture_unit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_unit.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +224,7 @@
 				0B4EB7F41C0788D40086BDD9 /* framebuffer.cpp */,
 				0B4EB7F61C0788D40086BDD9 /* generated_object.cpp */,
 				0B4EB7F81C0788D40086BDD9 /* pipeline.cpp */,
+				0BA992031C114018007F55BE /* texture_unit.cpp */,
 				0B4EB7FA1C0788D40086BDD9 /* program.cpp */,
 				0B4EB7FC1C0788D40086BDD9 /* query.cpp */,
 				0B4EB7FE1C0788D40086BDD9 /* renderbuffer.cpp */,
@@ -254,6 +259,7 @@
 				0B4EB81E1C0788F00086BDD9 /* shader.h */,
 				0B4EB81F1C0788F00086BDD9 /* texture.h */,
 				0B4EB8201C0788F00086BDD9 /* transform_feedback.h */,
+				0BA992011C113FF5007F55BE /* texture_unit.h */,
 				0B4EB8211C0788F00086BDD9 /* ugly.h */,
 				0B4EB8221C0788F00086BDD9 /* uniform.h */,
 				0B4EB8231C0788F00086BDD9 /* vertex_array.h */,
@@ -351,6 +357,7 @@
 				0B4EB8791C078E280086BDD9 /* pipeline.h in Headers */,
 				0B4EB87A1C078E280086BDD9 /* program.h in Headers */,
 				0B4EB87B1C078E280086BDD9 /* query.h in Headers */,
+				0BA992021C113FF5007F55BE /* texture_unit.h in Headers */,
 				0B4EB87C1C078E280086BDD9 /* renderbuffer.h in Headers */,
 				0B4EB87D1C078E280086BDD9 /* sampler.h in Headers */,
 				0B4EB87E1C078E280086BDD9 /* shader.h in Headers */,
@@ -501,6 +508,7 @@
 				0B4EB8691C078DAB0086BDD9 /* texture.cpp in Sources */,
 				0B4EB86A1C078DAB0086BDD9 /* transform_feedback.cpp in Sources */,
 				0B4EB86B1C078DAB0086BDD9 /* uniform.cpp in Sources */,
+				0BA992041C114018007F55BE /* texture_unit.cpp in Sources */,
 				0B4EB86C1C078DAB0086BDD9 /* vertex_array.cpp in Sources */,
 				0B4EB86D1C078DAB0086BDD9 /* viewport.cpp in Sources */,
 			);

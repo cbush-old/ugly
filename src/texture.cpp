@@ -79,6 +79,28 @@ namespace gl {
 #define _bind_target _target
 
 
+Texture::Texture(GLenum target, TextureParams const& params, GLenum internal_format)
+  : _target(target)
+  , _internal_format(internal_format)
+{
+  TextureBindguard guard(_target, name());
+  for (auto const& kv : params) {
+    GLenum pname = kv.first;
+    auto const& var = kv.second;
+    switch (var.type) {
+      case ParamVariant::I:
+        GL_CALL(glTexParameteri(_target, pname, var.i))
+        break;
+      case ParamVariant::F:
+        GL_CALL(glTexParameterf(_target, pname, var.f))
+        break;
+      case ParamVariant::FV:
+        GL_CALL(glTexParameterfv(_target, pname, var.f4))
+        break;
+    }
+  }
+}
+
 Texture::Texture(GLenum target, GLenum internal_format)
   : _target(target)
   , _internal_format(internal_format)
@@ -93,12 +115,36 @@ Texture::Texture(GLuint name, GLenum target, GLenum internal_format)
 Texture::~Texture() {}
 
 
+void Texture::parameter(GLenum pname, float value) {
+  TextureBindguard guard(_target, name());
+  GL_CALL(glTexParameterf(_target, pname, value));
+}
+
+void Texture::parameter(GLenum pname, int value) {
+  TextureBindguard guard(_target, name());
+  GL_CALL(glTexParameteri(_target, pname, value));
+}
+
+void Texture::parameter(GLenum pname, GLfloat const* values) {
+  TextureBindguard guard(_target, name());
+  GL_CALL(glTexParameterfv(_target, pname, values));
+}
+
+void Texture::parameter(GLenum pname, GLint const* values) {
+  TextureBindguard guard(_target, name());
+  GL_CALL(glTexParameteriv(_target, pname, values));
+}
+
+
 
 
 Texture1D::Texture1D(GLenum internal_format /* = GL_RGBA */)
   : Texture(GL_TEXTURE_1D, internal_format)
   {}
 
+Texture1D::Texture1D(TextureParams const& params, GLenum internal_format /* = GL_RGBA */)
+  : Texture(GL_TEXTURE_1D, params, internal_format)
+  {}
 
 void Texture1D::image(int level, ImageDesc1D const& desc) {
   IMPLEMENT_IMAGE(1D, DIMENSIONS1);
@@ -131,6 +177,9 @@ Texture2D::Texture2D(GLenum internal_format /* = GL_RGBA */)
   : Texture(GL_TEXTURE_2D, internal_format)
   {}
 
+Texture2D::Texture2D(TextureParams const& params, GLenum internal_format /* = GL_RGBA */)
+  : Texture(GL_TEXTURE_2D, params, internal_format)
+  {}
 
 void Texture2D::image(int level, ImageDesc2D const& desc) {
   IMPLEMENT_IMAGE(2D, DIMENSIONS2);
@@ -164,6 +213,10 @@ void Texture2D::subcopy(int level, unsigned xoffset, unsigned yoffset,
 
 Texture3D::Texture3D(GLenum internal_format /* = GL_RGBA */)
   : Texture(GL_TEXTURE_3D, internal_format)
+  {}
+  
+Texture3D::Texture3D(TextureParams const& params, GLenum internal_format /* = GL_RGBA */)
+  : Texture(GL_TEXTURE_3D, params, internal_format)
   {}
 
 
@@ -223,8 +276,8 @@ void Cubemap::Face::subcopy(int level, unsigned xoffset, unsigned yoffset,
 }
 
 
-Cubemap::Cubemap(GLenum internal_format /* = GL_RGBA */)
-  : Texture(GL_TEXTURE_CUBE_MAP, internal_format)
+Cubemap::Cubemap(TextureParams const& params, GLenum internal_format /* = GL_RGBA */)
+  : Texture(GL_TEXTURE_CUBE_MAP, params, internal_format)
   , _faces {
     { name(), GL_TEXTURE_CUBE_MAP_POSITIVE_X, internal_format },
     { name(), GL_TEXTURE_CUBE_MAP_POSITIVE_Y, internal_format },
@@ -234,6 +287,11 @@ Cubemap::Cubemap(GLenum internal_format /* = GL_RGBA */)
     { name(), GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, internal_format }
   }
   {}
+
+Cubemap::Cubemap(GLenum internal_format /* = GL_RGBA */)
+  : Cubemap(TextureParams(), internal_format)
+  {}
+
 
 Cubemap::Face& Cubemap::operator[](Cubemap::FaceIndex i) {
   GL_BOUNDS_CHECK(i, 6);

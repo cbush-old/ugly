@@ -8,7 +8,7 @@ out vec2[] tc_texcoord;
 out vec4[] tc_normal;
 
 void main(void) {
-  float amount = 8;
+  float amount = 18;
   gl_TessLevelInner[0] = amount;
   gl_TessLevelInner[1] = amount;
   gl_TessLevelOuter[0] = amount;

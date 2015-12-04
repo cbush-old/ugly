@@ -49,10 +49,43 @@ struct ImageDesc3D : public ImageDesc2D {
 };
 
 
+struct ParamVariant {
+  ParamVariant(GLint i): i(i), type(I) {}
+  ParamVariant(GLfloat f): f(f), type(F) {}
+  ParamVariant(GLfloat const* inf4): type(FV) {
+    std::memcpy(f4, inf4, 4);
+  }
+  
+  ParamVariant(ParamVariant const& o): type(o.type) {
+    std::memcpy(f4, o.f4, 4);
+  }
+  
+  ParamVariant& operator=(ParamVariant const& o) {
+    type = o.type;
+    std::memcpy(f4, o.f4, 4);
+    return *this;
+  }
+
+  union {
+    GLint i;
+    GLfloat f;
+    GLfloat f4[4];
+  };
+
+  enum Type {
+    I, F, FV
+  } type;
+
+};
+
+
+using TextureParams = std::map<GLenum, ParamVariant>;
+
 
 
 class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
   protected:
+    Texture(GLenum target, TextureParams const& params, GLenum internal_format);
     Texture(GLenum target, GLenum internal_format);
     Texture(GLuint name, GLenum target, GLenum internal_format);
 
@@ -64,9 +97,9 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
   public:
     void parameter(GLenum pname, float);
     void parameter(GLenum pname, int);
-    void parameter(GLenum pname, float const*);
-    void parameter(GLenum pname, int const*);
-  
+    void parameter(GLenum pname, GLfloat const*);
+    void parameter(GLenum pname, GLint const*);
+
   protected:
     GLenum const _target;
     GLenum _internal_format;
@@ -78,6 +111,7 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
 class Texture1D : public Texture {
   public:
     Texture1D(GLenum internal_format = GL_RGBA);
+    Texture1D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
     void image(int level, ImageDesc1D const&);
@@ -101,7 +135,7 @@ class Texture1D : public Texture {
 class Texture2D : public Texture {
   public:
     Texture2D(GLenum internal_format = GL_RGBA);
-
+    Texture2D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
     void image(int level, ImageDesc2D const&);
@@ -125,6 +159,7 @@ class Texture2D : public Texture {
 class Texture3D : public Texture {
   public:
     Texture3D(GLenum internal_format = GL_RGBA);
+    Texture3D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
     void image(int level, ImageDesc3D const&);
@@ -177,7 +212,8 @@ class Cubemap : Texture {
 
   public:
     Cubemap(GLenum internal_format = GL_RGBA);
-  
+    Cubemap(TextureParams const& params, GLenum internal_format = GL_RGBA);
+
   public:
     Face& operator[](FaceIndex i);
     Face const& operator[](FaceIndex i) const;

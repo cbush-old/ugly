@@ -46,12 +46,9 @@ void main() {
 
   vec4 nrml = te_normal;
 
-  vec2 p = vec2(1.0 - abs(gl_TessCoord.x - 0.5) / 0.5, 1.0 - abs(gl_TessCoord.y - 0.5) / 0.5);
-  float pv = p.x * p.y * 0.5;
-  position += nrml * pv;
 
   vec4 tmp = modelview * position;
-  const float fisheye_amount = 1.0;
+  const float fisheye_amount = 0.0;
   tmp.xy = tmp.xy * (1.0 - fisheye_amount) + (tmp.xy / length(tmp.xyz)) * fisheye_amount;
   gl_Position = projection * tmp;
 
