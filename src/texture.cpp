@@ -135,7 +135,9 @@ void Texture::parameter(GLenum pname, GLint const* values) {
   GL_CALL(glTexParameteriv(_target, pname, values));
 }
 
-
+GLenum Texture::target() const {
+  return _target;
+}
 
 
 Texture1D::Texture1D(GLenum internal_format /* = GL_RGBA */)

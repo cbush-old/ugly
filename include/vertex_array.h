@@ -11,6 +11,7 @@ namespace gl {
 
 class Program;
 class Buffer;
+class TextureUnit;
 
 class attrib {
   public:

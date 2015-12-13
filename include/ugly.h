@@ -6,6 +6,7 @@
 #include "shader.h"
 #include "uniform.h"
 #include "texture.h"
+#include "texture_unit.h"
 #include "enum.h"
 #include "buffer.h"
 #include "vertex_array.h"

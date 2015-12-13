@@ -147,6 +147,7 @@ int main(int argc, const char* const argv[]) {
     gl::uniform3<float> half_vector (program, program.uniform_location("half_vector"));
     gl::uniform<float> shininess (program, program.uniform_location("shininess"));
     gl::uniform<float> strength (program, program.uniform_location("strength"));
+    gl::uniform<int> sampler (program, program.uniform_location("texture_unit"));
 
     ambient.set(0.2f, 0.2f, 0.2f, 1.f);
     light_color.set(0.5f, 1.f, 1.f, 1.f);
@@ -179,7 +180,7 @@ int main(int argc, const char* const argv[]) {
     int tw = 16;
     std::vector<uint32_t> pixels (tw * tw);
     for (size_t i = 0; i < pixels.size(); ++i) {
-      pixels[i] = 0xffffffff; //rand();
+      pixels[i] = rand();
     }
 
     gl::TextureParams params {
@@ -188,6 +189,7 @@ int main(int argc, const char* const argv[]) {
       { GL_TEXTURE_WRAP_S, GL_REPEAT },
       { GL_TEXTURE_WRAP_T, GL_REPEAT },
     };
+
 
     gl::Texture2D texture (params);
     gl::ImageDesc2D desc (tw, tw, pixels.data());
@@ -205,6 +207,10 @@ int main(int argc, const char* const argv[]) {
     half_vector.set(hv.x, hv.y, hv.z);
 
     float tick = 0.f;
+
+    gl::TextureUnit unit;
+    unit.add(texture);
+
     while (!app.done()) {
       tick += 0.01f;
       context.clear_color(
@@ -225,7 +231,7 @@ int main(int argc, const char* const argv[]) {
       angle += 0.025f;
       glm::mat4 rotation;
       rotation = glm::rotate(rotation, angle, glm::vec3(0.5f, 0.5f, 0.f));
-//      rotation = glm::rotate(rotation, angle * 0.5f, glm::vec3(0.f, 0.f, 1.f));
+      rotation = glm::rotate(rotation, angle * 0.5f, glm::vec3(0.f, 0.f, 1.f));
 
       modelview_matrix = modelview_matrix * rotation;
 
@@ -234,8 +240,7 @@ int main(int argc, const char* const argv[]) {
 
       modelview.set(glm::value_ptr(modelview_matrix));
 
-      GL_CALL(glBindTexture(GL_TEXTURE_2D, texture.name()));
-
+      sampler.set(unit.unit());
       vao.draw(GL_PATCHES, 24);
       app.update();
     }

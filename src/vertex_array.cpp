@@ -1,9 +1,9 @@
 #include "vertex_array.h"
 #include "program.h"
 #include "buffer.h"
+#include "texture_unit.h"
 
 namespace gl {
-
 
 namespace {
 
@@ -17,7 +17,6 @@ class VertexArrayBindguard {
       GL_CALL_NOTHROW(glBindVertexArray(0));
     }
 };
-
 
 }
 

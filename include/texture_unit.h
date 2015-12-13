@@ -4,18 +4,26 @@
 
 #include "gl_type.h"
 
-
 namespace gl {
 
+class Texture;
 
 class TextureUnit {
+  private:
+    static std::atomic<unsigned> s_unit;
+
   public:
     TextureUnit();
     ~TextureUnit();
   
   public:
-    template<typename TextureType>
-    void enable(TextureType const& texture) const;
+    void add(Texture const& texture);
+  
+  public:
+    unsigned unit() const;
+  
+  private:
+    unsigned _unit;
 
 };
 

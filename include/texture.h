@@ -5,6 +5,7 @@
 #include "generated_object.h"
 
 #include <array>
+#include <memory>
 
 namespace gl {
 
@@ -99,6 +100,9 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
     void parameter(GLenum pname, int);
     void parameter(GLenum pname, GLfloat const*);
     void parameter(GLenum pname, GLint const*);
+  
+  public:
+    GLenum target() const;
 
   protected:
     GLenum const _target;
@@ -220,6 +224,9 @@ class Cubemap : Texture {
 
 };
 
+
+
+using TextureRef = std::shared_ptr<Texture>;
 
 
 

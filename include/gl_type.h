@@ -163,6 +163,16 @@ class Bindguard {
 
 };
 
+
+class TextureUnit;
+
+class ActiveTextureGuard {
+  public:
+    ActiveTextureGuard(TextureUnit const& unit);
+    ~ActiveTextureGuard();
+};
+
+
 using BufferBindguard = Bindguard<glBindBuffer>;
 using TextureBindguard = Bindguard<glBindTexture>;
 
