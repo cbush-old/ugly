@@ -30,8 +30,9 @@ void main() {
   vec4 reflect_color = vec4(reflection);
 
   fragColor = max(vec4(0.0), min(vec4(1.0),
+    ambient +
     texel * (
-      min(vec4(1.0), vec4(ambient.rgb * diffuse, 1.0))
+      min(vec4(1.0), light_color * diffuse)
     )
     +
     reflect_color

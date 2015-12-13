@@ -50,7 +50,7 @@ void main() {
     - abs(gl_TessCoord.x - 0.5)
     - abs(gl_TessCoord.y - 0.5);
 
-  position += center * te_normal * 0.5;
+  position += center * te_normal;
 
   vec4 tmp = modelview * position;
   const float fisheye_amount = 0.0;

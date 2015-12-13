@@ -149,7 +149,7 @@ int main(int argc, const char* const argv[]) {
     gl::uniform<float> strength (program, program.uniform_location("strength"));
     gl::uniform_sampler sampler (program, program.uniform_location("texture_unit"));
 
-    ambient.set(0.5f, 0.5f, 0.0f, 1.f);
+    ambient.set(0.1f, 0.1f, 0.1f, 1.f);
     light_color.set(1.f, 1.f, 1.f, 1.f);
     shininess.set(100.f);
     strength.set(1.f);
@@ -177,10 +177,10 @@ int main(int argc, const char* const argv[]) {
     // Set up texture
     //
     //
-    int tw = 128;
+    int tw = 32;
     std::vector<uint32_t> pixels (tw * tw);
     for (size_t i = 0; i < pixels.size(); ++i) {
-      pixels[i] = rand();
+      pixels[i] = uint32_t((i / (double)(tw * tw)) * 0x7fffffff);
     }
 
     gl::TextureParams params {
