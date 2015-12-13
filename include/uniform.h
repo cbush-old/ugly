@@ -92,6 +92,18 @@ using uniform_mat3x4 = detail::uniform_matrix<3, 4>;
 using uniform_mat4x3 = detail::uniform_matrix<4, 3>;
 
 
+class TextureUnit;
+
+class uniform_sampler : public uniform<int> {
+  public:
+    uniform_sampler(Program const& _program, GLint location);
+
+  public:
+    void use(TextureUnit const&);
+
+};
+
+
 } // namespace gl
 
 #endif

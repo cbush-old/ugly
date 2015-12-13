@@ -144,15 +144,15 @@ int main(int argc, const char* const argv[]) {
     gl::uniform4<float> ambient (program, program.uniform_location("ambient"));
     gl::uniform4<float> light_color (program, program.uniform_location("light_color"));
     gl::uniform3<float> light_direction (program, program.uniform_location("light_direction"));
-    gl::uniform3<float> half_vector (program, program.uniform_location("half_vector"));
+    gl::uniform3<float> half_vector (program, program.uniform_location("hv"));
     gl::uniform<float> shininess (program, program.uniform_location("shininess"));
     gl::uniform<float> strength (program, program.uniform_location("strength"));
-    gl::uniform<int> sampler (program, program.uniform_location("texture_unit"));
+    gl::uniform_sampler sampler (program, program.uniform_location("texture_unit"));
 
-    ambient.set(0.2f, 0.2f, 0.2f, 1.f);
-    light_color.set(0.5f, 1.f, 1.f, 1.f);
-    shininess.set(20.f);
-    strength.set(20.f);
+    ambient.set(0.5f, 0.5f, 0.0f, 1.f);
+    light_color.set(1.f, 1.f, 1.f, 1.f);
+    shininess.set(100.f);
+    strength.set(1.f);
 
     gl::uniform_mat4 modelview (program, program.uniform_location("modelview"));
     gl::uniform_mat4 normal_matrix (program, program.uniform_location("normal_matrix"));
@@ -177,7 +177,7 @@ int main(int argc, const char* const argv[]) {
     // Set up texture
     //
     //
-    int tw = 16;
+    int tw = 128;
     std::vector<uint32_t> pixels (tw * tw);
     for (size_t i = 0; i < pixels.size(); ++i) {
       pixels[i] = rand();
@@ -198,21 +198,26 @@ int main(int argc, const char* const argv[]) {
     // Properties of the displayed object
     float angle = 0.f;
     glm::vec3 position (0.f, 0.f, -2.0f);
-
-    float light_angle = 1.f;
-    glm::vec3 direction = glm::rotate(glm::vec3(0.f, 0.f, 1.f), light_angle, glm::vec3(0.f, 1.f, 0.f));
-    light_direction.set(direction.x, direction.y, direction.z);
-
-    glm::vec3 hv = glm::normalize((direction + glm::vec3(0.f, 0.f, 1.f)) / 2.f);
-    half_vector.set(hv.x, hv.y, hv.z);
-
     float tick = 0.f;
 
     gl::TextureUnit unit;
     unit.add(texture);
 
     while (!app.done()) {
+    
+    
+      static float light_angle = 0.5f;
+      glm::vec3 direction = glm::rotate(glm::vec3(0.f, 0.f, 1.f), light_angle, glm::vec3(0.f, 1.f, 0.f));
+      light_direction.set(direction.x, direction.y, direction.z);
+
+      glm::vec3 hv = glm::normalize(
+        direction + glm::vec3(0.f, 0.f, 1.f)
+      );
+      half_vector.set(hv.x, hv.y, hv.z);
+
+
       tick += 0.01f;
+
       context.clear_color(
         0.5f + sin(tick) * 0.5f,
         0.5f + sin(tick + 1.f) * 0.5f,
@@ -240,7 +245,7 @@ int main(int argc, const char* const argv[]) {
 
       modelview.set(glm::value_ptr(modelview_matrix));
 
-      sampler.set(unit.unit());
+      sampler.use(unit);
       vao.draw(GL_PATCHES, 24);
       app.update();
     }

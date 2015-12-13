@@ -20,20 +20,21 @@ void main() {
   vec4 texel = texture(texture_unit, texcoord4);
   texel.a = 1.0;
 
-  float diffuse = max(0.5, dot(surfacenormal, light_direction));
+  float diffuse = max(0.0, dot(surfacenormal, light_direction));
   diffuse = min(1.0, diffuse);
 
-  float reflection = max(0.0, dot(vec3(0.0, 0.0, 1.0), surfacenormal));
+  float reflection = max(0.0, dot(surfacenormal, hv));
+  reflection = min(1.0, reflection);
   reflection = pow(reflection, shininess) * strength;
   
-  vec4 reflect_color = vec4(0.1) * reflection;
+  vec4 reflect_color = vec4(reflection);
 
-  fragColor = texel;
-  /*max(vec4(0.0), min(vec4(1.0),
-    (texel * (
+  fragColor = max(vec4(0.0), min(vec4(1.0),
+    texel * (
       min(vec4(1.0), vec4(ambient.rgb * diffuse, 1.0))
     )
-    + reflect_color
-  )));*/
+    +
+    reflect_color
+  ));
 
 }

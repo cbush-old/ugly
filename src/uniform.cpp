@@ -3,6 +3,7 @@
 #include "uniform.h"
 #include "gl_type.h"
 #include "program.h"
+#include "texture_unit.h"
 
 #include <functional>
 
@@ -137,6 +138,15 @@ SPECIALIZE(GLuint, ui);
 
 
 
+
+
+
+uniform_sampler::uniform_sampler(Program const& program, GLint location)
+  : uniform<int>(program, location) {}
+
+void uniform_sampler::use(TextureUnit const& unit) {
+  uniform<int>::set(unit.unit());
+}
 
 
 
