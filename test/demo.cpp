@@ -122,6 +122,8 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const
 
 int main(int argc, const char* const argv[]) {
 
+  GLuint rb;
+
   try {
 
     glfwApp app;
@@ -203,16 +205,32 @@ int main(int argc, const char* const argv[]) {
     gl::TextureUnit unit;
     unit.add(texture);
 
-
-
-    gl::Texture2D fb_texture;
+  
+    gl::Texture2D texture2 (params);
+    for (size_t i = 0; i < pixels.size(); ++i) {
+      pixels[i] = 0xff0000ff;
+    }
+    texture2.image(0, desc);
+    gl::TextureUnit unit2;
+    unit2.add(texture2);
+    
+    gl::Texture2D fb_texture (params);
     fb_texture.storage(1, tw, tw);
 
     gl::Framebuffer fb;
     fb.texture(GL_COLOR_ATTACHMENT0, fb_texture);
 
+    GL_CALL(glGenRenderbuffers(1, &rb));
+    GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, rb));
+    GL_CALL(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, tw, tw));
+    {
+      gl::FramebufferBindguard guard (GL_FRAMEBUFFER, fb.name());
+      GL_CALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb));
+    }
+
     gl::TextureUnit fb_unit;
     fb_unit.add(fb_texture);
+
 
     logi("framebuffer status: %s", fb.status_str());
 
@@ -247,26 +265,36 @@ int main(int argc, const char* const argv[]) {
       glm::mat4 rotation;
       rotation = glm::rotate(rotation, angle, glm::vec3(0.5f, 0.5f, 0.f));
       rotation = glm::rotate(rotation, angle * 0.5f, glm::vec3(0.f, 0.f, 1.f));
-
-      modelview_matrix = modelview_matrix * rotation;
-
+      auto rotated_modelview_matrix = modelview_matrix * rotation;
 
       normal_matrix.set(glm::value_ptr(rotation));
+      modelview.set(glm::value_ptr(rotated_modelview_matrix));
 
-      modelview.set(glm::value_ptr(modelview_matrix));
 
-      GL_CALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fb.name()));
+      GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, fb.name()));
       glViewport(0, 0, tw, tw);
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       sampler.use(unit);
       vao.draw(GL_PATCHES, 24);
-      
-      GL_CALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
+
+      GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+      context.clear_color(
+        0.5f + cos(tick) * 0.5f,
+        0.5f + cos(tick + 1.f) * 0.5f,
+        0.5f + cos(tick + 2.f) * 0.5f
+      );
+
       glViewport(0, 0, app.width(), app.height());
+      glm::mat4 rotation2;
+      rotation2 = glm::rotate(rotation2, angle * 0.2f, glm::vec3(0.5f, 0.5f, 0.f));
+      rotation2 = glm::rotate(rotation2, angle * 0.05f, glm::vec3(0.f, 0.f, 1.f));
+      auto slow_rotated_modelview_matrix = modelview_matrix * rotation2;
+
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       sampler.use(fb_unit);
+      modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
       vao.draw(GL_PATCHES, 24);
-      
+
       app.update();
     }
 
@@ -274,4 +302,5 @@ int main(int argc, const char* const argv[]) {
     std::cout << e.what() << std::endl;
   }
 
+  GL_CALL(glDeleteRenderbuffers(1, &rb));
 }

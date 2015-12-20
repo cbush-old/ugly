@@ -53,7 +53,7 @@ void main() {
   position += center * te_normal;
 
   vec4 tmp = modelview * position;
-  const float fisheye_amount = 0.0;
+  const float fisheye_amount = 0.2;
   tmp.xy = tmp.xy * (1.0 - fisheye_amount) + (tmp.xy / length(tmp.xyz)) * fisheye_amount;
   gl_Position = projection * tmp;
 
