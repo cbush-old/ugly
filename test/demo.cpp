@@ -177,7 +177,7 @@ int main(int argc, const char* const argv[]) {
     // Set up texture
     //
     //
-    int tw = 32;
+    int tw = 256;
     std::vector<uint32_t> pixels (tw * tw);
     for (size_t i = 0; i < pixels.size(); ++i) {
       pixels[i] = uint32_t((i / (double)(tw * tw)) * 0x7fffffff);
@@ -203,9 +203,21 @@ int main(int argc, const char* const argv[]) {
     gl::TextureUnit unit;
     unit.add(texture);
 
+
+
+    gl::Texture2D fb_texture;
+    fb_texture.storage(1, tw, tw);
+
+    gl::Framebuffer fb;
+    fb.texture(GL_COLOR_ATTACHMENT0, fb_texture);
+
+    gl::TextureUnit fb_unit;
+    fb_unit.add(fb_texture);
+
+    logi("framebuffer status: %s", fb.status_str());
+
     while (!app.done()) {
-    
-    
+
       static float light_angle = 0.5f;
       glm::vec3 direction = glm::rotate(glm::vec3(0.f, 0.f, 1.f), light_angle, glm::vec3(0.f, 1.f, 0.f));
       light_direction.set(direction.x, direction.y, direction.z);
@@ -223,8 +235,6 @@ int main(int argc, const char* const argv[]) {
         0.5f + sin(tick + 1.f) * 0.5f,
         0.5f + sin(tick + 2.f) * 0.5f
       );
-
-      context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
       glm::mat4 modelview_matrix {
         glm::translate(
@@ -245,8 +255,18 @@ int main(int argc, const char* const argv[]) {
 
       modelview.set(glm::value_ptr(modelview_matrix));
 
+      GL_CALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fb.name()));
+      glViewport(0, 0, tw, tw);
+      context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       sampler.use(unit);
       vao.draw(GL_PATCHES, 24);
+      
+      GL_CALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
+      glViewport(0, 0, app.width(), app.height());
+      context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      sampler.use(fb_unit);
+      vao.draw(GL_PATCHES, 24);
+      
       app.update();
     }
 

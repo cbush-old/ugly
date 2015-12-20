@@ -4,6 +4,34 @@
 namespace gl {
 
 
+
+namespace {
+
+template<typename ImageDescType>
+void reduce(ImageDescType& desc);
+
+template<>
+void reduce(ImageDesc1D& desc) {
+  desc.width = std::max(1, desc.width / 2);
+}
+
+template<>
+void reduce(ImageDesc2D& desc) {
+  desc.width = std::max(1, desc.width / 2);
+  desc.height = std::max(1, desc.height / 2);
+}
+
+template<>
+void reduce(ImageDesc3D& desc) {
+  desc.width = std::max(1, desc.width / 2);
+  desc.height = std::max(1, desc.height / 2);
+  desc.depth = std::max(1, desc.depth / 2);
+}
+
+}
+
+
+
 #define OFFSETS1 xoffset
 #define OFFSETS2 OFFSETS1, yoffset
 #define OFFSETS3 OFFSETS2, zoffset
@@ -72,6 +100,25 @@ namespace gl {
     OFFSETS, \
     __VA_ARGS__ \
   ))
+
+
+/* GL > 4.2
+#define IMPLEMENT_STORAGE(ND, ...) \
+  TextureBindguard texture_guard(_bind_target, name()); \
+  GL_CALL(glTexStorage##ND ( \
+    _bind_target, \
+    levels, \
+    _internal_format, \
+    __VA_ARGS__ \
+  ));
+*/
+
+#define IMPLEMENT_STORAGE(ND, ...) \
+  ImageDesc##ND desc (__VA_ARGS__, nullptr); \
+  for (GLsizei level = 0; level < levels; ++level) { \
+    image(level, desc); \
+    reduce(desc); \
+  }
 
 
 
@@ -172,6 +219,11 @@ void Texture1D::subcopy(int level, unsigned xoffset, Buffer const& buffer, int x
   IMPLEMENT_SUBCOPY(1D, OFFSETS1, x, y, w);
 }
 
+void Texture1D::storage(GLsizei levels, GLsizei w) {
+  IMPLEMENT_STORAGE(1D, w);
+}
+
+
 
 
 
@@ -181,6 +233,11 @@ Texture2D::Texture2D(GLenum internal_format /* = GL_RGBA */)
 
 Texture2D::Texture2D(TextureParams const& params, GLenum internal_format /* = GL_RGBA */)
   : Texture(GL_TEXTURE_2D, params, internal_format)
+  {}
+
+// protected constructor might be used for Cubemap faces
+Texture2D::Texture2D(GLuint name, GLenum target, GLenum internal_format)
+  : Texture(name, target, internal_format)
   {}
 
 void Texture2D::image(int level, ImageDesc2D const& desc) {
@@ -206,6 +263,10 @@ void Texture2D::copy(int level, Buffer const& buffer, int x, int y, GLsizei w, G
 void Texture2D::subcopy(int level, unsigned xoffset, unsigned yoffset,
   Buffer const& buffer, int x, int y, GLsizei w, GLsizei h) {
   IMPLEMENT_SUBCOPY(2D, OFFSETS2, x, y, w, h);
+}
+
+void Texture2D::storage(GLsizei levels, GLsizei w, GLsizei h) {
+  IMPLEMENT_STORAGE(2D, w, h);
 }
 
 
@@ -243,6 +304,10 @@ void Texture3D::subcopy(int level, unsigned xoffset, unsigned yoffset, unsigned 
   IMPLEMENT_SUBCOPY(3D, OFFSETS3, x, y, w, h);
 }
 
+void Texture3D::storage(GLsizei levels, GLsizei w, GLsizei h, GLsizei d) {
+  IMPLEMENT_STORAGE(3D, w, h, d);
+}
+
 
 
 #undef _bind_target
@@ -251,6 +316,7 @@ GLenum const Cubemap::Face::_bind_target = GL_TEXTURE_CUBE_MAP;
 Cubemap::Face::Face(GLuint name, GLenum target, GLenum internal_format)
   : Texture(name, target, internal_format)
   {}
+
 
 void Cubemap::Face::image(int level, ImageDesc2D const& desc) {
   IMPLEMENT_IMAGE(2D, DIMENSIONS2);
@@ -303,6 +369,16 @@ Cubemap::Face& Cubemap::operator[](Cubemap::FaceIndex i) {
 Cubemap::Face const& Cubemap::operator[](Cubemap::FaceIndex i) const {
   GL_BOUNDS_CHECK(i, 6);
   return _faces[i];
+}
+
+void Cubemap::storage(GLsizei levels, GLsizei w, GLsizei h) {
+  ImageDesc2D desc (w, h, nullptr);
+  for (GLsizei level = 0; level < levels; ++level) {
+    for (auto& face : _faces) {
+      face.image(level, desc);
+    }
+    reduce(desc);
+  }
 }
 
 

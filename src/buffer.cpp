@@ -1,4 +1,5 @@
 #include "buffer.h"
+#include "texture.h"
 
 namespace gl {
 
@@ -45,6 +46,11 @@ void Buffer::get(size_t offset, size_t size, void* data) const {
   glGetBufferSubData(GL_COPY_READ_BUFFER, offset, size, data);
 }
 
+
+void Buffer::texture(Texture& texture, GLenum internal_format) {
+  TextureBindguard guard(GL_TEXTURE_BUFFER, texture.name());
+  GL_CALL(glTexBuffer(GL_TEXTURE_BUFFER, internal_format, name()));
+}
 
 
 Buffer::Buffer() {}

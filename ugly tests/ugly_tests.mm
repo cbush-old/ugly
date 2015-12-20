@@ -250,6 +250,20 @@ gl::Context *context;
 }
 
 
+- (void)testFramebuffer {
+  try {
+    gl::Framebuffer fb;
+    
+    gl::Texture2D texture;
+    texture.storage(1, 128, 128);
+    
+    fb.texture(GL_DEPTH_ATTACHMENT, texture, 0);
+
+  } catch(gl::exception const& e) {
+    XCTAssert(false, @"exception: %s", e.what());
+  }
+}
+
 
 
 

@@ -10,6 +10,8 @@
 namespace gl {
 
 
+class Texture;
+
 
 class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
   public:
@@ -66,6 +68,11 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
 
   public:
     void get(size_t offset, size_t size, void* data) const;
+  
+  
+  public:
+    // glTexBuffer
+    void texture(Texture& texture, GLenum internal_format);
 
 
   private:

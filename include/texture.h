@@ -19,7 +19,7 @@ struct ImageDesc {
     ImageDesc(GLsizei width, void const* data): data(data), width(width) {}
 
   public:
-    void const* data;
+    void const* data { nullptr };
     GLenum format { GL_RGBA };
     GLenum type { GL_UNSIGNED_INT_8_8_8_8 };
     GLsizei width { 0 };
@@ -118,6 +118,8 @@ class Texture1D : public Texture {
     Texture1D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
+    void storage(GLsizei levels, GLsizei w);
+
     void image(int level, ImageDesc1D const&);
 
     /**
@@ -140,12 +142,17 @@ class Texture2D : public Texture {
   public:
     Texture2D(GLenum internal_format = GL_RGBA);
     Texture2D(TextureParams const& params, GLenum internal_format = GL_RGBA);
+  
+  protected:
+    Texture2D(GLuint name, GLenum target, GLenum internal_format);
 
   public:
+    void storage(GLsizei levels, GLsizei w, GLsizei h);
+
     void image(int level, ImageDesc2D const&);
 
     /**
-     * @brief specify image data using the given buffer the pixel unpack buffer.
+     * @brief specify image data using the given buffer
      **/
     void image(int level, Buffer const&, ImageDesc2D const&, size_t offset);
 
@@ -156,7 +163,7 @@ class Texture2D : public Texture {
     void copy(int level, Buffer const& buffer, int x, int y, GLsizei w, GLsizei h);
 
     void subcopy(int level, unsigned xoffset, unsigned yoffset, Buffer const&, int x, int y, GLsizei w, GLsizei h);
-
+  
 };
 
 
@@ -166,6 +173,8 @@ class Texture3D : public Texture {
     Texture3D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
+    void storage(GLsizei levels, GLsizei w, GLsizei h, GLsizei d);
+
     void image(int level, ImageDesc3D const&);
 
     /**
@@ -185,7 +194,7 @@ class Texture3D : public Texture {
 
 
 
-class Cubemap : Texture {
+class Cubemap : public Texture {
   public:
     enum FaceIndex {
       POSITIVE_X = 0,
@@ -203,9 +212,9 @@ class Cubemap : Texture {
 
       public:
         Face(GLuint name, GLenum target, GLenum internal_format = GL_RGBA);
-
+      
       public:
-        void image(int level, ImageDesc2D const&);
+        void image(int level, ImageDesc2D const& desc);
         void image(int level, Buffer const&, ImageDesc2D const&, size_t offset);
         void subimage(int level, unsigned xoffset, unsigned yoffset, ImageDesc2D const&);
         void subimage(int level, unsigned xoffset, unsigned yoffset, Buffer const&, ImageDesc2D const&, size_t offset);
@@ -221,6 +230,9 @@ class Cubemap : Texture {
   public:
     Face& operator[](FaceIndex i);
     Face const& operator[](FaceIndex i) const;
+
+  public:
+    void storage(GLsizei levels, GLsizei w, GLsizei h);
 
 };
 
