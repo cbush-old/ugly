@@ -2,6 +2,7 @@
 #include "texture.h"
 #include "renderbuffer.h"
 #include "vertex_array.h"
+#include "program.h"
 
 namespace gl {
 
@@ -97,6 +98,7 @@ void Framebuffer::clear(GLenum mask) {
 
 void Framebuffer::draw(VertexArray const& vao, GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
   VertexArrayBindguard guard(vao.name());
+  ProgramBindguard program_guard(vao.program().name());
   FramebufferBindguard fb_guard(GL_FRAMEBUFFER, name());
   GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
   GL_CALL(glDrawArrays(mode, first, count));

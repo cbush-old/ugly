@@ -29,6 +29,16 @@ GLint attrib::location() const {
 
 
 
+VertexArray::VertexArray(Program const& program)
+  : _program(program)
+  {}
+
+
+Program const& VertexArray::program() const {
+  return _program;
+}
+
+
 void VertexArray::pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
   BufferBindguard buffer_guard(GL_ARRAY_BUFFER, name());
   VertexArrayBindguard vertex_array_guard(name());

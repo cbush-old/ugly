@@ -32,6 +32,9 @@ class attrib {
 
 class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArrays> {
   public:
+    VertexArray(Program const&);
+
+  public:
     void enable(attrib const&);
     void disable(attrib const&);
 
@@ -39,6 +42,13 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
     void pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
     void draw(GLenum mode, GLsizei count, GLsizei first = 0);
     void draw(Framebuffer& framebuffer, GLenum mode, GLsizei count, GLsizei first = 0);
+  
+  public:
+    Program const& program() const;
+
+  private:
+    Program const& _program;
+
 };
 
 } // namespace gl

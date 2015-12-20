@@ -53,6 +53,7 @@ void Buffer::texture(Texture& texture, GLenum internal_format) {
 }
 
 
+
 Buffer::Buffer() {}
 
 Buffer::~Buffer() {}

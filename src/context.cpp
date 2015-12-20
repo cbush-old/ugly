@@ -182,6 +182,7 @@ void Context::clear(GLenum mask) {
 
 void Context::draw(VertexArray const& vao, GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
   VertexArrayBindguard guard(vao.name());
+  ProgramBindguard program_guard(vao.program().name());
   GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
   GL_CALL(glDrawArrays(mode, first, count));
 }
@@ -300,15 +301,6 @@ std::vector<int> Context::get() const {
   return gl::get(*this, param, size);
 }
 
-
-//
-//
-//    Programs
-//
-//
-void Context::use(Program const& program) {
-  GL_CALL(glUseProgram(program.name()));
-}
 
 
 

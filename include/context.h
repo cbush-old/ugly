@@ -85,9 +85,6 @@ class Context : public BasicFramebuffer {
       return get<T>(param);
     }
 
-  public: // Program
-    void use(Program const&);
-
   private:
     template<typename T>
     T get(GLenum) const;

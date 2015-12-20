@@ -252,13 +252,15 @@ int main(int argc, const char* const argv[]) {
     projection.set(glm::value_ptr(projection_matrix));
     boring_projection.set(glm::value_ptr(projection_matrix));
 
-    gl::VertexArray vao;
+    gl::VertexArray vao (program);
     gl::Buffer buffer;
     set_vertex_data(buffer, vao, program);
     
-    gl::VertexArray boring_vao;
-    gl::Buffer boring_buffer;
-    set_boring_vertex_data(boring_buffer, boring_vao, boring_program);
+    gl::VertexArray boring_vao (boring_program);
+    {
+      gl::Buffer boring_buffer;
+      set_boring_vertex_data(boring_buffer, boring_vao, boring_program);
+    }
 
     // Set up texture
     //
@@ -350,7 +352,6 @@ int main(int argc, const char* const argv[]) {
       fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
       sampler.use(unit);
-      context.use(program);
       fb.draw(vao, GL_PATCHES, 24);
       context.clear_color(
         0.5f + cos(tick) * 0.5f,
@@ -365,7 +366,6 @@ int main(int argc, const char* const argv[]) {
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       boring_sampler.use(fb_unit);
       boring_modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
-      context.use(boring_program);
       context.draw(boring_vao, GL_TRIANGLE_STRIP, 26);
 
       app.update();
