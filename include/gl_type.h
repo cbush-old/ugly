@@ -49,6 +49,15 @@ template<typename T> using vec4 = vec<T, T, T, T>;
 
 
 
+template<typename T>
+struct rect {
+  T x, y, width, height;
+  rect(): x(0), y(0), width(0), height(0) {}
+  rect(T x, T y, T width, T height): x(x), y(y), width(width), height(height) {}
+};
+
+using Viewport = rect<float>;
+
 
 template<typename T>
 bool operator==(vec2<T> const& a, vec2<T> const& b) {
@@ -170,6 +179,12 @@ class ActiveTextureGuard {
   public:
     ActiveTextureGuard(TextureUnit const& unit);
     ~ActiveTextureGuard();
+};
+
+class VertexArrayBindguard {
+  public:
+    VertexArrayBindguard(GLuint name);
+    ~VertexArrayBindguard();
 };
 
 

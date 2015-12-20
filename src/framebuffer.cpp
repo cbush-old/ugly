@@ -1,6 +1,7 @@
 #include "framebuffer.h"
 #include "texture.h"
 #include "renderbuffer.h"
+#include "vertex_array.h"
 
 namespace gl {
 
@@ -67,6 +68,40 @@ const char* Framebuffer::status_str() const {
     default: return "unknown";
   }
 }
+
+void BasicFramebuffer::viewport(float x, float y, float w, float h) {
+  _viewport = Viewport(x, y, w, h);
+}
+
+void BasicFramebuffer::viewport(Viewport viewport) {
+  _viewport = viewport;
+}
+
+Viewport const& BasicFramebuffer::viewport() const {
+  return _viewport;
+}
+
+void BasicFramebuffer::clear_color(float r, float g, float b, float a /* = 1.f */) {
+  _clear_color = color(r, g, b, a);
+}
+
+void BasicFramebuffer::clear_color(color c) {
+  _clear_color = c;
+}
+
+void Framebuffer::clear(GLenum mask) {
+  FramebufferBindguard guard(GL_FRAMEBUFFER, name());
+  GL_CALL(glClearColor(_clear_color.r, _clear_color.g, _clear_color.b, _clear_color.a));
+  GL_CALL(glClear(mask));
+}
+
+void Framebuffer::draw(VertexArray const& vao, GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
+  VertexArrayBindguard guard(vao.name());
+  FramebufferBindguard fb_guard(GL_FRAMEBUFFER, name());
+  GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
+  GL_CALL(glDrawArrays(mode, first, count));
+}
+
 
 
 

@@ -127,9 +127,10 @@ int main(int argc, const char* const argv[]) {
     glfwApp app;
 
     gl::MonoContext context (&app);
+    context.viewport(0, 0, app.width(), app.height());
 
-    GL_CALL(glDisable(GL_CULL_FACE));
-    GL_CALL(glEnable(GL_DEPTH_TEST));
+    context.disable<GL_CULL_FACE>();
+    context.enable<GL_DEPTH_TEST>();
 
 
     gl::Program program (
@@ -221,6 +222,7 @@ int main(int argc, const char* const argv[]) {
 
     gl::TextureUnit fb_unit (fb_texture);
 
+    fb.viewport(0, 0, tw, tw);
 
     logi("framebuffer status: %s", fb.status_str());
 
@@ -238,12 +240,6 @@ int main(int argc, const char* const argv[]) {
 
       tick += 0.01f;
 
-      context.clear_color(
-        0.5f + sin(tick) * 0.5f,
-        0.5f + sin(tick + 1.f) * 0.5f,
-        0.5f + sin(tick + 2.f) * 0.5f
-      );
-
       glm::mat4 modelview_matrix {
         glm::translate(
           glm::mat4(),
@@ -260,21 +256,23 @@ int main(int argc, const char* const argv[]) {
       normal_matrix.set(glm::value_ptr(rotation));
       modelview.set(glm::value_ptr(rotated_modelview_matrix));
 
+      fb.clear_color(
+        0.5f + sin(tick) * 0.5f,
+        0.5f + sin(tick + 1.f) * 0.5f,
+        0.5f + sin(tick + 2.f) * 0.5f
+      );
 
-      GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, fb.name()));
-      glViewport(0, 0, tw, tw);
-      context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
       sampler.use(unit);
-      vao.draw(GL_PATCHES, 24);
+      fb.draw(vao, GL_PATCHES, 24);
 
-      GL_CALL(glBindFramebuffer(GL_FRAMEBUFFER, 0));
       context.clear_color(
         0.5f + cos(tick) * 0.5f,
         0.5f + cos(tick + 1.f) * 0.5f,
         0.5f + cos(tick + 2.f) * 0.5f
       );
 
-      glViewport(0, 0, app.width(), app.height());
       glm::mat4 rotation2;
       rotation2 = glm::rotate(rotation2, angle * 0.2f, glm::vec3(0.f, 1.f, 0.f));
       auto slow_rotated_modelview_matrix = modelview_matrix * rotation2;
@@ -282,7 +280,7 @@ int main(int argc, const char* const argv[]) {
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       sampler.use(fb_unit);
       modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
-      vao.draw(GL_PATCHES, 24);
+      context.draw(vao, GL_PATCHES, 24);
 
       app.update();
     }

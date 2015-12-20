@@ -10,6 +10,8 @@
 #include "buffer.h"
 #include "program.h"
 #include "texture.h"
+#include "vertex_array.h"
+
 
 namespace gl {
 
@@ -168,24 +170,20 @@ Context::~Context() {
   delete _impl;
 }
 
+
 void Context_impl::on_made_not_current() {
 }
 
 
-void Context::clear() {
-  GL_CALL(glClear(_impl->_clear_mask));
-}
-
-void Context::clear(GLbitfield mask) {
+void Context::clear(GLenum mask) {
+  GL_CALL(glClearColor(_clear_color.r, _clear_color.g, _clear_color.b, _clear_color.a));
   GL_CALL(glClear(mask));
 }
 
-void Context::clear_color(color const& color) {
-  GL_CALL(glClearColor(color.r, color.g, color.b, color.a));
-}
-
-void Context::clear_color(float r, float g, float b, float a /* = 1.f */) {
-  GL_CALL(glClearColor(r, g, b, a));
+void Context::draw(VertexArray const& vao, GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
+  VertexArrayBindguard guard(vao.name());
+  GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
+  GL_CALL(glDrawArrays(mode, first, count));
 }
 
 

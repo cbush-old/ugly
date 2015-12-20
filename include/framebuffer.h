@@ -12,9 +12,31 @@ class Texture2D;
 class Texture3D;
 class Cubemap;
 class Renderbuffer;
+class VertexArray;
 
 
-class Framebuffer : public GeneratedObject<glGenFramebuffers, glDeleteFramebuffers> {
+class BasicFramebuffer {
+  public:
+    void clear_color(float r, float g, float b, float a = 1.f);
+    void clear_color(color c);
+    void viewport(float x, float y, float w, float h);
+    void viewport(Viewport viewport);
+    Viewport const& viewport() const;
+
+  public:
+    virtual void clear(GLenum mask) =0;
+    virtual void draw(VertexArray const&, GLenum mode, GLsizei count, GLsizei first = 0) =0;
+
+  protected:
+    Viewport _viewport;
+    color _clear_color;
+
+};
+
+class Framebuffer
+  : public GeneratedObject<glGenFramebuffers, glDeleteFramebuffers>
+  , public BasicFramebuffer
+{
   public:
     void texture(GLenum attachment, Texture1D const& texture, int level = 0);
     void texture(GLenum attachment, Texture2D const& texture, int level = 0);
@@ -23,7 +45,11 @@ class Framebuffer : public GeneratedObject<glGenFramebuffers, glDeleteFramebuffe
   
   public:
     void renderbuffer(GLenum attachment, Renderbuffer const& renderbuffer);
-  
+
+  public:
+    void clear(GLenum mask) override;
+    void draw(VertexArray const&, GLenum mode, GLsizei count, GLsizei first = 0) override;
+
   public:
     GLenum status() const;
     const char* status_str() const;

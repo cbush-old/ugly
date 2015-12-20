@@ -3,7 +3,7 @@
 
 #include "gl_type.h"
 #include "generated_object.h"
-
+#include "framebuffer.h"
 
 #include <functional>
 
@@ -21,10 +21,10 @@ class Buffer;
 class Program;
 class Framebuffer;
 class Texture;
+class VertexArray;
 
 
-
-class Context {
+class Context : public BasicFramebuffer {
   public:
     Context();
 
@@ -65,16 +65,11 @@ class Context {
     void bind(Framebuffer&);
 
 
-  public:
-    void clear();
-    void clear(GLbitfield mask);
+  public: // BasicFramebuffer
+    void clear(GLenum mask) override;
+    void draw(VertexArray const&, GLenum mode, GLsizei count, GLsizei first = 0) override;
 
   public:
-    /**
-     * @brief set the color buffer value
-     **/
-    void clear_color(color const&);
-    void clear_color(float r, float g, float b, float a = 1.f);
     void color_mask(color const&);
     void color_mask(GLuint buf, color const&);
 
@@ -121,7 +116,6 @@ class Context {
 
   public: // Program
     void use(Program const&);
-
 
   private:
     template<typename T>

@@ -3,4 +3,10 @@
 
 #include "gl_type.h"
 
+namespace gl {
+
+
+
+}
+
 #endif

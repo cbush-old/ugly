@@ -2,23 +2,19 @@
 #include "program.h"
 #include "buffer.h"
 #include "texture_unit.h"
+#include "framebuffer.h"
 
 namespace gl {
 
-namespace {
 
-class VertexArrayBindguard {
-  public:
-    VertexArrayBindguard(GLuint name) {
-      GL_CALL(glBindVertexArray(name));
-    }
-
-    ~VertexArrayBindguard() {
-      GL_CALL_NOTHROW(glBindVertexArray(0));
-    }
-};
-
+VertexArrayBindguard::VertexArrayBindguard(GLuint name) {
+  GL_CALL(glBindVertexArray(name));
 }
+
+VertexArrayBindguard::~VertexArrayBindguard() {
+  GL_CALL_NOTHROW(glBindVertexArray(0));
+}
+
 
 
 attrib::attrib(Program const& program, const char* name)
@@ -62,10 +58,6 @@ void VertexArray::disable(attrib const& attrib) {
 }
 
 
-void VertexArray::draw(GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
-  VertexArrayBindguard guard(name());
-  GL_CALL(glDrawArrays(mode, first, count));
-}
 
 
 } // namespace gl

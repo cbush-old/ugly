@@ -11,7 +11,8 @@ namespace gl {
 
 class Program;
 class Buffer;
-class TextureUnit;
+class Framebuffer;
+
 
 class attrib {
   public:
@@ -37,6 +38,7 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
   public:
     void pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
     void draw(GLenum mode, GLsizei count, GLsizei first = 0);
+    void draw(Framebuffer& framebuffer, GLenum mode, GLsizei count, GLsizei first = 0);
 };
 
 } // namespace gl
