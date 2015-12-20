@@ -200,8 +200,7 @@ int main(int argc, const char* const argv[]) {
     glm::vec3 position (0.f, 0.f, -2.0f);
     float tick = 0.f;
 
-    gl::TextureUnit unit;
-    unit.add(texture);
+    gl::TextureUnit unit (texture);
 
   
     gl::Texture2D texture2 (params);
@@ -209,8 +208,7 @@ int main(int argc, const char* const argv[]) {
       pixels[i] = 0xff0000ff;
     }
     texture2.image(0, desc);
-    gl::TextureUnit unit2;
-    unit2.add(texture2);
+    gl::TextureUnit unit2 (texture2);
     
     gl::Texture2D fb_texture (params);
     fb_texture.storage(1, tw, tw);
@@ -221,8 +219,7 @@ int main(int argc, const char* const argv[]) {
     gl::Renderbuffer rb (GL_DEPTH_COMPONENT24, tw, tw);
     fb.renderbuffer(GL_DEPTH_ATTACHMENT, rb);
 
-    gl::TextureUnit fb_unit;
-    fb_unit.add(fb_texture);
+    gl::TextureUnit fb_unit (fb_texture);
 
 
     logi("framebuffer status: %s", fb.status_str());
@@ -279,8 +276,7 @@ int main(int argc, const char* const argv[]) {
 
       glViewport(0, 0, app.width(), app.height());
       glm::mat4 rotation2;
-      rotation2 = glm::rotate(rotation2, angle * 0.2f, glm::vec3(0.5f, 0.5f, 0.f));
-      rotation2 = glm::rotate(rotation2, angle * 0.05f, glm::vec3(0.f, 0.f, 1.f));
+      rotation2 = glm::rotate(rotation2, angle * 0.2f, glm::vec3(0.f, 1.f, 0.f));
       auto slow_rotated_modelview_matrix = modelview_matrix * rotation2;
 
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

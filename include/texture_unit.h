@@ -14,6 +14,19 @@ class TextureUnit {
 
   public:
     TextureUnit();
+
+    template<typename TextureType>
+    TextureUnit(TextureType const& texture)
+      : TextureUnit() {
+      add(texture);
+    }
+
+    template<typename TextureType, typename... MoreTextures>
+    TextureUnit(TextureType const& texture, MoreTextures const&... args)
+      : TextureUnit(args...) {
+      add(texture);
+    }
+
     ~TextureUnit();
   
   public:

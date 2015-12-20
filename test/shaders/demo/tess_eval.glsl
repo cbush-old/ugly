@@ -19,7 +19,12 @@ vec4 interpolate(in vec4 v0, in vec4 v1, in vec4 v2, in vec4 v3)
 {
   vec4 a = mix(v0, v1, gl_TessCoord.x);
   vec4 b = mix(v3, v2, gl_TessCoord.x);
-  return mix(a, b, gl_TessCoord.y);
+  vec4 c = mix(v0, v1, gl_TessCoord.z);
+  vec4 d = mix(v3, v2, gl_TessCoord.z);
+
+  vec4 e = mix(a, b, gl_TessCoord.y);
+  vec4 f = mix(c, d, gl_TessCoord.y);
+  return vec4(e.xy, f.zw);
 }
 
 void main() {
@@ -45,7 +50,8 @@ void main() {
   );
 
   vec4 nrml = te_normal;
-  
+  vec4 texel = texture(texture_unit, te_texcoord);
+
   float center = 1.0
     - abs(gl_TessCoord.x - 0.5)
     - abs(gl_TessCoord.y - 0.5);
@@ -53,7 +59,7 @@ void main() {
   position += center * te_normal;
 
   vec4 tmp = modelview * position;
-  const float fisheye_amount = 0.2;
+  const float fisheye_amount = -1.0;
   tmp.xy = tmp.xy * (1.0 - fisheye_amount) + (tmp.xy / length(tmp.xyz)) * fisheye_amount;
   gl_Position = projection * tmp;
 
