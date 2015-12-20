@@ -1,12 +1,12 @@
 #include "framebuffer.h"
 #include "texture.h"
+#include "renderbuffer.h"
 
 namespace gl {
 
 
 
 #define FRAMEBUFFER_TEXTURE_IMPL(ND, ...) \
-  TextureBindguard texture_guard(texture.target(), texture.name()); /* needed? */ \
   FramebufferBindguard guard(GL_FRAMEBUFFER, name()); \
   GL_CALL(glFramebufferTexture##ND ( \
     GL_FRAMEBUFFER, \
@@ -33,6 +33,16 @@ void Framebuffer::texture(GLenum attachment, Cubemap const& texture, int level) 
 }
 
 #undef FRAMEBUFFER_TEXTURE_IMPL
+
+void Framebuffer::renderbuffer(GLenum attachment, Renderbuffer const& renderbuffer) {
+  FramebufferBindguard guard(GL_FRAMEBUFFER, name());
+  GL_CALL(glFramebufferRenderbuffer(
+    GL_FRAMEBUFFER,
+    attachment,
+    GL_RENDERBUFFER,
+    renderbuffer.name()
+  ));
+}
 
 
 GLenum Framebuffer::status() const {

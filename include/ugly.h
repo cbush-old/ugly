@@ -11,5 +11,6 @@
 #include "buffer.h"
 #include "framebuffer.h"
 #include "vertex_array.h"
+#include "renderbuffer.h"
 
 #endif

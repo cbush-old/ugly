@@ -176,6 +176,7 @@ class ActiveTextureGuard {
 using BufferBindguard = Bindguard<glBindBuffer>;
 using TextureBindguard = Bindguard<glBindTexture>;
 using FramebufferBindguard = Bindguard<glBindFramebuffer>;
+using RenderbufferBindguard = Bindguard<glBindRenderbuffer>;
 
 
 

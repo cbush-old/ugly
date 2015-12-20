@@ -122,8 +122,6 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const
 
 int main(int argc, const char* const argv[]) {
 
-  GLuint rb;
-
   try {
 
     glfwApp app;
@@ -220,13 +218,8 @@ int main(int argc, const char* const argv[]) {
     gl::Framebuffer fb;
     fb.texture(GL_COLOR_ATTACHMENT0, fb_texture);
 
-    GL_CALL(glGenRenderbuffers(1, &rb));
-    GL_CALL(glBindRenderbuffer(GL_RENDERBUFFER, rb));
-    GL_CALL(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, tw, tw));
-    {
-      gl::FramebufferBindguard guard (GL_FRAMEBUFFER, fb.name());
-      GL_CALL(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rb));
-    }
+    gl::Renderbuffer rb (GL_DEPTH_COMPONENT24, tw, tw);
+    fb.renderbuffer(GL_DEPTH_ATTACHMENT, rb);
 
     gl::TextureUnit fb_unit;
     fb_unit.add(fb_texture);
@@ -302,5 +295,4 @@ int main(int argc, const char* const argv[]) {
     std::cout << e.what() << std::endl;
   }
 
-  GL_CALL(glDeleteRenderbuffers(1, &rb));
 }
