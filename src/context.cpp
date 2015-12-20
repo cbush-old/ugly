@@ -301,23 +301,6 @@ std::vector<int> Context::get() const {
 }
 
 
-template<GLenum mode>
-void Context::draw_arrays(int, GLsizei) {
-  // TODO
-}
-
-
-void Context::active_texture(size_t i) {
-  GL_CALL(glActiveTexture(GLenum(GL_TEXTURE0 + i)));
-}
-
-size_t Context::active_texture() const {
-  GL_CALL(unsigned rv = get<unsigned, GL_ACTIVE_TEXTURE>() - GL_TEXTURE0);
-  return rv;
-}
-
-
-
 //
 //
 //    Programs

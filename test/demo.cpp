@@ -120,6 +120,79 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const
 }
 
 
+
+void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
+
+  float scale = 1.f;
+  float t = 1.f;
+  #define MAKE3D(x, y, z) x * scale * 0.5f, y * scale * 0.5f, z * scale * 0.5f
+
+  std::vector<GLfloat> vertex_data {
+    // Front face
+    MAKE3D(-1, -1, +1),
+    MAKE3D(+1, -1, +1),
+    MAKE3D(-1, +1, +1),
+    MAKE3D(+1, +1, +1),
+
+    // Right face
+    MAKE3D(+1, +1, +1),
+    MAKE3D(+1, -1, +1),
+    MAKE3D(+1, +1, -1),
+    MAKE3D(+1, -1, -1),
+
+    // Back face
+    MAKE3D(+1, -1, -1),
+    MAKE3D(-1, -1, -1),
+    MAKE3D(+1, +1, -1),
+    MAKE3D(-1, +1, -1),
+
+    // Left face
+    MAKE3D(-1, +1, -1),
+    MAKE3D(-1, -1, -1),
+    MAKE3D(-1, +1, +1),
+    MAKE3D(-1, -1, +1),
+
+    // Bottom face
+    MAKE3D(-1, -1, +1),
+    MAKE3D(-1, -1, -1),
+    MAKE3D(+1, -1, +1),
+    MAKE3D(+1, -1, -1),
+
+    // Move to top
+    MAKE3D(+1, -1, -1),
+    MAKE3D(-1, +1, +1),
+
+    // Top Face
+    MAKE3D(-1, +1, +1),
+    MAKE3D(+1, +1, +1),
+    MAKE3D(+1, +1, -1),
+    MAKE3D(-1, +1, -1),
+
+    0, 0, t, 0, 0, t, t, t, // Front
+    0, t, 0, 0, t, t, t, 0, // Right
+    0, 0, t, 0, 0, t, t, t, // Back
+    0, t, 0, 0, t, t, t, 0, // Left
+    0, t, 0, 0, t, t, t, 0, // Bottom
+    t, 0, 0, 0, // Move to top
+    0, 0, t, 0, 0, t, t, t // Top
+
+  };
+  #undef MAKE3D
+
+  buffer.data(vertex_data, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
+
+  gl::attrib position (program, "position");
+  gl::attrib texcoord (program, "texcoord_in");
+
+  vao.pointer(buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  vao.pointer(buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
+
+  vao.enable(position);
+  vao.enable(texcoord);
+
+}
+
+
 int main(int argc, const char* const argv[]) {
 
   try {
@@ -134,12 +207,16 @@ int main(int argc, const char* const argv[]) {
 
 
     gl::Program program (
-      context,
       gl::VertexShader("shaders/demo/vert.glsl"),
       gl::TessControlShader("shaders/demo/tess_control.glsl"),
       gl::TessEvaluationShader("shaders/demo/tess_eval.glsl"),
       gl::GeometryShader("shaders/demo/geo.glsl"),
       gl::FragmentShader("shaders/demo/frag.glsl")
+    );
+    
+    gl::Program boring_program (
+      gl::VertexShader("shaders/vert.glsl"),
+      gl::FragmentShader("shaders/frag.glsl")
     );
 
     gl::uniform4<float> ambient (program, program.uniform_location("ambient"));
@@ -159,6 +236,10 @@ int main(int argc, const char* const argv[]) {
     gl::uniform_mat4 normal_matrix (program, program.uniform_location("normal_matrix"));
     gl::uniform_mat4 projection (program, program.uniform_location("projection"));
 
+    gl::uniform_mat4 boring_modelview (boring_program, boring_program.uniform_location("modelview"));
+    gl::uniform_mat4 boring_projection (boring_program, boring_program.uniform_location("projection"));
+    gl::uniform_sampler boring_sampler (boring_program, boring_program.uniform_location("texture_unit"));
+
     glm::mat4 projection_matrix {
       glm::perspective<GLfloat>(
         45,
@@ -169,12 +250,16 @@ int main(int argc, const char* const argv[]) {
     };
 
     projection.set(glm::value_ptr(projection_matrix));
-
+    boring_projection.set(glm::value_ptr(projection_matrix));
 
     gl::VertexArray vao;
     gl::Buffer buffer;
     set_vertex_data(buffer, vao, program);
     
+    gl::VertexArray boring_vao;
+    gl::Buffer boring_buffer;
+    set_boring_vertex_data(boring_buffer, boring_vao, boring_program);
+
     // Set up texture
     //
     //
@@ -203,7 +288,7 @@ int main(int argc, const char* const argv[]) {
 
     gl::TextureUnit unit (texture);
 
-  
+
     gl::Texture2D texture2 (params);
     for (size_t i = 0; i < pixels.size(); ++i) {
       pixels[i] = 0xff0000ff;
@@ -265,8 +350,8 @@ int main(int argc, const char* const argv[]) {
       fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
       sampler.use(unit);
+      context.use(program);
       fb.draw(vao, GL_PATCHES, 24);
-
       context.clear_color(
         0.5f + cos(tick) * 0.5f,
         0.5f + cos(tick + 1.f) * 0.5f,
@@ -278,9 +363,10 @@ int main(int argc, const char* const argv[]) {
       auto slow_rotated_modelview_matrix = modelview_matrix * rotation2;
 
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-      sampler.use(fb_unit);
-      modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
-      context.draw(vao, GL_PATCHES, 24);
+      boring_sampler.use(fb_unit);
+      boring_modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
+      context.use(boring_program);
+      context.draw(boring_vao, GL_TRIANGLE_STRIP, 26);
 
       app.update();
     }

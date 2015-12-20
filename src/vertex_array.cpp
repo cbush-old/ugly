@@ -7,16 +7,6 @@
 namespace gl {
 
 
-VertexArrayBindguard::VertexArrayBindguard(GLuint name) {
-  GL_CALL(glBindVertexArray(name));
-}
-
-VertexArrayBindguard::~VertexArrayBindguard() {
-  GL_CALL_NOTHROW(glBindVertexArray(0));
-}
-
-
-
 attrib::attrib(Program const& program, const char* name)
   : _program(program)
   , _location(program.attrib_location(name))

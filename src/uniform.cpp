@@ -11,7 +11,10 @@ namespace gl {
 
 namespace detail {
 
-basic_uniform::basic_uniform(Program const& program, GLint location): _program(program), _location(location) {}
+basic_uniform::basic_uniform(Program const& program, GLint location)
+  : _program(program)
+  , _location(location)
+  {}
 
 GLint basic_uniform::location() const {
   return _location;
@@ -40,7 +43,10 @@ uniform<T...>::uniform(Program const& program, GLint location)
 // uniform scalar specialization
 #define SPECIALIZE_STEP1(...) template<> void uniform<__VA_ARGS__>
 #define SPECIALIZE_STEP2(...) ::set(__VA_ARGS__)
-#define SPECIALIZE_STEP3(Count, Suffix, ...) { GL_CALL(glUniform##Count##Suffix(_location, __VA_ARGS__ )); }
+#define SPECIALIZE_STEP3(Count, Suffix, ...) { \
+  ProgramBindguard guard(_program.name()); \
+  GL_CALL(glUniform##Count##Suffix(_location, __VA_ARGS__ )); \
+}
 
 #define SPECIALIZE2(Type, Suffix) \
   SPECIALIZE_STEP1(Type, Type) \
@@ -92,6 +98,7 @@ uniform_matrix<N, M>::uniform_matrix(Program const& program, GLint location, GLs
 #define SPECIALIZE_AND_INSTANTIATE(N, M, SUFFIX) \
   template<> \
   void uniform_matrix<N, M>::set(GLfloat const* value, bool transpose) { \
+    ProgramBindguard guard(_program.name()); \
     GL_CALL(glUniformMatrix##SUFFIX##fv(_location, _count, (GLboolean)transpose, value)); \
   } \
   template class uniform_matrix< N, M >;

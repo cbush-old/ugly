@@ -58,13 +58,6 @@ class Context : public BasicFramebuffer {
     bool current() const;
 
 
-  public:
-    void bind(Pipeline&);
-
-    template<GLenum target>
-    void bind(Framebuffer&);
-
-
   public: // BasicFramebuffer
     void clear(GLenum mask) override;
     void draw(VertexArray const&, GLenum mode, GLsizei count, GLsizei first = 0) override;
@@ -78,15 +71,7 @@ class Context : public BasicFramebuffer {
 
     template<GLenum> void enable();
     template<GLenum> void disable();
-
-    template<GLenum> void enable(GLuint);
-    template<GLenum> void disable(GLuint);
-
     template<GLenum> bool is_enabled() const;
-    template<GLenum> bool is_enabled(GLuint) const;
-
-    template<GLenum>
-    void draw_arrays(int first, GLsizei count);
 
     template<typename T>
     void clear_depth(T depth);
@@ -99,20 +84,6 @@ class Context : public BasicFramebuffer {
     T get() const {
       return get<T>(param);
     }
-
-    /**
-     * @brief bind target with buffer
-     **/
-    void bind(GLenum target, Buffer const& buffer);
-    void unbind(GLenum target);
-    bool is_bound(GLenum target) const;
-    bool is_bound(GLenum target, Buffer const& buffer) const;
-
-
-  public: // Texture
-    void active_texture(size_t i);
-    size_t active_texture() const;
-
 
   public: // Program
     void use(Program const&);

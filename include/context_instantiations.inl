@@ -45,18 +45,4 @@ INSTANTIATE_ENABLE(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 EXTERN template std::vector<int> Context::get<GL_COMPRESSED_TEXTURE_FORMATS, GL_NUM_COMPRESSED_TEXTURE_FORMATS>() const;
 EXTERN template std::vector<int> Context::get<GL_PROGRAM_BINARY_FORMATS, GL_NUM_PROGRAM_BINARY_FORMATS>() const;
 
-
-EXTERN template void Context::draw_arrays<GL_POINTS>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_LINE_STRIP>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_LINE_LOOP>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_LINES>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_LINE_STRIP_ADJACENCY>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_LINES_ADJACENCY>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_TRIANGLE_STRIP>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_TRIANGLE_FAN>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_TRIANGLES>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_TRIANGLE_STRIP_ADJACENCY>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_TRIANGLES_ADJACENCY>(int, GLsizei);
-EXTERN template void Context::draw_arrays<GL_PATCHES>(int, GLsizei);
-
 #undef EXTERN

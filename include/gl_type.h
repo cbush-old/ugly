@@ -173,27 +173,26 @@ class Bindguard {
 };
 
 
-class TextureUnit;
-
-class ActiveTextureGuard {
+template<typename T, void(*BindFunction)(T), T Default = 0>
+class NoTargetBindguard {
   public:
-    ActiveTextureGuard(TextureUnit const& unit);
-    ~ActiveTextureGuard();
+    NoTargetBindguard(T name) {
+      GL_CALL(BindFunction(name));
+    }
+  
+    ~NoTargetBindguard() {
+      GL_CALL_NOTHROW(BindFunction(Default));
+    }
 };
-
-class VertexArrayBindguard {
-  public:
-    VertexArrayBindguard(GLuint name);
-    ~VertexArrayBindguard();
-};
-
 
 using BufferBindguard = Bindguard<glBindBuffer>;
 using TextureBindguard = Bindguard<glBindTexture>;
 using FramebufferBindguard = Bindguard<glBindFramebuffer>;
 using RenderbufferBindguard = Bindguard<glBindRenderbuffer>;
 
-
+using ActiveTextureBindguard = NoTargetBindguard<GLenum, glActiveTexture, GL_TEXTURE0>;
+using VertexArrayBindguard = NoTargetBindguard<GLuint, glBindVertexArray>;
+using ProgramBindguard = NoTargetBindguard<GLuint, glUseProgram>;
 
 
 } // namespace gl
