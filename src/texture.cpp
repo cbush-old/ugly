@@ -151,7 +151,9 @@ Texture::Texture(GLenum target, TextureParams const& params, GLenum internal_for
 Texture::Texture(GLenum target, GLenum internal_format)
   : _target(target)
   , _internal_format(internal_format)
-  {}
+{
+  TextureBindguard guard(_target, name());
+}
 
 Texture::Texture(GLuint name, GLenum target, GLenum internal_format)
   : GeneratedObject(name)

@@ -7,17 +7,17 @@
 namespace gl {
 
 
-attrib::attrib(Program const& program, const char* name)
+attrib::attrib(ProgramConstRef program, const char* name)
   : _program(program)
-  , _location(program.attrib_location(name))
+  , _location(program->attrib_location(name))
   {}
 
-attrib::attrib(Program const& program, std::string const& name)
+attrib::attrib(ProgramConstRef program, std::string const& name)
   : _program(program)
-  , _location(program.attrib_location(name))
+  , _location(program->attrib_location(name))
   {}
 
-attrib::attrib(Program const& program, GLint location)
+attrib::attrib(ProgramConstRef program, GLint location)
   : _program(program)
   , _location(location)
   {}
@@ -40,7 +40,7 @@ ProgramConstRef VertexArray::program() const {
 
 
 void VertexArray::pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
-  BufferBindguard buffer_guard(GL_ARRAY_BUFFER, name());
+  BufferBindguard buffer_guard(GL_ARRAY_BUFFER, buffer.name());
   VertexArrayBindguard vertex_array_guard(name());
   GL_CALL(glVertexAttribPointer(attrib.location(), size, type, normalized, stride, (void const*)offset));
 }

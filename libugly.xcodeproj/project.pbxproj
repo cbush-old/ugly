@@ -157,6 +157,8 @@
 		0B4EB89C1C07954E0086BDD9 /* ugly_tests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ugly_tests.mm; sourceTree = "<group>"; };
 		0B4EB8A51C079B4C0086BDD9 /* libugly.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = libugly.xcodeproj; sourceTree = "<group>"; };
 		0B4EB8AC1C07B0620086BDD9 /* demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = demo.cpp; sourceTree = "<group>"; };
+		0B72F3591C27B95C00EC2F10 /* frag0.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = frag0.glsl; sourceTree = "<group>"; };
+		0B72F35A1C27B95C00EC2F10 /* frag1.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = frag1.glsl; sourceTree = "<group>"; };
 		0BA992011C113FF5007F55BE /* texture_unit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_unit.h; sourceTree = "<group>"; };
 		0BA992031C114018007F55BE /* texture_unit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_unit.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -283,6 +285,7 @@
 		0B4EB82D1C0788FE0086BDD9 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				0B72F3581C27B95C00EC2F10 /* blur */,
 				0B4EB82E1C0788FE0086BDD9 /* bad_syntax.glsl */,
 				0B4EB82F1C0788FE0086BDD9 /* demo */,
 				0B4EB8321C0788FE0086BDD9 /* frag.glsl */,
@@ -336,6 +339,15 @@
 		0B4EB8A61C079B4C0086BDD9 /* Products */ = {
 			isa = PBXGroup;
 			name = Products;
+			sourceTree = "<group>";
+		};
+		0B72F3581C27B95C00EC2F10 /* blur */ = {
+			isa = PBXGroup;
+			children = (
+				0B72F3591C27B95C00EC2F10 /* frag0.glsl */,
+				0B72F35A1C27B95C00EC2F10 /* frag1.glsl */,
+			);
+			path = blur;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

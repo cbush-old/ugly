@@ -17,15 +17,15 @@ class Framebuffer;
 
 class attrib {
   public:
-    attrib(Program const&, const char* name);
-    attrib(Program const&, std::string const& name);
-    attrib(Program const&, GLint location);
+    attrib(ProgramConstRef, const char* name);
+    attrib(ProgramConstRef, std::string const& name);
+    attrib(ProgramConstRef, GLint location);
 
   public:
     GLint location() const;
 
   protected:
-    Program const& _program;
+    ProgramConstRef _program;
     GLint _location { -1 };
 
 };

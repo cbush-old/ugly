@@ -12,7 +12,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 
-void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
+void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::ProgramConstRef program) {
 
   float scale = 1.f;
   float t = 1.f;
@@ -121,7 +121,7 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const
 
 
 
-void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
+void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::ProgramConstRef program) {
 
   float scale = 1.f;
   float t = 1.f;
@@ -165,8 +165,8 @@ void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Progra
     // Top Face
     MAKE3D(-1, +1, +1),
     MAKE3D(+1, +1, +1),
-    MAKE3D(+1, +1, -1),
     MAKE3D(-1, +1, -1),
+    MAKE3D(+1, +1, -1),
 
     0, 0, t, 0, 0, t, t, t, // Front
     0, t, 0, 0, t, t, t, 0, // Right
@@ -174,7 +174,7 @@ void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Progra
     0, t, 0, 0, t, t, t, 0, // Left
     0, t, 0, 0, t, t, t, 0, // Bottom
     t, 0, 0, 0, // Move to top
-    0, 0, t, 0, 0, t, t, t // Top
+    0, t, t, t, 0, 0, t, 0, // Top
 
   };
   #undef MAKE3D
@@ -254,21 +254,24 @@ int main(int argc, const char* const argv[]) {
 
     gl::VertexArray vao (program);
     gl::Buffer buffer;
-    set_vertex_data(buffer, vao, *program);
-    
+    set_vertex_data(buffer, vao, program);
+
     gl::VertexArray boring_vao (boring_program);
-    {
-      gl::Buffer boring_buffer;
-      set_boring_vertex_data(boring_buffer, boring_vao, *boring_program);
-    }
+    gl::Buffer boring_buffer;
+    set_boring_vertex_data(boring_buffer, boring_vao, boring_program);
 
     // Set up texture
     //
     //
-    int tw = 256;
+    int tw = 1028;
+    size_t check_size = 64;
     std::vector<uint32_t> pixels (tw * tw);
     for (size_t i = 0; i < pixels.size(); ++i) {
-      pixels[i] = uint32_t((i / (double)(tw * tw)) * 0x7fffffff);
+      auto x = (i % tw) / check_size;
+      auto y = (i / tw) / check_size;
+      bool in_check = (y & 1) ^ (x & 1);
+      pixels[i] = (in_check * 0xffffff00) | 0xff;
+      
     }
 
     gl::TextureParams params {
@@ -298,18 +301,76 @@ int main(int argc, const char* const argv[]) {
     texture2.image(0, desc);
     gl::TextureUnit unit2 (texture2);
     
-    gl::Texture2D fb_texture (params);
+    gl::Texture2D fb_texture (params), fb_texture2 (params);
     fb_texture.storage(1, tw, tw);
+    fb_texture2.storage(1, tw, tw); //app.width(), app.height());
 
-    gl::Framebuffer fb;
+    gl::Framebuffer fb, fb2;
     fb.texture(GL_COLOR_ATTACHMENT0, fb_texture);
+    fb2.texture(GL_COLOR_ATTACHMENT0, fb_texture2);
 
-    gl::Renderbuffer rb (GL_DEPTH_COMPONENT24, tw, tw);
+    gl::Renderbuffer rb (GL_DEPTH_COMPONENT24, tw, tw),
+      rb2 (GL_DEPTH_COMPONENT24, tw, tw);
     fb.renderbuffer(GL_DEPTH_ATTACHMENT, rb);
-
-    gl::TextureUnit fb_unit (fb_texture);
-
     fb.viewport(0, 0, tw, tw);
+    fb2.renderbuffer(GL_DEPTH_ATTACHMENT, rb2);
+    fb2.viewport(0, 0, tw, tw); //app.width(), app.height());
+    fb2.clear_color(0.f, 0.f, 0.f);
+
+    gl::TextureUnit fb_unit (fb_texture), fb_unit2 (fb_texture2);
+
+
+
+    // Blur?
+    gl::Framebuffer blur_fb;
+    gl::Texture2D blur_fb_texture (params);
+    gl::TextureUnit blur_unit[2] {
+      { fb_texture2 },
+      { blur_fb_texture },
+    };
+    
+    blur_fb_texture.storage(1, tw, tw);
+    blur_fb.texture(GL_COLOR_ATTACHMENT0, blur_fb_texture);
+    blur_fb.viewport(0, 0, tw, tw);
+    gl::ProgramRef blur_program[2] {
+      gl::ProgramRef { new gl::Program(gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag0.glsl")) },
+      gl::ProgramRef { new gl::Program(gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag1.glsl")) },
+    };
+
+    gl::VertexArray blur_vao[2] {
+      { blur_program[0] },
+      { blur_program[1] },
+    };
+    
+    gl::uniform_mat4 blur_modelview[2] {
+      { blur_program[0], "modelview" },
+      { blur_program[1], "modelview" },
+    };
+    gl::uniform_mat4 blur_projection[2] {
+      { blur_program[0], "projection" },
+      { blur_program[1], "projection" },
+    };
+    gl::uniform_sampler blur_sampler[2] {
+      { blur_program[0], "texture_unit" },
+      { blur_program[1], "texture_unit" },
+    };
+
+    projection_matrix = glm::ortho(
+      -0.5f, 0.5f,
+      -0.5f, 0.5f,
+      0.1f, 2.5f
+    );
+    blur_projection[0].set(glm::value_ptr(projection_matrix));
+    blur_projection[1].set(glm::value_ptr(projection_matrix));
+    
+    for (size_t i = 0; i < 2; ++i) {
+      gl::attrib position (blur_program[i], "position");
+      gl::attrib texcoord (blur_program[i], "texcoord_in");
+      blur_vao[i].pointer(boring_buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+      blur_vao[i].pointer(boring_buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
+      blur_vao[i].enable(position);
+      blur_vao[i].enable(texcoord);
+    }
 
     logi("framebuffer status: %s", fb.status_str());
 
@@ -341,7 +402,7 @@ int main(int argc, const char* const argv[]) {
       auto rotated_modelview_matrix = modelview_matrix * rotation;
 
       normal_matrix.set(glm::value_ptr(rotation));
-      modelview.set(glm::value_ptr(rotated_modelview_matrix));
+      boring_modelview.set(glm::value_ptr(rotated_modelview_matrix));
 
       fb.clear_color(
         0.5f + sin(tick) * 0.5f,
@@ -351,23 +412,44 @@ int main(int argc, const char* const argv[]) {
 
       fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-      sampler.use(unit);
-      fb.draw(vao, GL_PATCHES, 24);
+      boring_sampler.use(unit);
+      fb.draw(boring_vao, GL_TRIANGLE_STRIP, 26, 0);
       context.clear_color(
         0.5f + cos(tick) * 0.5f,
         0.5f + cos(tick + 1.f) * 0.5f,
         0.5f + cos(tick + 2.f) * 0.5f
       );
 
+      modelview_matrix = glm::translate(glm::mat4(),
+        glm::vec3(
+          position.x,
+          position.y,
+          position.z - sin(tick) * 0.25
+        )
+      );
+
       glm::mat4 rotation2;
       rotation2 = glm::rotate(rotation2, angle * 0.2f, glm::vec3(0.f, 1.f, 0.f));
       auto slow_rotated_modelview_matrix = modelview_matrix * rotation2;
 
-      context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-      boring_sampler.use(fb_unit);
-      boring_modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
-      context.draw(boring_vao, GL_TRIANGLE_STRIP, 26);
+      fb2.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      sampler.use(fb_unit);
+      modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
+      fb2.draw(vao, GL_PATCHES, 24);
 
+      modelview_matrix = glm::translate(glm::mat4(),
+        glm::vec3(0.f, 0.f, -2.f)
+      );
+      blur_modelview[0].set(glm::value_ptr(modelview_matrix));
+      blur_modelview[1].set(glm::value_ptr(modelview_matrix));
+
+      blur_fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      blur_sampler[0].use(fb_unit2);
+      blur_fb.draw(blur_vao[0], GL_TRIANGLE_STRIP, 4, 0);
+
+      context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+      blur_sampler[1].use(blur_unit[1]);
+      context.draw(blur_vao[1], GL_TRIANGLE_STRIP, 4, 0);
       app.update();
     }
 
