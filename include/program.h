@@ -1,5 +1,5 @@
-#ifndef OGL_PROGRAM_H
-#define OGL_PROGRAM_H
+#ifndef UGLY_PROGRAM_H
+#define UGLY_PROGRAM_H
 
 #include <memory>
 #include <unordered_map>
@@ -7,7 +7,6 @@
 
 #include "gl_type.h"
 #include "shader.h"
-#include "uniform.h"
 #include "context.h"
 
 
@@ -34,7 +33,7 @@ class Program {
   public:
     Program();
 
-  public: // convenience constructors
+  public: // convenience
     /**
      * @brief construct a program with attached shaders
      **/
@@ -86,9 +85,6 @@ class Program {
     bool validate() const;
 
     std::string info_log() const;
-  
-  public:
-    untyped_uniform operator[](std::string const&) const;
 
   private:
     void attach() {}
@@ -96,9 +92,6 @@ class Program {
   private:
     class Program_impl* _impl;
   
-  private:
-    mutable std::unordered_map<std::string, untyped_uniform> _location_cache;
-
 };
 
 template<typename... ShaderT>
@@ -114,6 +107,9 @@ inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
   attach(the_rest...);
 }
 
+
+using ProgramRef = std::shared_ptr<Program>;
+using ProgramConstRef = std::shared_ptr<Program const>;
 
 
 } // namespace gl

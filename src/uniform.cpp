@@ -11,10 +11,21 @@ namespace gl {
 
 namespace detail {
 
-basic_uniform::basic_uniform(untyped_uniform u)
-  : _program(u.program())
-  , _location(u.location())
+basic_uniform::basic_uniform(ProgramConstRef program, const char* name)
+  : _program(program)
+  , _location(program->uniform_location(name))
   {}
+
+basic_uniform::basic_uniform(ProgramConstRef program, std::string const& name)
+  : _program(program)
+  , _location(program->uniform_location(name))
+  {}
+
+basic_uniform::basic_uniform(ProgramConstRef program, GLint location)
+  : _program(program)
+  , _location(location)
+  {}
+
 
 basic_uniform::~basic_uniform() {}
 
@@ -39,8 +50,18 @@ uniform<T>::uniform(untyped_uniform u)
 
 
 template<typename... T>
-uniform<T...>::uniform(untyped_uniform u)
-  : basic_uniform(u)
+uniform<T...>::uniform(ProgramConstRef program, const char* name)
+  : basic_uniform(program, name)
+  {}
+
+template<typename... T>
+uniform<T...>::uniform(ProgramConstRef program, std::string const& name)
+  : basic_uniform(program, name)
+  {}
+
+template<typename... T>
+uniform<T...>::uniform(ProgramConstRef program, GLint location)
+  : basic_uniform(program, location)
   {}
 
 template<typename... T>
@@ -98,9 +119,9 @@ INSTANTIATE_TYPE(GLuint);
 
 
 template<unsigned N, unsigned M>
-uniform_matrix<N, M>::uniform_matrix(untyped_uniform u)
-  : basic_uniform(u)
-  , _count(1) // TODO
+uniform_matrix<N, M>::uniform_matrix(ProgramConstRef program, const char* name, GLsizei count)
+  : basic_uniform(program, name)
+  , _count(count)
   {}
 
 template<unsigned N, unsigned M>
@@ -160,36 +181,23 @@ SPECIALIZE(GLuint, ui);
 
 
 
-uniform_sampler::uniform_sampler(untyped_uniform u)
-  : uniform<int>(u) {}
+uniform_sampler::uniform_sampler(ProgramConstRef program, const char* name)
+  : uniform<int>(program, name) {}
+
+
+uniform_sampler::uniform_sampler(ProgramConstRef program, std::string const& name)
+  : uniform<int>(program, name) {}
+
+
+uniform_sampler::uniform_sampler(ProgramConstRef program, GLint location)
+  : uniform<int>(program, location) {}
+
 
 void uniform_sampler::use(TextureUnit const& unit) {
   uniform<int>::set(unit.unit());
 }
 
 uniform_sampler::~uniform_sampler() {}
-
-
-
-untyped_uniform::untyped_uniform(Program const* program, GLint location)
-  : _program(program)
-  , _location(location)
-  {}
-
-untyped_uniform::untyped_uniform(untyped_uniform const& o)
-  : _program(o._program)
-  , _location(o._location)
-{}
-
-untyped_uniform::~untyped_uniform() {}
-
-GLint untyped_uniform::location() const {
-  return _location;
-}
-
-Program const* untyped_uniform::program() const {
-  return _program;
-}
 
 
 

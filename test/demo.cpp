@@ -206,39 +206,39 @@ int main(int argc, const char* const argv[]) {
     context.enable<GL_DEPTH_TEST>();
 
 
-    gl::Program program (
+    gl::ProgramRef program (new gl::Program(
       gl::VertexShader("shaders/demo/vert.glsl"),
       gl::TessControlShader("shaders/demo/tess_control.glsl"),
       gl::TessEvaluationShader("shaders/demo/tess_eval.glsl"),
       gl::GeometryShader("shaders/demo/geo.glsl"),
       gl::FragmentShader("shaders/demo/frag.glsl")
-    );
+    ));
     
-    gl::Program boring_program (
+    gl::ProgramRef boring_program (new gl::Program(
       gl::VertexShader("shaders/vert.glsl"),
       gl::FragmentShader("shaders/frag.glsl")
-    );
+    ));
 
-    gl::uniform4<float> ambient = program["ambient"];
-    gl::uniform4<float> light_color (program["light_color"]);
-    gl::uniform3<float> light_direction (program["light_direction"]);
-    gl::uniform3<float> half_vector (program["hv"]);
-    gl::uniform<float> shininess (program["shininess"]);
-    gl::uniform<float> strength (program["strength"]);
-    gl::uniform_sampler sampler (program["texture_unit"]);
+    gl::uniform4<float> ambient (program, "ambient");
+    gl::uniform4<float> light_color (program, "light_color");
+    gl::uniform3<float> light_direction (program, "light_direction");
+    gl::uniform3<float> half_vector (program, "hv");
+    gl::uniform<float> shininess (program, "shininess");
+    gl::uniform<float> strength (program, "strength");
+    gl::uniform_sampler sampler (program, "texture_unit");
 
     ambient.set(0.1f, 0.1f, 0.1f, 1.f);
     light_color.set(1.f, 1.f, 1.f, 1.f);
     shininess.set(100.f);
     strength.set(1.f);
 
-    gl::uniform_mat4 modelview (program["modelview"]);
-    gl::uniform_mat4 normal_matrix (program["normal_matrix"]);
-    gl::uniform_mat4 projection (program["projection"]);
+    gl::uniform_mat4 modelview (program, "modelview");
+    gl::uniform_mat4 normal_matrix (program, "normal_matrix");
+    gl::uniform_mat4 projection (program, "projection");
 
-    gl::uniform_mat4 boring_modelview (boring_program["modelview"]);
-    gl::uniform_mat4 boring_projection (boring_program["projection"]);
-    gl::uniform_sampler boring_sampler (boring_program["texture_unit"]);
+    gl::uniform_mat4 boring_modelview (boring_program, "modelview");
+    gl::uniform_mat4 boring_projection (boring_program, "projection");
+    gl::uniform_sampler boring_sampler (boring_program, "texture_unit");
 
     glm::mat4 projection_matrix {
       glm::perspective<GLfloat>(
@@ -254,12 +254,12 @@ int main(int argc, const char* const argv[]) {
 
     gl::VertexArray vao (program);
     gl::Buffer buffer;
-    set_vertex_data(buffer, vao, program);
+    set_vertex_data(buffer, vao, *program);
     
     gl::VertexArray boring_vao (boring_program);
     {
       gl::Buffer boring_buffer;
-      set_boring_vertex_data(boring_buffer, boring_vao, boring_program);
+      set_boring_vertex_data(boring_buffer, boring_vao, *boring_program);
     }
 
     // Set up texture

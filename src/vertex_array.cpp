@@ -29,12 +29,12 @@ GLint attrib::location() const {
 
 
 
-VertexArray::VertexArray(Program const& program)
+VertexArray::VertexArray(ProgramConstRef program)
   : _program(program)
   {}
 
 
-Program const& VertexArray::program() const {
+ProgramConstRef VertexArray::program() const {
   return _program;
 }
 

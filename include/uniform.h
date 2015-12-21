@@ -2,50 +2,29 @@
 #define OGL_UNIFORM_H
 
 #include "gl_type.h"
+#include "program.h"
+
 #include <vector>
 #include <string>
 
 namespace gl {
 
-class Program;
-
-
-
-class untyped_uniform {
-  public:
-    untyped_uniform(Program const* program, GLint location);
-
-  public:
-    untyped_uniform& operator=(untyped_uniform const&) = delete;
-    untyped_uniform(untyped_uniform const&);
-    ~untyped_uniform();
-  
-  public:
-    GLint location() const;
-  
-  public:
-    Program const* program() const;
-  
-  private:
-    Program const* _program { nullptr };
-    GLint _location;
-};
-
-
+using ProgramConstRef = std::shared_ptr<Program const>;
 
 namespace detail {
 
 class basic_uniform {
   protected:
-    basic_uniform();
-    basic_uniform(untyped_uniform);
+    basic_uniform(ProgramConstRef program, const char* name);
+    basic_uniform(ProgramConstRef program, std::string const& name);
+    basic_uniform(ProgramConstRef program, GLint location);
     ~basic_uniform();
 
   public:
     GLint location() const;
 
   protected:
-    Program const* _program { nullptr };
+    ProgramConstRef _program;
     GLint _location { -1 };
 };
 
@@ -54,9 +33,9 @@ class uniform : public basic_uniform {
   using vec_t = vec<T...>;
   
   public:
-    uniform();
-    uniform(untyped_uniform);
-    uniform& operator=(untyped_uniform);
+    uniform(ProgramConstRef program, const char* name);
+    uniform(ProgramConstRef program, std::string const& name);
+    uniform(ProgramConstRef program, GLint location);
     ~uniform();
 
   public:
@@ -66,23 +45,13 @@ class uniform : public basic_uniform {
 
 };
 
-/*
-template<typename T>
-class uniform<T> : public basic_uniform {
-  public:
-    void set(T value);
-    T get() const;
 
-};
-*/
-  
-  
 template<unsigned N, unsigned M = N>
 class uniform_matrix : public basic_uniform {
   public:
-    uniform_matrix();
-    uniform_matrix(untyped_uniform);
-    uniform_matrix& operator=(untyped_uniform);
+    uniform_matrix(ProgramConstRef program, const char* name, GLsizei count = 1);
+    uniform_matrix(ProgramConstRef program, std::string const& name, GLsizei count = 1);
+    uniform_matrix(ProgramConstRef program, GLint location, GLsizei count = 1);
     ~uniform_matrix();
 
   public:
@@ -125,9 +94,9 @@ class TextureUnit;
 
 class uniform_sampler : public uniform<int> {
   public:
-    uniform_sampler();
-    uniform_sampler(untyped_uniform);
-    uniform_sampler& operator=(untyped_uniform);
+    uniform_sampler(ProgramConstRef program, const char* name);
+    uniform_sampler(ProgramConstRef program, std::string const& name);
+    uniform_sampler(ProgramConstRef program, GLint location);
     ~uniform_sampler();
 
   public:

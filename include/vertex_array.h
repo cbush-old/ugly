@@ -3,6 +3,7 @@
 
 #include "gl_type.h"
 #include "generated_object.h"
+#include "program.h"
 
 #include <string>
 
@@ -32,7 +33,7 @@ class attrib {
 
 class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArrays> {
   public:
-    VertexArray(Program const&);
+    VertexArray(ProgramConstRef);
 
   public:
     void enable(attrib const&);
@@ -44,10 +45,10 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
     void draw(Framebuffer& framebuffer, GLenum mode, GLsizei count, GLsizei first = 0);
   
   public:
-    Program const& program() const;
+    ProgramConstRef program() const;
 
   private:
-    Program const& _program;
+    ProgramConstRef _program;
 
 };
 
