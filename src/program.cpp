@@ -133,6 +133,23 @@ uniform_info Program::active_uniform(GLuint index) const {
 }
 
 
+untyped_uniform Program::operator[](std::string const& name) const {
+  auto it = _location_cache.find(name);
+  if (it != _location_cache.end()) {
+    return it->second;
+  }
+  GLint location { uniform_location(name) };
+  untyped_uniform rv (this, location);
+  _location_cache.emplace(name, rv);
+  return rv;
+}
+
+/*
+untyped_uniform const& Program::operator[](std::string const& name) const {
+
+}
+*/
+
 
 
 

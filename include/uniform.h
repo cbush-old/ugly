@@ -10,26 +10,54 @@ namespace gl {
 class Program;
 
 
+
+class untyped_uniform {
+  public:
+    untyped_uniform(Program const* program, GLint location);
+
+  public:
+    untyped_uniform& operator=(untyped_uniform const&) = delete;
+    untyped_uniform(untyped_uniform const&);
+    ~untyped_uniform();
+  
+  public:
+    GLint location() const;
+  
+  public:
+    Program const* program() const;
+  
+  private:
+    Program const* _program { nullptr };
+    GLint _location;
+};
+
+
+
 namespace detail {
 
 class basic_uniform {
   protected:
-    basic_uniform(Program const& _program, GLint location);
+    basic_uniform();
+    basic_uniform(untyped_uniform);
+    ~basic_uniform();
 
   public:
     GLint location() const;
 
   protected:
-    Program const& _program;
+    Program const* _program { nullptr };
     GLint _location { -1 };
 };
 
 template<typename... T>
 class uniform : public basic_uniform {
   using vec_t = vec<T...>;
-
+  
   public:
-    uniform(Program const& program, GLint location);
+    uniform();
+    uniform(untyped_uniform);
+    uniform& operator=(untyped_uniform);
+    ~uniform();
 
   public:
     void set(T... values);
@@ -38,25 +66,25 @@ class uniform : public basic_uniform {
 
 };
 
-
+/*
 template<typename T>
 class uniform<T> : public basic_uniform {
-  public:
-    uniform(Program const& program, GLint location);
-
   public:
     void set(T value);
     T get() const;
 
 };
-
+*/
   
   
 template<unsigned N, unsigned M = N>
 class uniform_matrix : public basic_uniform {
   public:
-    uniform_matrix(Program const& program, GLint location, GLsizei count = 1);
-  
+    uniform_matrix();
+    uniform_matrix(untyped_uniform);
+    uniform_matrix& operator=(untyped_uniform);
+    ~uniform_matrix();
+
   public:
     void set(GLfloat const*, bool transpose = false);
   
@@ -67,6 +95,7 @@ class uniform_matrix : public basic_uniform {
 
 
 }
+
 
 
 template<typename T>
@@ -96,7 +125,10 @@ class TextureUnit;
 
 class uniform_sampler : public uniform<int> {
   public:
-    uniform_sampler(Program const& _program, GLint location);
+    uniform_sampler();
+    uniform_sampler(untyped_uniform);
+    uniform_sampler& operator=(untyped_uniform);
+    ~uniform_sampler();
 
   public:
     void use(TextureUnit const&);

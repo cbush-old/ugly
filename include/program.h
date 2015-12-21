@@ -2,6 +2,8 @@
 #define OGL_PROGRAM_H
 
 #include <memory>
+#include <unordered_map>
+#include <string>
 
 #include "gl_type.h"
 #include "shader.h"
@@ -17,7 +19,6 @@ struct uniform_info {
   GLint size;
   std::string name;
 };
-
 
 
 class Program {
@@ -85,13 +86,18 @@ class Program {
     bool validate() const;
 
     std::string info_log() const;
-
+  
+  public:
+    untyped_uniform operator[](std::string const&) const;
 
   private:
     void attach() {}
 
   private:
     class Program_impl* _impl;
+  
+  private:
+    mutable std::unordered_map<std::string, untyped_uniform> _location_cache;
 
 };
 

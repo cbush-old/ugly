@@ -219,26 +219,26 @@ int main(int argc, const char* const argv[]) {
       gl::FragmentShader("shaders/frag.glsl")
     );
 
-    gl::uniform4<float> ambient (program, program.uniform_location("ambient"));
-    gl::uniform4<float> light_color (program, program.uniform_location("light_color"));
-    gl::uniform3<float> light_direction (program, program.uniform_location("light_direction"));
-    gl::uniform3<float> half_vector (program, program.uniform_location("hv"));
-    gl::uniform<float> shininess (program, program.uniform_location("shininess"));
-    gl::uniform<float> strength (program, program.uniform_location("strength"));
-    gl::uniform_sampler sampler (program, program.uniform_location("texture_unit"));
+    gl::uniform4<float> ambient = program["ambient"];
+    gl::uniform4<float> light_color (program["light_color"]);
+    gl::uniform3<float> light_direction (program["light_direction"]);
+    gl::uniform3<float> half_vector (program["hv"]);
+    gl::uniform<float> shininess (program["shininess"]);
+    gl::uniform<float> strength (program["strength"]);
+    gl::uniform_sampler sampler (program["texture_unit"]);
 
     ambient.set(0.1f, 0.1f, 0.1f, 1.f);
     light_color.set(1.f, 1.f, 1.f, 1.f);
     shininess.set(100.f);
     strength.set(1.f);
 
-    gl::uniform_mat4 modelview (program, program.uniform_location("modelview"));
-    gl::uniform_mat4 normal_matrix (program, program.uniform_location("normal_matrix"));
-    gl::uniform_mat4 projection (program, program.uniform_location("projection"));
+    gl::uniform_mat4 modelview (program["modelview"]);
+    gl::uniform_mat4 normal_matrix (program["normal_matrix"]);
+    gl::uniform_mat4 projection (program["projection"]);
 
-    gl::uniform_mat4 boring_modelview (boring_program, boring_program.uniform_location("modelview"));
-    gl::uniform_mat4 boring_projection (boring_program, boring_program.uniform_location("projection"));
-    gl::uniform_sampler boring_sampler (boring_program, boring_program.uniform_location("texture_unit"));
+    gl::uniform_mat4 boring_modelview (boring_program["modelview"]);
+    gl::uniform_mat4 boring_projection (boring_program["projection"]);
+    gl::uniform_sampler boring_sampler (boring_program["texture_unit"]);
 
     glm::mat4 projection_matrix {
       glm::perspective<GLfloat>(
