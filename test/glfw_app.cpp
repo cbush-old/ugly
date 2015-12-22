@@ -1,5 +1,6 @@
 #include "glfw_app.h"
 #include "log.h"
+#include "ugly.h"
 
 bool glfwApp::_done { true };
 std::atomic<int> glfwApp::_refs { 0 };
@@ -26,6 +27,10 @@ glfwApp::glfwApp(int major, int minor) {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 
   _window = glfwCreateWindow(width(), height(), "libugly test", NULL, NULL);
+
+  glfwMakeContextCurrent(_window);
+  logi("%s", glGetString(GL_VERSION));
+
   _done = false;
 
   glfwSetKeyCallback(_window, key_callback);
