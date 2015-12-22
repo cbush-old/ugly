@@ -9,7 +9,7 @@ template<void(*glGenFunc)(GLsizei, GLuint*), void(*glDeleteFunc)(GLsizei, GLuint
 class GeneratedObject {
   protected:
     GeneratedObject();
-    GeneratedObject(GLuint name);
+    explicit GeneratedObject(GLuint name);
   
   public:
     GeneratedObject(GeneratedObject const&) = delete;

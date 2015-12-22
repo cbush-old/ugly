@@ -12,7 +12,7 @@ Renderbuffer::Renderbuffer(GLenum internal_format, GLsizei width, GLsizei height
 }
 
 void Renderbuffer::storage(GLsizei width, GLsizei height) {
-  RenderbufferBindguard guard(GL_RENDERBUFFER, name());
+  RenderbufferBindguard guard(GL_RENDERBUFFER, *this);
   GL_CALL(glRenderbufferStorage(GL_RENDERBUFFER, _internal_format, width, height));
 }
 

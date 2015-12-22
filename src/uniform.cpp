@@ -131,7 +131,7 @@ uniform_matrix<N, M>::~uniform_matrix() {}
 #define SPECIALIZE_AND_INSTANTIATE(N, M, SUFFIX) \
   template<> \
   void uniform_matrix<N, M>::set(GLfloat const* value, bool transpose) { \
-    ProgramBindguard guard(_program->name()); \
+    ProgramBindguard guard(*_program); \
     GL_CALL(glUniformMatrix##SUFFIX##fv(_location, _count, (GLboolean)transpose, value)); \
   } \
   template class uniform_matrix< N, M >;

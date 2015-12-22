@@ -16,7 +16,7 @@ TextureUnit::~TextureUnit() {
 }
 
 void TextureUnit::add(Texture const& texture) {
-  ActiveTextureBindguard guard(GL_TEXTURE0 + unit());
+  ActiveTextureBindguard guard(*this);
   GL_CALL(glBindTexture(texture.target(), texture.name()));
 }
 

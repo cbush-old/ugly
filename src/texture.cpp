@@ -42,7 +42,7 @@ void reduce(ImageDesc3D& desc) {
 
 
 #define IMPLEMENT_IMAGE_OR_UNPACK(ND, DATA_OR_OFFSET, ...) \
-  TextureBindguard guard(_bind_target, name()); \
+  TextureBindguard guard(_bind_target, *this); \
   GL_CALL(glTexImage##ND ( \
     _target, \
     level, \
@@ -58,7 +58,7 @@ void reduce(ImageDesc3D& desc) {
   IMPLEMENT_IMAGE_OR_UNPACK(ND, desc.data, DIMENSIONS)
 
 #define IMPLEMENT_SUB_IMAGE_OR_UNPACK(ND, DATA_OR_OFFSET, ...) \
-  TextureBindguard guard(_bind_target, name()); \
+  TextureBindguard guard(_bind_target, *this); \
   GL_CALL(glTexSubImage##ND ( \
     _target, \
     level, \
@@ -72,17 +72,17 @@ void reduce(ImageDesc3D& desc) {
   IMPLEMENT_SUB_IMAGE_OR_UNPACK(ND, desc.data, OFFSETS, DIMENSIONS)
 
 #define IMPLEMENT_UNPACK(ND, DIMENSIONS) \
-  BufferBindguard buffer_guard(GL_PIXEL_UNPACK_BUFFER, buffer.name()); \
+  BufferBindguard buffer_guard(GL_PIXEL_UNPACK_BUFFER, buffer); \
   IMPLEMENT_IMAGE_OR_UNPACK(ND, (void const*)offset, DIMENSIONS)
 
 #define IMPLEMENT_SUB_UNPACK(ND, OFFSETS, DIMENSIONS) \
-  BufferBindguard buffer_guard(GL_PIXEL_UNPACK_BUFFER, buffer.name()); \
+  BufferBindguard buffer_guard(GL_PIXEL_UNPACK_BUFFER, buffer); \
   IMPLEMENT_SUB_IMAGE_OR_UNPACK(ND, (void const*)offset, OFFSETS, DIMENSIONS)
 
 
 #define IMPLEMENT_COPY(ND, ...) \
-  BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer.name()); \
-  TextureBindguard texture_guard(_bind_target, name()); \
+  BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer); \
+  TextureBindguard texture_guard(_bind_target, *this); \
   GL_CALL(glCopyTexImage##ND( \
     _target, \
     level, \
@@ -92,8 +92,8 @@ void reduce(ImageDesc3D& desc) {
   ))
 
 #define IMPLEMENT_SUBCOPY(ND, OFFSETS, ...) \
-  BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer.name()); \
-  TextureBindguard texture_guard(_bind_target, name()); \
+  BufferBindguard buffer_guard(GL_COPY_READ_BUFFER, buffer); \
+  TextureBindguard texture_guard(_bind_target, *this); \
   GL_CALL(glCopyTexSubImage##ND( \
     _target, \
     level, \
@@ -130,7 +130,7 @@ Texture::Texture(GLenum target, TextureParams const& params, GLenum internal_for
   : _target(target)
   , _internal_format(internal_format)
 {
-  TextureBindguard guard(_target, name());
+  TextureBindguard guard(_target, *this);
   for (auto const& kv : params) {
     GLenum pname = kv.first;
     auto const& var = kv.second;
@@ -152,7 +152,7 @@ Texture::Texture(GLenum target, GLenum internal_format)
   : _target(target)
   , _internal_format(internal_format)
 {
-  TextureBindguard guard(_target, name());
+  TextureBindguard guard(_target, *this);
 }
 
 Texture::Texture(GLuint name, GLenum target, GLenum internal_format)
@@ -165,22 +165,22 @@ Texture::~Texture() {}
 
 
 void Texture::parameter(GLenum pname, float value) {
-  TextureBindguard guard(_target, name());
+  TextureBindguard guard(_target, *this);
   GL_CALL(glTexParameterf(_target, pname, value));
 }
 
 void Texture::parameter(GLenum pname, int value) {
-  TextureBindguard guard(_target, name());
+  TextureBindguard guard(_target, *this);
   GL_CALL(glTexParameteri(_target, pname, value));
 }
 
 void Texture::parameter(GLenum pname, GLfloat const* values) {
-  TextureBindguard guard(_target, name());
+  TextureBindguard guard(_target, *this);
   GL_CALL(glTexParameterfv(_target, pname, values));
 }
 
 void Texture::parameter(GLenum pname, GLint const* values) {
-  TextureBindguard guard(_target, name());
+  TextureBindguard guard(_target, *this);
   GL_CALL(glTexParameteriv(_target, pname, values));
 }
 

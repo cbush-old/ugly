@@ -9,7 +9,7 @@ namespace gl {
 
 
 #define FRAMEBUFFER_TEXTURE_IMPL(ND, ...) \
-  FramebufferBindguard guard(GL_FRAMEBUFFER, name()); \
+  FramebufferBindguard guard(GL_FRAMEBUFFER, *this); \
   GL_CALL(glFramebufferTexture##ND ( \
     GL_FRAMEBUFFER, \
     attachment, \
@@ -37,7 +37,7 @@ void Framebuffer::texture(GLenum attachment, Cubemap const& texture, int level) 
 #undef FRAMEBUFFER_TEXTURE_IMPL
 
 void Framebuffer::renderbuffer(GLenum attachment, Renderbuffer const& renderbuffer) {
-  FramebufferBindguard guard(GL_FRAMEBUFFER, name());
+  FramebufferBindguard guard(GL_FRAMEBUFFER, *this);
   GL_CALL(glFramebufferRenderbuffer(
     GL_FRAMEBUFFER,
     attachment,
@@ -48,7 +48,7 @@ void Framebuffer::renderbuffer(GLenum attachment, Renderbuffer const& renderbuff
 
 
 GLenum Framebuffer::status() const {
-  FramebufferBindguard guard(GL_FRAMEBUFFER, name());
+  FramebufferBindguard guard(GL_FRAMEBUFFER, *this);
   GLenum rv;
   GL_CALL(rv = glCheckFramebufferStatus(GL_FRAMEBUFFER));
   return rv;
@@ -91,15 +91,15 @@ void BasicFramebuffer::clear_color(color c) {
 }
 
 void Framebuffer::clear(GLenum mask) {
-  FramebufferBindguard guard(GL_FRAMEBUFFER, name());
+  FramebufferBindguard guard(GL_FRAMEBUFFER, *this);
   GL_CALL(glClearColor(_clear_color.r, _clear_color.g, _clear_color.b, _clear_color.a));
   GL_CALL(glClear(mask));
 }
 
 void Framebuffer::draw(VertexArray const& vao, GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
-  VertexArrayBindguard guard(vao.name());
-  ProgramBindguard program_guard(vao.program()->name());
-  FramebufferBindguard fb_guard(GL_FRAMEBUFFER, name());
+  VertexArrayBindguard guard(vao);
+  ProgramBindguard program_guard(*vao.program());
+  FramebufferBindguard fb_guard(GL_FRAMEBUFFER, *this);
   GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
   GL_CALL(glDrawArrays(mode, first, count));
 }

@@ -8,8 +8,8 @@ namespace gl {
 
 class Renderbuffer : public GeneratedObject<glGenRenderbuffers, glDeleteRenderbuffers> {
   public:
-    Renderbuffer(GLenum internal_format);
-    Renderbuffer(GLenum internal_format, GLsizei width, GLsizei height);
+    explicit Renderbuffer(GLenum internal_format);
+    explicit Renderbuffer(GLenum internal_format, GLsizei width, GLsizei height);
 
   public:
     void storage(GLsizei width, GLsizei height);

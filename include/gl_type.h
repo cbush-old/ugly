@@ -155,17 +155,11 @@ enum BufferIndex {
 
 
 
-template<void(*BindFunction)(GLenum, GLuint)>
+template<typename T, void(*BindFunction)(GLenum, GLuint)>
 class Bindguard {
   public:
-    Bindguard(GLenum target, GLuint name)
-      : _target(target) {
-      GL_CALL(BindFunction(_target, name));
-    }
-
-    ~Bindguard() {
-      GL_CALL_NOTHROW(BindFunction(_target, 0));
-    }
+    Bindguard(GLenum target, T const& object);
+    ~Bindguard();
 
   private:
     GLenum _target;
@@ -173,26 +167,29 @@ class Bindguard {
 };
 
 
-template<typename T, void(*BindFunction)(T), T Default = 0>
+template<typename T, void(*BindFunction)(GLuint), GLuint Default = 0>
 class NoTargetBindguard {
   public:
-    NoTargetBindguard(T name) {
-      GL_CALL(BindFunction(name));
-    }
-  
-    ~NoTargetBindguard() {
-      GL_CALL_NOTHROW(BindFunction(Default));
-    }
+    NoTargetBindguard(T const& object);
+    ~NoTargetBindguard();
 };
 
-using BufferBindguard = Bindguard<glBindBuffer>;
-using TextureBindguard = Bindguard<glBindTexture>;
-using FramebufferBindguard = Bindguard<glBindFramebuffer>;
-using RenderbufferBindguard = Bindguard<glBindRenderbuffer>;
+class Buffer;
+class Texture;
+class Framebuffer;
+class Renderbuffer;
+class TextureUnit;
+class VertexArray;
+class Program;
 
-using ActiveTextureBindguard = NoTargetBindguard<GLenum, glActiveTexture, GL_TEXTURE0>;
-using VertexArrayBindguard = NoTargetBindguard<GLuint, glBindVertexArray>;
-using ProgramBindguard = NoTargetBindguard<GLuint, glUseProgram>;
+using BufferBindguard = Bindguard<Buffer, glBindBuffer>;
+using TextureBindguard = Bindguard<Texture, glBindTexture>;
+using FramebufferBindguard = Bindguard<Framebuffer, glBindFramebuffer>;
+using RenderbufferBindguard = Bindguard<Renderbuffer, glBindRenderbuffer>;
+
+using ActiveTextureBindguard = NoTargetBindguard<TextureUnit, glActiveTexture, GL_TEXTURE0>;
+using VertexArrayBindguard = NoTargetBindguard<VertexArray, glBindVertexArray>;
+using ProgramBindguard = NoTargetBindguard<Program, glUseProgram>;
 
 
 } // namespace gl

@@ -40,20 +40,20 @@ ProgramConstRef VertexArray::program() const {
 
 
 void VertexArray::pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
-  BufferBindguard buffer_guard(GL_ARRAY_BUFFER, buffer.name());
-  VertexArrayBindguard vertex_array_guard(name());
+  BufferBindguard buffer_guard(GL_ARRAY_BUFFER, buffer);
+  VertexArrayBindguard vertex_array_guard(*this);
   GL_CALL(glVertexAttribPointer(attrib.location(), size, type, normalized, stride, (void const*)offset));
 }
 
 
 void VertexArray::enable(attrib const& attrib) {
-  VertexArrayBindguard guard(name());
+  VertexArrayBindguard guard(*this);
   GL_CALL(glEnableVertexAttribArray(attrib.location()));
 }
 
 
 void VertexArray::disable(attrib const& attrib) {
-  VertexArrayBindguard guard(name());
+  VertexArrayBindguard guard(*this);
   GL_CALL(glDisableVertexAttribArray(attrib.location()));
 }
 

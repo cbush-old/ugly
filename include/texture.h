@@ -86,9 +86,9 @@ using TextureParams = std::map<GLenum, ParamVariant>;
 
 class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
   protected:
-    Texture(GLenum target, TextureParams const& params, GLenum internal_format);
-    Texture(GLenum target, GLenum internal_format);
-    Texture(GLuint name, GLenum target, GLenum internal_format);
+    explicit Texture(GLenum target, TextureParams const& params, GLenum internal_format);
+    explicit Texture(GLenum target, GLenum internal_format);
+    explicit Texture(GLuint name, GLenum target, GLenum internal_format);
 
   public:
     Texture(Texture const&) = delete;
@@ -114,7 +114,7 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
 
 class Texture1D : public Texture {
   public:
-    Texture1D(GLenum internal_format = GL_RGBA);
+    explicit Texture1D(GLenum internal_format = GL_RGBA);
     Texture1D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
@@ -140,7 +140,7 @@ class Texture1D : public Texture {
 
 class Texture2D : public Texture {
   public:
-    Texture2D(GLenum internal_format = GL_RGBA);
+    explicit Texture2D(GLenum internal_format = GL_RGBA);
     Texture2D(TextureParams const& params, GLenum internal_format = GL_RGBA);
   
   protected:
@@ -169,7 +169,7 @@ class Texture2D : public Texture {
 
 class Texture3D : public Texture {
   public:
-    Texture3D(GLenum internal_format = GL_RGBA);
+    explicit Texture3D(GLenum internal_format = GL_RGBA);
     Texture3D(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
@@ -224,7 +224,7 @@ class Cubemap : public Texture {
     } _faces[6];
 
   public:
-    Cubemap(GLenum internal_format = GL_RGBA);
+    explicit Cubemap(GLenum internal_format = GL_RGBA);
     Cubemap(TextureParams const& params, GLenum internal_format = GL_RGBA);
 
   public:
