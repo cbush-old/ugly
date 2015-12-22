@@ -19,6 +19,10 @@ struct uniform_info {
   std::string name;
 };
 
+class Program;
+
+using ProgramRef = std::shared_ptr<Program>;
+using ProgramConstRef = std::shared_ptr<Program const>;
 
 class Program {
   public:
@@ -29,8 +33,7 @@ class Program {
       Binary(GLsizei size): buffer(size) {}
     };
 
-
-  public:
+  private:
     Program();
 
   public: // convenience
@@ -38,8 +41,9 @@ class Program {
      * @brief construct a program with attached shaders
      **/
     template<typename... ShaderT>
-    Program(Shader const&, ShaderT const&...);
+    static ProgramRef create(Shader const&, ShaderT const&...);
 
+    static ProgramRef create();
 
   public:
     ~Program();
@@ -95,11 +99,12 @@ class Program {
 };
 
 template<typename... ShaderT>
-inline Program::Program(Shader const& shader, ShaderT const&... shaders): Program() {
-  attach(shader, shaders...);
-  link();
+inline ProgramRef Program::create(Shader const& shader, ShaderT const&... shaders) {
+  ProgramRef program (new Program());
+  program->attach(shader, shaders...);
+  program->link();
+  return program;
 }
-
 
 template<typename ShaderT, typename... ShaderV>
 inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
@@ -107,9 +112,6 @@ inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
   attach(the_rest...);
 }
 
-
-using ProgramRef = std::shared_ptr<Program>;
-using ProgramConstRef = std::shared_ptr<Program const>;
 
 
 } // namespace gl

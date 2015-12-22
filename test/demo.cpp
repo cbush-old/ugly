@@ -206,18 +206,18 @@ int main(int argc, const char* const argv[]) {
     context.enable<GL_DEPTH_TEST>();
 
 
-    gl::ProgramRef program (new gl::Program(
+    gl::ProgramRef program = gl::Program::create(
       gl::VertexShader("shaders/demo/vert.glsl"),
       gl::TessControlShader("shaders/demo/tess_control.glsl"),
       gl::TessEvaluationShader("shaders/demo/tess_eval.glsl"),
       gl::GeometryShader("shaders/demo/geo.glsl"),
       gl::FragmentShader("shaders/demo/frag.glsl")
-    ));
+    );
     
-    gl::ProgramRef boring_program (new gl::Program(
+    gl::ProgramRef boring_program = gl::Program::create(
       gl::VertexShader("shaders/vert.glsl"),
       gl::FragmentShader("shaders/frag.glsl")
-    ));
+    );
 
     gl::uniform4<float> ambient (program, "ambient");
     gl::uniform4<float> light_color (program, "light_color");
@@ -333,8 +333,12 @@ int main(int argc, const char* const argv[]) {
     blur_fb.texture(GL_COLOR_ATTACHMENT0, blur_fb_texture);
     blur_fb.viewport(0, 0, tw, tw);
     gl::ProgramRef blur_program[2] {
-      gl::ProgramRef { new gl::Program(gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag0.glsl")) },
-      gl::ProgramRef { new gl::Program(gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag1.glsl")) },
+      gl::ProgramRef { gl::Program::create(
+        gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag0.glsl")
+      ) },
+      gl::ProgramRef { gl::Program::create(
+        gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag1.glsl")
+      ) },
     };
 
     gl::VertexArray blur_vao[2] {
