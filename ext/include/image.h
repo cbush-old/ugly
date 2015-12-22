@@ -12,18 +12,10 @@ class Image {
     Image(std::string const& path);
 
   public:
-    GLenum format() const;
+    gl::ImageDesc2D const& desc() const;
 
-  public:
-    size_t width() const;
-    size_t height() const;
-
-  public:
-    size_t size() const;
-    uint8_t const* data() const;
-  
   private:
-    std::shared_ptr<class ImageImpl> _impl;
+    std::shared_ptr<gl::ImageDesc2D> _desc;
 
 };
 

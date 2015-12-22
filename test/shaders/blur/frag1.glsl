@@ -9,7 +9,7 @@ in vec2 texcoord;
 
 void main() {
   vec4 texel;
-  float space = 0.0005;
+  float space = 0.000005;
   float top = 20;
   float start = -top;
   for (float i = start; i < top; ++i) {

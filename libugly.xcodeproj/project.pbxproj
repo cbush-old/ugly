@@ -65,6 +65,8 @@
 		0BDEB4FB1C28EA65003C4442 /* bindguard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDEB4F91C28EA3F003C4442 /* bindguard.cpp */; };
 		0BDEB5081C2902DA003C4442 /* image.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BDEB5071C2902DA003C4442 /* image.h */; };
 		0BDEB50A1C29100B003C4442 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDEB5091C29100B003C4442 /* image.cpp */; };
+		0BDEB50F1C293E2D003C4442 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BDEB50E1C293E2D003C4442 /* libpng.dylib */; };
+		0BDEB5121C29410B003C4442 /* libugly-ext.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BDEB5031C290195003C4442 /* libugly-ext.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +83,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 0B4EB8591C078CD10086BDD9;
 			remoteInfo = ugly;
+		};
+		0BDEB5101C293F50003C4442 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0B4EB7E71C07887B0086BDD9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0BDEB5021C290195003C4442;
+			remoteInfo = "ugly-ext";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -168,6 +177,7 @@
 		0BDEB5031C290195003C4442 /* libugly-ext.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libugly-ext.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BDEB5071C2902DA003C4442 /* image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
 		0BDEB5091C29100B003C4442 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
+		0BDEB50E1C293E2D003C4442 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = ../../../usr/local/lib/libpng.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +185,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BDEB5121C29410B003C4442 /* libugly-ext.dylib in Frameworks */,
 				0B4EB8901C0791E10086BDD9 /* IOKit.framework in Frameworks */,
 				0B4EB88E1C0791DB0086BDD9 /* CoreVideo.framework in Frameworks */,
 				0B4EB88C1C0791D50086BDD9 /* Cocoa.framework in Frameworks */,
@@ -208,6 +219,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BDEB50F1C293E2D003C4442 /* libpng.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +229,7 @@
 		0B4EB7E61C07887B0086BDD9 = {
 			isa = PBXGroup;
 			children = (
+				0BDEB50E1C293E2D003C4442 /* libpng.dylib */,
 				0B4EB8891C0791C70086BDD9 /* libglfw.dylib */,
 				0B4EB88B1C0791D50086BDD9 /* Cocoa.framework */,
 				0B4EB88D1C0791DB0086BDD9 /* CoreVideo.framework */,
@@ -446,6 +459,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0BDEB5111C293F50003C4442 /* PBXTargetDependency */,
 				0B4EB8921C07938A0086BDD9 /* PBXTargetDependency */,
 			);
 			name = demo;
@@ -628,6 +642,11 @@
 			target = 0B4EB8591C078CD10086BDD9 /* ugly */;
 			targetProxy = 0B4EB89F1C07954E0086BDD9 /* PBXContainerItemProxy */;
 		};
+		0BDEB5111C293F50003C4442 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0BDEB5021C290195003C4442 /* ugly-ext */;
+			targetProxy = 0BDEB5101C293F50003C4442 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -694,7 +713,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = "test include";
+				USER_HEADER_SEARCH_PATHS = "test include ext/include";
 			};
 			name = Debug;
 		};
@@ -742,7 +761,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = "test include";
+				USER_HEADER_SEARCH_PATHS = "test include ext/include";
 			};
 			name = Release;
 		};
@@ -1017,12 +1036,13 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/System/Library/Frameworks/OpenGL.framework/Headers,
 				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = "ext/include include";
+				USER_HEADER_SEARCH_PATHS = "ext/include include /usr/local/include/";
 			};
 			name = Debug;
 		};
@@ -1065,11 +1085,12 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/System/Library/Frameworks/OpenGL.framework/Headers,
 				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				USER_HEADER_SEARCH_PATHS = "ext/include include";
+				USER_HEADER_SEARCH_PATHS = "ext/include include /usr/local/include/";
 			};
 			name = Release;
 		};
@@ -1119,6 +1140,7 @@
 				0BDEB5061C290195003C4442 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

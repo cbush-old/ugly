@@ -1,6 +1,8 @@
 #include "log.h"
 #include "ugly.h"
 
+#include "image.h"
+
 #include "glfw_app.h"
 
 #define GLM_FORCE_RADIANS
@@ -283,7 +285,10 @@ int main(int argc, const char* const argv[]) {
 
 
     gl::Texture2D texture (params);
-    gl::ImageDesc2D desc (tw, tw, pixels.data());
+    
+    glx::Image image ("shaders/../zombie.png");
+    
+    gl::ImageDesc2D const& desc = image.desc(); //(tw, tw, pixels.data());
     texture.image(0, desc);
   
     // Properties of the displayed object
