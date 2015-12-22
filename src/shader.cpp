@@ -9,7 +9,7 @@
 namespace gl {
 
 
-Shader::Shader(): _name(0) {}
+Shader::Shader() {}
 
 
 Shader::~Shader() {
@@ -38,6 +38,7 @@ template<GLenum Type>
 Shader_type<Type>::Shader_type(std::string const& path)
   : Shader_type<Type>()
 {
+  GL_CALL(_name = glCreateShader(Type));
   std::string file = load_file(path);
   set_source(file);
   compile();
