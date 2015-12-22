@@ -10,7 +10,7 @@ in vec2 texcoord;
 void main() {
   vec4 texel;
   float space = 0.0005;
-  float top = 10;
+  float top = 30;
   float start = -top;
   for (float i = start; i < top; ++i) {
     float f = 0.5 - abs(i / top) / 2.0;

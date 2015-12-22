@@ -32,7 +32,7 @@ class Shader {
     unsigned source_length() const;
 
   protected:
-    class Shader_impl* _impl { nullptr };
+    GLuint _name;
 
 };
 

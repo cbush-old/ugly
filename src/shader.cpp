@@ -8,20 +8,12 @@
 
 namespace gl {
 
-// Not much point to using pImpl while the only data member is _name.
-// For now, treat _impl as reserved, but use it as _name.
 
-class Shader_impl;
-
-#define _name ((GLuint&)*_impl)
-
-
-Shader::Shader(): _impl((Shader_impl*)new GLuint(0)) {}
+Shader::Shader(): _name(0) {}
 
 
 Shader::~Shader() {
   GL_CALL(glDeleteShader(_name));
-  delete (GLuint*)_impl;
 }
 
 

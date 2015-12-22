@@ -53,10 +53,10 @@ bool glfwApp::done() const {
 }
 
 int glfwApp::width() const {
-  return 640;
+  return 720 * (16.0 / 9.0);
 }
 
 int glfwApp::height() const {
-  return 480;
+  return 720;
 }
 
