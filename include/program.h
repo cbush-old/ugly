@@ -94,8 +94,8 @@ class Program {
     void attach() {}
 
   private:
-    class Program_impl* _impl;
-  
+    GLuint _name;
+
 };
 
 template<typename... ShaderT>

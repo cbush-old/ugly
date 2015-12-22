@@ -11,21 +11,13 @@ static inline void print_log(GLuint id) {
   gl_log<glGetProgramiv, glGetProgramInfoLog>(id);
 }
 
-// Not much point to using pImpl while the only data member is _name.
-// For now, treat _impl as reserved, but use it as _name. \m/ SATAN \m/
 
-class Program_impl;
-
-#define _name ((GLuint&)*_impl)
-
-
-Program::Program(): _impl((Program_impl*)new GLuint(0)) {
+Program::Program(): _name(0) {
   GL_CALL(_name = glCreateProgram());
 }
 
 Program::~Program() {
   GL_CALL(glDeleteProgram(_name));
-  delete (GLuint*)_impl;
 }
 
 void Program::attach(Shader const& shader) {
