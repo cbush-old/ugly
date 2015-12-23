@@ -375,12 +375,11 @@ int main(int argc, const char* const argv[]) {
     blur_projection[1].set(glm::value_ptr(projection_matrix));
     
     for (size_t i = 0; i < 2; ++i) {
-      gl::attrib position (blur_program[i].attrib("position"));
-      gl::attrib texcoord (blur_program[i].attrib("texcoord_in"));
-      blur_vao[i].pointer(boring_buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
-      blur_vao[i].pointer(boring_buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
-      blur_vao[i].enable(position);
-      blur_vao[i].enable(texcoord);
+      std::string position_str ("position");
+      blur_vao[i].pointer(boring_buffer, "position", 3, GL_FLOAT, GL_FALSE, 0, 0);
+      blur_vao[i].pointer(boring_buffer, "texcoord_in", 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
+      blur_vao[i].enable(position_str);
+      blur_vao[i].enable("texcoord_in");
     }
 
     logi("framebuffer status: %s", fb.status_str());
