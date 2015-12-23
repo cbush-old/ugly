@@ -23,79 +23,10 @@ class Program {
   public:
     inline GLuint name() const { return _name; }
 
-  public:
-    template<typename StringType>
-    GLint find_cached_attrib_location(StringType const& name) const;
-  
-    template<typename StringType>
-    GLint attrib_location(StringType const& name) const;
-
-    void clear_cache();
-
   private:
-    mutable std::unordered_map<GLint, GLint> _attrib_cache;
     GLuint _name;
 
 };
-
-namespace {
-
-#define HASH_CHAR(x, c) x ^= (c) * 0x7fffffff;
-
-GLint hash(const char* s) {
-  GLint x = 0;
-  for (const char* c = s; *c != '\0'; ++c) {
-    HASH_CHAR(x, *c);
-  }
-  return x;
-}
-
-GLint hash(std::string const& s) {
-  GLint x = 0;
-  for (auto const& c : s) {
-    HASH_CHAR(x, c);
-  }
-  return x;
-}
-
-inline const char* c_str(std::string const& s) {
-  return s.c_str();
-}
-
-inline const char* c_str(const char* s) {
-  return s;
-}
-
-#undef HASH_CHAR
-
-}
-
-
-template<typename StringType>
-GLint Program::attrib_location(StringType const& attrib_name) const {
-  GLint location = find_cached_attrib_location(attrib_name);
-  if (location == -1) {
-    GL_CALL(location = glGetAttribLocation(_name, c_str(attrib_name)));
-    _attrib_cache[hash(attrib_name)] = location;
-  }
-  return location;
-}
-
-
-template<typename StringType>
-GLint Program::find_cached_attrib_location(StringType const& name) const {
-  auto it = _attrib_cache.find(hash(name));
-  if (it != _attrib_cache.end()) {
-    return it->second;
-  }
-  return -1;
-}
-
-
-void Program::clear_cache() {
-  _attrib_cache.clear();
-}
-
 
 Program::Program(): _name(0) {
   GL_CALL(_name = glCreateProgram());
@@ -161,11 +92,13 @@ GLint ProgramRef::uniform_location(std::string const& uniform_name) const {
 }
 
 GLint ProgramRef::attrib_location(const char* attrib_name) const {
-  return _shared->attrib_location(attrib_name);
+  GL_CALL(GLint location = glGetAttribLocation(name(), attrib_name));
+  return location;
 }
 
 GLint ProgramRef::attrib_location(std::string const& attrib_name) const {
-  return _shared->attrib_location(attrib_name);
+  GL_CALL(GLint location = glGetAttribLocation(name(), attrib_name.c_str()));
+  return location;
 }
 
 attrib ProgramRef::attrib(const char* name) const {
