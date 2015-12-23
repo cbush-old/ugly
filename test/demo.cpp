@@ -241,6 +241,8 @@ int main(int argc, const char* const argv[]) {
     gl::uniform_mat4 boring_modelview = boring_program["modelview"];
     gl::uniform_mat4 boring_projection = boring_program["projection"];
     gl::uniform_sampler boring_sampler = boring_program["texture_unit"];
+    gl::uniform4<float> boring_color = boring_program.uniform("color");
+    boring_color.set(1.f, 1.f, 1.f, 1.f);
 
     glm::mat4 projection_matrix {
       glm::perspective<GLfloat>(
