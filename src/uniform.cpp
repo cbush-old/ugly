@@ -9,36 +9,31 @@
 
 namespace gl {
 
-namespace detail {
-
-basic_uniform::basic_uniform(ProgramConstRef program, const char* name)
-  : _program(program)
-  , _location(program.uniform_location(name))
-  {}
-
-basic_uniform::basic_uniform(ProgramConstRef program, std::string const& name)
-  : _program(program)
-  , _location(program.uniform_location(name))
-  {}
-
-basic_uniform::basic_uniform(ProgramConstRef program, GLint location)
+untyped_uniform::untyped_uniform(ProgramConstRef program, GLint location)
   : _program(program)
   , _location(location)
   {}
 
+ProgramConstRef untyped_uniform::program() const {
+  return _program;
+}
 
-basic_uniform::~basic_uniform() {}
+GLint untyped_uniform::location() const {
+  return _location;
+}
+
+
+namespace detail {
+
+basic_uniform::basic_uniform(untyped_uniform const& u)
+  : _program(u.program())
+  , _location(u.location())
+  {}
+
 
 GLint basic_uniform::location() const {
   return _location;
 }
-
-/*
-template<typename T>
-uniform<T>::uniform(untyped_uniform u)
-  : basic_uniform(u)
-  {}
-*/
 
 
 // What is this madness? Well, it's a rather C++y way to provide a bit of type safety
@@ -50,22 +45,9 @@ uniform<T>::uniform(untyped_uniform u)
 
 
 template<typename... T>
-uniform<T...>::uniform(ProgramConstRef program, const char* name)
-  : basic_uniform(program, name)
+uniform<T...>::uniform(untyped_uniform const& u)
+  : basic_uniform(u)
   {}
-
-template<typename... T>
-uniform<T...>::uniform(ProgramConstRef program, std::string const& name)
-  : basic_uniform(program, name)
-  {}
-
-template<typename... T>
-uniform<T...>::uniform(ProgramConstRef program, GLint location)
-  : basic_uniform(program, location)
-  {}
-
-template<typename... T>
-uniform<T...>::~uniform() {}
 
 
 // uniform scalar specialization
@@ -119,13 +101,10 @@ INSTANTIATE_TYPE(GLuint);
 
 
 template<unsigned N, unsigned M>
-uniform_matrix<N, M>::uniform_matrix(ProgramConstRef program, const char* name, GLsizei count)
-  : basic_uniform(program, name)
+uniform_matrix<N, M>::uniform_matrix(untyped_uniform const& u, GLsizei count)
+  : basic_uniform(u)
   , _count(count)
   {}
-
-template<unsigned N, unsigned M>
-uniform_matrix<N, M>::~uniform_matrix() {}
 
 
 #define SPECIALIZE_AND_INSTANTIATE(N, M, SUFFIX) \
@@ -181,24 +160,13 @@ SPECIALIZE(GLuint, ui);
 
 
 
-uniform_sampler::uniform_sampler(ProgramConstRef program, const char* name)
-  : uniform<int>(program, name) {}
-
-
-uniform_sampler::uniform_sampler(ProgramConstRef program, std::string const& name)
-  : uniform<int>(program, name) {}
-
-
-uniform_sampler::uniform_sampler(ProgramConstRef program, GLint location)
-  : uniform<int>(program, location) {}
+uniform_sampler::uniform_sampler(untyped_uniform const& u)
+  : uniform<int>(u) {}
 
 
 void uniform_sampler::use(TextureUnit const& unit) {
   uniform<int>::set(unit.unit());
 }
-
-uniform_sampler::~uniform_sampler() {}
-
 
 
 

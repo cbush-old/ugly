@@ -1,6 +1,7 @@
 #include "program.h"
 #include "log.h"
 #include "context.h"
+#include "uniform.h"
 
 namespace gl {
 
@@ -99,6 +100,27 @@ GLint ProgramRef::attrib_location(std::string const& attrib_name) const {
   GL_CALL(GLint location = glGetAttribLocation(name(), attrib_name.c_str()));
   return location;
 }
+
+untyped_uniform ProgramRef::operator[](const char* name) const {
+  return { *this, uniform_location(name) };
+}
+
+untyped_uniform ProgramRef::operator[](std::string const& name) const {
+  return { *this, uniform_location(name) };
+}
+
+untyped_uniform ProgramRef::uniform(const char* name) const {
+  return { *this, uniform_location(name) };
+}
+
+untyped_uniform ProgramRef::uniform(std::string const& name) const {
+  return { *this, uniform_location(name) };
+}
+
+untyped_uniform ProgramRef::uniform(GLint location) const {
+  return { *this, location };
+}
+
 
 GLint ProgramRef::get(GLenum param) const {
   GLint params[3];

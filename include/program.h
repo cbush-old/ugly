@@ -12,6 +12,8 @@
 
 namespace gl {
 
+class untyped_uniform;
+
 struct uniform_info {
   GLuint index;
   GLenum type;
@@ -56,6 +58,13 @@ class ProgramRef {
     GLint uniform_location(const char* name) const;
     GLint uniform_location(std::string const& name) const;
     uniform_info active_uniform(GLuint index) const;
+
+  public:
+    untyped_uniform operator[](const char* name) const;
+    untyped_uniform operator[](std::string const& name) const;
+    untyped_uniform uniform(const char* name) const;
+    untyped_uniform uniform(std::string const& name) const;
+    untyped_uniform uniform(GLint location) const;
 
   public:
     GLint attrib_location(const char* name) const;
