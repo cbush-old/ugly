@@ -24,6 +24,20 @@ class untyped_uniform {
 };
 
 
+class attrib {
+  public:
+    attrib(ProgramConstRef, GLint location);
+
+  public:
+    GLint location() const;
+
+  protected:
+    ProgramConstRef _program;
+    GLint _location { -1 };
+
+};
+
+
 namespace detail {
 
 class basic_uniform {

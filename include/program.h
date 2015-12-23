@@ -13,6 +13,7 @@
 namespace gl {
 
 class untyped_uniform;
+class attrib;
 
 struct uniform_info {
   GLuint index;
@@ -28,7 +29,9 @@ struct Binary {
   Binary(GLsizei size): buffer(size) {}
 };
 
+
 class Program;
+
 
 class ProgramRef {
   public:
@@ -69,6 +72,8 @@ class ProgramRef {
   public:
     GLint attrib_location(const char* name) const;
     GLint attrib_location(std::string const& name) const;
+    class attrib attrib(const char* name) const;
+    class attrib attrib(std::string const& name) const;
 
   public:
     GLint get(GLenum) const;

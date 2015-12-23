@@ -3,30 +3,9 @@
 #include "buffer.h"
 #include "texture_unit.h"
 #include "framebuffer.h"
+#include "uniform.h"
 
 namespace gl {
-
-
-attrib::attrib(ProgramConstRef program, const char* name)
-  : _program(program)
-  , _location(program.attrib_location(name))
-  {}
-
-attrib::attrib(ProgramConstRef program, std::string const& name)
-  : _program(program)
-  , _location(program.attrib_location(name))
-  {}
-
-attrib::attrib(ProgramConstRef program, GLint location)
-  : _program(program)
-  , _location(location)
-  {}
-
-
-GLint attrib::location() const {
-  return _location;
-}
-
 
 
 VertexArray::VertexArray(ProgramConstRef program)
@@ -45,19 +24,43 @@ void VertexArray::pointer(Buffer& buffer, attrib const& attrib, GLint size, GLen
   GL_CALL(glVertexAttribPointer(attrib.location(), size, type, normalized, stride, (void const*)offset));
 }
 
+void VertexArray::pointer(Buffer& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
+  BufferBindguard buffer_guard(GL_ARRAY_BUFFER, buffer);
+  VertexArrayBindguard vertex_array_guard(*this);
+  GL_CALL(glVertexAttribPointer(_program.attrib_location(attrib_name), size, type, normalized, stride, (void const*)offset));
+}
+
+void VertexArray::pointer(Buffer& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
+  pointer(buffer, attrib_name.c_str(), size, type, normalized, stride, offset);
+}
 
 void VertexArray::enable(attrib const& attrib) {
   VertexArrayBindguard guard(*this);
   GL_CALL(glEnableVertexAttribArray(attrib.location()));
 }
 
+void VertexArray::enable(const char* attrib_name) {
+  VertexArrayBindguard guard(*this);
+  GL_CALL(glEnableVertexAttribArray(_program.attrib_location(attrib_name)));
+}
+
+void VertexArray::enable(std::string const& attrib_name) {
+  enable(attrib_name.c_str());
+}
 
 void VertexArray::disable(attrib const& attrib) {
   VertexArrayBindguard guard(*this);
   GL_CALL(glDisableVertexAttribArray(attrib.location()));
 }
 
+void VertexArray::disable(const char* attrib_name) {
+  VertexArrayBindguard guard(*this);
+  GL_CALL(glDisableVertexAttribArray(_program.attrib_location(attrib_name)));
+}
 
+void VertexArray::disable(std::string const& attrib_name) {
+  disable(attrib_name.c_str());
+}
 
 
 } // namespace gl
