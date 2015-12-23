@@ -101,15 +101,6 @@ GLint ProgramRef::attrib_location(std::string const& attrib_name) const {
   return location;
 }
 
-attrib ProgramRef::attrib(const char* name) const {
-  return { *this, attrib_location(name) };
-}
-
-attrib ProgramRef::attrib(std::string const& name) const {
-  return { *this, attrib_location(name) };
-}
-
-
 untyped_uniform ProgramRef::operator[](const char* name) const {
   return { *this, uniform_location(name) };
 }

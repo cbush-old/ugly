@@ -13,7 +13,22 @@ namespace gl {
 class Program;
 class Buffer;
 class Framebuffer;
-class attrib;
+
+
+class attrib {
+  public:
+    attrib(ProgramConstRef, const char* name);
+    attrib(ProgramConstRef, std::string const& name);
+    attrib(ProgramConstRef, GLint location);
+
+  public:
+    GLint location() const;
+
+  protected:
+    ProgramConstRef _program;
+    GLint _location { -1 };
+
+};
 
 
 class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArrays> {
@@ -22,16 +37,10 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
 
   public:
     void enable(attrib const&);
-    void enable(const char* attrib_name);
-    void enable(std::string const& attrib_name);
     void disable(attrib const&);
-    void disable(const char* attrib_name);
-    void disable(std::string const& attrib_name);
 
   public:
     void pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
-    void pointer(Buffer& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
-    void pointer(Buffer& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
     void draw(GLenum mode, GLsizei count, GLsizei first = 0);
     void draw(Framebuffer& framebuffer, GLenum mode, GLsizei count, GLsizei first = 0);
   
