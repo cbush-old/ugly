@@ -19,36 +19,26 @@ struct uniform_info {
   std::string name;
 };
 
+struct Binary {
+  std::vector<uint8_t> buffer;
+  GLenum format;
+  Binary() {}
+  Binary(GLsizei size): buffer(size) {}
+};
+
 class Program;
 
-using ProgramRef = std::shared_ptr<Program>;
-using ProgramConstRef = std::shared_ptr<Program const>;
-
-class Program {
+class ProgramRef {
   public:
-    struct Binary {
-      std::vector<uint8_t> buffer;
-      GLenum format;
-      Binary() {}
-      Binary(GLsizei size): buffer(size) {}
-    };
+    ProgramRef();
 
-  private:
-    Program();
-
-  public: // convenience
-    /**
-     * @brief construct a program with attached shaders
-     **/
     template<typename... ShaderT>
-    static ProgramRef create(Shader const&, ShaderT const&...);
-
-    static ProgramRef create();
-
+    ProgramRef(Shader const&, ShaderT const&...);
+  
   public:
-    ~Program();
-    Program(Program const&) = delete;
-    Program& operator=(Program const&) = delete;
+    ProgramRef(ProgramRef const&);
+    ProgramRef& operator=(ProgramRef const&);
+    ~ProgramRef();
 
   public:
     void attach(Shader const&);
@@ -76,41 +66,46 @@ class Program {
     Binary binary() const;
     void binary(Binary const&);
 
+  public:
     /**
      * @brief retrieve properties corresponding to a specified shader stage
      **/
     GLint stage(GLenum shader_type, GLenum param) const;
+    bool validate() const;
+    std::string info_log() const;
 
+  public:
     /**
      * @brief specify a parameter
      **/
     void parameter(GLenum param, GLint value);
-
-    bool validate() const;
-
-    std::string info_log() const;
-
+  
   private:
     void attach() {}
 
   private:
-    GLuint _name;
+    std::shared_ptr<Program> _shared;
 
 };
 
+
 template<typename... ShaderT>
-inline ProgramRef Program::create(Shader const& shader, ShaderT const&... shaders) {
-  ProgramRef program (new Program());
-  program->attach(shader, shaders...);
-  program->link();
-  return program;
+inline ProgramRef::ProgramRef(Shader const& shader, ShaderT const&... shaders)
+  : ProgramRef()
+{
+  attach(shader, shaders...);
+  link();
 }
 
 template<typename ShaderT, typename... ShaderV>
-inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
+inline void ProgramRef::attach(ShaderT const& first, ShaderV const&... the_rest) {
   attach(static_cast<Shader const&>(first));
   attach(the_rest...);
 }
+
+
+
+using ProgramConstRef = ProgramRef const;
 
 
 

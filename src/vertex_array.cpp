@@ -9,12 +9,12 @@ namespace gl {
 
 attrib::attrib(ProgramConstRef program, const char* name)
   : _program(program)
-  , _location(program->attrib_location(name))
+  , _location(program.attrib_location(name))
   {}
 
 attrib::attrib(ProgramConstRef program, std::string const& name)
   : _program(program)
-  , _location(program->attrib_location(name))
+  , _location(program.attrib_location(name))
   {}
 
 attrib::attrib(ProgramConstRef program, GLint location)

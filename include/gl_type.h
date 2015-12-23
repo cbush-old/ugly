@@ -180,7 +180,9 @@ class Framebuffer;
 class Renderbuffer;
 class TextureUnit;
 class VertexArray;
-class Program;
+class ProgramRef;
+
+using ProgramConstRef = ProgramRef const;
 
 using BufferBindguard = Bindguard<Buffer, glBindBuffer>;
 using TextureBindguard = Bindguard<Texture, glBindTexture>;
@@ -189,7 +191,7 @@ using RenderbufferBindguard = Bindguard<Renderbuffer, glBindRenderbuffer>;
 
 using ActiveTextureBindguard = NoTargetBindguard<TextureUnit, glActiveTexture, GL_TEXTURE0>;
 using VertexArrayBindguard = NoTargetBindguard<VertexArray, glBindVertexArray>;
-using ProgramBindguard = NoTargetBindguard<Program, glUseProgram>;
+using ProgramBindguard = NoTargetBindguard<ProgramConstRef, glUseProgram>;
 
 
 } // namespace gl

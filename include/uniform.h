@@ -9,7 +9,6 @@
 
 namespace gl {
 
-using ProgramConstRef = std::shared_ptr<Program const>;
 
 namespace detail {
 

@@ -48,7 +48,7 @@ template class Bindguard<Renderbuffer, glBindRenderbuffer>;
 
 template class NoTargetBindguard<TextureUnit, glActiveTexture, GL_TEXTURE0>;
 template class NoTargetBindguard<VertexArray, glBindVertexArray>;
-template class NoTargetBindguard<Program, glUseProgram>;
+template class NoTargetBindguard<ProgramConstRef, glUseProgram>;
 
 
 }
