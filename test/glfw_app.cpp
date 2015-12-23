@@ -29,7 +29,6 @@ glfwApp::glfwApp(int major, int minor) {
   _window = glfwCreateWindow(width(), height(), "libugly test", NULL, NULL);
 
   glfwMakeContextCurrent(_window);
-  logi("%s", glGetString(GL_VERSION));
 
   _done = false;
 
