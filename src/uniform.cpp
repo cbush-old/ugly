@@ -169,6 +169,16 @@ void uniform_sampler::use(TextureUnit const& unit) {
 }
 
 
+attrib::attrib(ProgramConstRef program, GLint location)
+  : _program(program)
+  , _location(location)
+  {}
+
+
+GLint attrib::location() const {
+  return _location;
+}
+
 
 }
 

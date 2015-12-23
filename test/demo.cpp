@@ -106,9 +106,9 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::ProgramConstR
 
   buffer.data(vertex_data, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
 
-  gl::attrib position (program, "position");
-  gl::attrib texcoord (program, "texcoord_in");
-  gl::attrib normal (program, "normal_in");
+  gl::attrib position (program.attrib("position"));
+  gl::attrib texcoord (program.attrib("texcoord_in"));
+  gl::attrib normal (program.attrib("normal_in"));
 
   GL_CALL(glPatchParameteri(GL_PATCH_VERTICES, 4));
   vao.pointer(buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -183,8 +183,8 @@ void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Progra
 
   buffer.data(vertex_data, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
 
-  gl::attrib position (program, "position");
-  gl::attrib texcoord (program, "texcoord_in");
+  gl::attrib position (program.attrib("position"));
+  gl::attrib texcoord (program.attrib("texcoord_in"));
 
   vao.pointer(buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
   vao.pointer(buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
@@ -241,7 +241,8 @@ int main(int argc, const char* const argv[]) {
     gl::uniform_mat4 boring_modelview = boring_program["modelview"];
     gl::uniform_mat4 boring_projection = boring_program["projection"];
     gl::uniform_sampler boring_sampler = boring_program["texture_unit"];
-    gl::uniform4<float> boring_color = boring_program.uniform("color");
+    gl::uniform4<float> boring_color = boring_program["color"];
+
     boring_color.set(1.f, 1.f, 1.f, 1.f);
 
     glm::mat4 projection_matrix {
@@ -375,8 +376,8 @@ int main(int argc, const char* const argv[]) {
     blur_projection[1].set(glm::value_ptr(projection_matrix));
     
     for (size_t i = 0; i < 2; ++i) {
-      gl::attrib position (blur_program[i], "position");
-      gl::attrib texcoord (blur_program[i], "texcoord_in");
+      gl::attrib position (blur_program[i].attrib("position"));
+      gl::attrib texcoord (blur_program[i].attrib("texcoord_in"));
       blur_vao[i].pointer(boring_buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
       blur_vao[i].pointer(boring_buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
       blur_vao[i].enable(position);
