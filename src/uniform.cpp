@@ -164,7 +164,7 @@ uniform_sampler::uniform_sampler(untyped_uniform const& u)
   : uniform<int>(u) {}
 
 
-void uniform_sampler::use(TextureUnit const& unit) {
+void uniform_sampler::set(TextureUnit const& unit) {
   uniform<int>::set(unit.unit());
 }
 

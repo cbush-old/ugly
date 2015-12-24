@@ -9,19 +9,9 @@
 
 namespace gl {
 
-class untyped_uniform {
-  public:
-    untyped_uniform(ProgramConstRef program, GLint location);
-  
-  public:
-    ProgramConstRef program() const;
-    GLint location() const;
 
-  private:
-    ProgramConstRef _program;
-    GLint _location { -1 };
-
-};
+class TextureUnit;
+class untyped_uniform;
 
 
 class attrib {
@@ -108,16 +98,44 @@ using uniform_mat3x4 = detail::uniform_matrix<3, 4>;
 using uniform_mat4x3 = detail::uniform_matrix<4, 3>;
 
 
-class TextureUnit;
-
 class uniform_sampler : public uniform<int> {
   public:
     uniform_sampler(untyped_uniform const&);
 
   public:
-    void use(TextureUnit const&);
+    void set(TextureUnit const&);
 
 };
+
+class untyped_uniform {
+  public:
+    untyped_uniform(ProgramConstRef program, GLint location);
+  
+  public:
+    ProgramConstRef program() const;
+    GLint location() const;
+  
+  public:
+    template<typename... T>
+    void set(T... values) {
+      detail::uniform<T...>(*this).set(values...);
+    }
+  
+    template<typename... T>
+    void set(vec<T...> value) {
+      detail::uniform<T...>(*this).set(value);
+    }
+
+    void set(TextureUnit const& value) {
+      uniform_sampler(*this).set(value);
+    }
+
+  private:
+    ProgramConstRef _program;
+    GLint _location { -1 };
+
+};
+
 
 
 } // namespace gl

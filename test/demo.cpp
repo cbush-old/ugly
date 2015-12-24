@@ -221,7 +221,6 @@ int main(int argc, const char* const argv[]) {
       gl::FragmentShader("shaders/frag.glsl")
     );
 
-    gl::uniform4<float> ambient = program.uniform("ambient");
     gl::uniform4<float> light_color = program["light_color"];
     gl::uniform3<float> light_direction = program["light_direction"];
     gl::uniform3<float> half_vector = program["hv"];
@@ -229,10 +228,10 @@ int main(int argc, const char* const argv[]) {
     gl::uniform<float> strength = program["strength"];
     gl::uniform_sampler sampler = program["texture_unit"];
 
-    ambient.set(0.1f, 0.1f, 0.1f, 1.f);
-    light_color.set(1.f, 1.f, 1.f, 1.f);
-    shininess.set(100.f);
-    strength.set(1.f);
+    program["ambient"].set(0.1f, 0.1f, 0.1f, 1.f);
+    program["light_color"].set(1.f, 1.f, 1.f, 1.f);
+    program["shininess"].set(100.f);
+    program["strength"].set(1.f);
 
     gl::uniform_mat4 modelview = program["modelview"];
     gl::uniform_mat4 normal_matrix = program["normal_matrix"];
@@ -376,10 +375,9 @@ int main(int argc, const char* const argv[]) {
     blur_projection[1].set(glm::value_ptr(projection_matrix));
     
     for (size_t i = 0; i < 2; ++i) {
-      std::string position_str ("position");
       blur_vao[i].pointer(boring_buffer, "position", 3, GL_FLOAT, GL_FALSE, 0, 0);
       blur_vao[i].pointer(boring_buffer, "texcoord_in", 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
-      blur_vao[i].enable(position_str);
+      blur_vao[i].enable("position");
       blur_vao[i].enable("texcoord_in");
     }
 
@@ -423,7 +421,7 @@ int main(int argc, const char* const argv[]) {
 
       fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-      boring_sampler.use(unit);
+      boring_sampler.set(unit);
       fb.draw(boring_vao, GL_TRIANGLE_STRIP, 26, 0);
       context.clear_color(
         0.5f + cos(tick) * 0.5f,
@@ -444,7 +442,7 @@ int main(int argc, const char* const argv[]) {
       auto slow_rotated_modelview_matrix = modelview_matrix * rotation2;
 
       fb2.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-      sampler.use(fb_unit);
+      sampler.set(fb_unit);
       modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
       fb2.draw(vao, GL_PATCHES, 24);
 
@@ -455,11 +453,11 @@ int main(int argc, const char* const argv[]) {
       blur_modelview[1].set(glm::value_ptr(modelview_matrix));
 
       blur_fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-      blur_sampler[0].use(fb_unit2);
+      blur_sampler[0].set(fb_unit2);
       blur_fb.draw(blur_vao[0], GL_TRIANGLE_STRIP, 4, 0);
 
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-      blur_sampler[1].use(blur_unit[1]);
+      blur_sampler[1].set(blur_unit[1]);
       context.draw(blur_vao[1], GL_TRIANGLE_STRIP, 4, 0);
       app.update();
     }
