@@ -42,7 +42,7 @@ struct ImageDesc3D : public ImageDesc2D {
   public:
     ImageDesc3D() {}
     ImageDesc3D(GLsizei width, GLsizei height, GLsizei depth, void const* data)
-      : ImageDesc2D(width, height, data), depth(height)
+      : ImageDesc2D(width, height, data), depth(depth)
       {}
   
   public:
