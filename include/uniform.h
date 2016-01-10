@@ -16,14 +16,20 @@ class untyped_uniform;
 
 class attrib {
   public:
+    attrib();
     attrib(ProgramConstRef, GLint location);
+  
+  public:
+    ~attrib() = default;
+    attrib(attrib const&) = default;
+    attrib& operator=(attrib const&) = default;
 
   public:
     GLint location() const;
 
-  protected:
-    ProgramConstRef _program;
-    GLint _location { -1 };
+  private:
+    GLint _program;
+    GLint _location;
 
 };
 
