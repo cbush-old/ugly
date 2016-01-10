@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B4B7A641C2EAC6100252EB0 /* frag.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8321C0788FE0086BDD9 /* frag.glsl */; };
+		0B4B7A651C2EAC6100252EB0 /* geo.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8331C0788FE0086BDD9 /* geo.glsl */; };
+		0B4B7A661C2EAC6100252EB0 /* tess_control.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8341C0788FE0086BDD9 /* tess_control.glsl */; };
+		0B4B7A671C2EAC6100252EB0 /* tess_eval.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8351C0788FE0086BDD9 /* tess_eval.glsl */; };
+		0B4B7A681C2EAC6100252EB0 /* vert.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8361C0788FE0086BDD9 /* vert.glsl */; };
+		0B4B7A6A1C2EAC8500252EB0 /* frag0.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B72F3591C27B95C00EC2F10 /* frag0.glsl */; };
+		0B4B7A6B1C2EAC8500252EB0 /* frag1.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B72F35A1C27B95C00EC2F10 /* frag1.glsl */; };
+		0B4B7A6C1C2EAC8A00252EB0 /* bad_syntax.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB82E1C0788FE0086BDD9 /* bad_syntax.glsl */; };
+		0B4B7A6E1C2EACAA00252EB0 /* frag.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8301C0788FE0086BDD9 /* frag.glsl */; };
+		0B4B7A6F1C2EACAA00252EB0 /* geo.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B126F631C0D582C00F96CA0 /* geo.glsl */; };
+		0B4B7A701C2EACAA00252EB0 /* vert.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4EB8311C0788FE0086BDD9 /* vert.glsl */; };
+		0B4B7A711C2EACAA00252EB0 /* tess_eval.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B126F641C0D587500F96CA0 /* tess_eval.glsl */; };
+		0B4B7A721C2EACAA00252EB0 /* tess_control.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B126F651C0D588A00F96CA0 /* tess_control.glsl */; };
+		0B4B7A751C2EACF600252EB0 /* zombie.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B4B7A741C2EACF300252EB0 /* zombie.png */; };
 		0B4EB85E1C078DAB0086BDD9 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB7EE1C0788D40086BDD9 /* buffer.cpp */; };
 		0B4EB85F1C078DAB0086BDD9 /* context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB7F01C0788D40086BDD9 /* context.cpp */; };
 		0B4EB8601C078DAB0086BDD9 /* enum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB7F21C0788D40086BDD9 /* enum.cpp */; };
@@ -94,14 +108,55 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0B4EB8451C0789C30086BDD9 /* CopyFiles */ = {
+		0B4B7A691C2EAC7300252EB0 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = shaders/blur;
+			dstSubfolderSpec = 16;
 			files = (
+				0B4B7A6A1C2EAC8500252EB0 /* frag0.glsl in CopyFiles */,
+				0B4B7A6B1C2EAC8500252EB0 /* frag1.glsl in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B4B7A6D1C2EAC9800252EB0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = shaders/demo;
+			dstSubfolderSpec = 16;
+			files = (
+				0B4B7A6E1C2EACAA00252EB0 /* frag.glsl in CopyFiles */,
+				0B4B7A6F1C2EACAA00252EB0 /* geo.glsl in CopyFiles */,
+				0B4B7A701C2EACAA00252EB0 /* vert.glsl in CopyFiles */,
+				0B4B7A711C2EACAA00252EB0 /* tess_eval.glsl in CopyFiles */,
+				0B4B7A721C2EACAA00252EB0 /* tess_control.glsl in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B4B7A731C2EACDA00252EB0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				0B4B7A751C2EACF600252EB0 /* zombie.png in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0B4EB8451C0789C30086BDD9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = shaders;
+			dstSubfolderSpec = 16;
+			files = (
+				0B4B7A6C1C2EAC8A00252EB0 /* bad_syntax.glsl in CopyFiles */,
+				0B4B7A641C2EAC6100252EB0 /* frag.glsl in CopyFiles */,
+				0B4B7A651C2EAC6100252EB0 /* geo.glsl in CopyFiles */,
+				0B4B7A661C2EAC6100252EB0 /* tess_control.glsl in CopyFiles */,
+				0B4B7A671C2EAC6100252EB0 /* tess_eval.glsl in CopyFiles */,
+				0B4B7A681C2EAC6100252EB0 /* vert.glsl in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -109,6 +164,7 @@
 		0B126F631C0D582C00F96CA0 /* geo.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = geo.glsl; sourceTree = "<group>"; };
 		0B126F641C0D587500F96CA0 /* tess_eval.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tess_eval.glsl; sourceTree = "<group>"; };
 		0B126F651C0D588A00F96CA0 /* tess_control.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tess_control.glsl; sourceTree = "<group>"; };
+		0B4B7A741C2EACF300252EB0 /* zombie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zombie.png; sourceTree = "<group>"; };
 		0B4EB7EE1C0788D40086BDD9 /* buffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = buffer.cpp; sourceTree = "<group>"; };
 		0B4EB7F01C0788D40086BDD9 /* context.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = context.cpp; sourceTree = "<group>"; };
 		0B4EB7F21C0788D40086BDD9 /* enum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = enum.cpp; sourceTree = "<group>"; };
@@ -302,6 +358,7 @@
 		0B4EB8251C0788FE0086BDD9 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				0B4B7A741C2EACF300252EB0 /* zombie.png */,
 				0B4EB8AC1C07B0620086BDD9 /* demo.cpp */,
 				0B4EB8281C0788FE0086BDD9 /* glfw_app.cpp */,
 				0B4EB8291C0788FE0086BDD9 /* glfw_app.h */,
@@ -455,6 +512,9 @@
 				0B4EB8431C0789C30086BDD9 /* Sources */,
 				0B4EB8441C0789C30086BDD9 /* Frameworks */,
 				0B4EB8451C0789C30086BDD9 /* CopyFiles */,
+				0B4B7A691C2EAC7300252EB0 /* CopyFiles */,
+				0B4B7A6D1C2EAC9800252EB0 /* CopyFiles */,
+				0B4B7A731C2EACDA00252EB0 /* CopyFiles */,
 			);
 			buildRules = (
 			);
