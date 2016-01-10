@@ -26,6 +26,11 @@ class BasicFramebuffer {
   public:
     virtual void clear(GLenum mask) =0;
     virtual void draw(VertexArray const&, GLenum mode, GLsizei count, GLsizei first = 0) =0;
+  
+    /**
+     * @brief draw using the given VertexArray object's 'mode' and 'count'.
+     **/
+    virtual void draw(VertexArray const&);
 
   protected:
     Viewport _viewport;

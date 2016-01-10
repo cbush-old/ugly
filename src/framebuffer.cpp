@@ -90,6 +90,11 @@ void BasicFramebuffer::clear_color(color c) {
   _clear_color = c;
 }
 
+void BasicFramebuffer::draw(VertexArray const& vao) {
+  GL_ASSERT(vao.count(), "draw called with 0-count vertex array %p", &vao);
+  draw(vao, vao.mode(), vao.count());
+}
+
 void Framebuffer::clear(GLenum mask) {
   FramebufferBindguard guard(GL_FRAMEBUFFER, *this);
   GL_CALL(glClearColor(_clear_color.r, _clear_color.g, _clear_color.b, _clear_color.a));

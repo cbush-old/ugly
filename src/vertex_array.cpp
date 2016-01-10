@@ -12,6 +12,11 @@ VertexArray::VertexArray(ProgramConstRef program)
   : _program(program)
   {}
 
+VertexArray::VertexArray(ProgramConstRef program, GLenum mode)
+  : _program(program)
+  , _mode(mode)
+  {}
+
 
 ProgramConstRef VertexArray::program() const {
   return _program;
@@ -60,6 +65,22 @@ void VertexArray::disable(const char* attrib_name) {
 
 void VertexArray::disable(std::string const& attrib_name) {
   disable(attrib_name.c_str());
+}
+
+GLenum VertexArray::mode() const {
+  return _mode;
+}
+
+GLsizei VertexArray::count() const {
+  return _count;
+}
+
+void VertexArray::set_mode(GLenum mode) {
+  _mode = mode;
+}
+
+void VertexArray::set_count(GLsizei count) {
+  _count = count;
 }
 
 

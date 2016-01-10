@@ -19,6 +19,7 @@ class attrib;
 class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArrays> {
   public:
     VertexArray(ProgramConstRef);
+    VertexArray(ProgramConstRef, GLenum mode);
 
   public:
     void enable(attrib const&);
@@ -32,14 +33,21 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
     void pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
     void pointer(Buffer& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
     void pointer(Buffer& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
-    void draw(GLenum mode, GLsizei count, GLsizei first = 0);
-    void draw(Framebuffer& framebuffer, GLenum mode, GLsizei count, GLsizei first = 0);
   
+  public: // Optionally store count and mode params for use with drawing.
+    GLsizei count() const;
+    void set_count(GLsizei);
+  
+    GLenum mode() const;
+    void set_mode(GLenum);
+
   public:
     ProgramConstRef program() const;
 
   private:
     ProgramConstRef _program;
+    GLenum _mode { GL_POINTS };
+    GLsizei _count { 0 };
 
 };
 
