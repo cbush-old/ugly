@@ -83,5 +83,12 @@ void VertexArray::set_count(GLsizei count) {
   _count = count;
 }
 
+std::vector<size_t> const& VertexArray::segments() const {
+  return _segments;
+}
+
+void VertexArray::set_segments(std::vector<size_t> const& segments) {
+  _segments = segments;
+}
 
 } // namespace gl

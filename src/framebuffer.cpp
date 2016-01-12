@@ -91,8 +91,17 @@ void BasicFramebuffer::clear_color(color c) {
 }
 
 void BasicFramebuffer::draw(VertexArray const& vao) {
-  GL_ASSERT(vao.count(), "draw called with 0-count vertex array %p", &vao);
-  draw(vao, vao.mode(), vao.count());
+  auto const& segments = vao.segments();
+  if (segments.empty()) {
+    GL_ASSERT(vao.count(), "draw called with 0-count vertex array %p", &vao);
+    draw(vao, vao.mode(), vao.count());
+  } else {
+    GLsizei offset = 0;
+    for (size_t segment_size : segments) {
+      draw(vao, vao.mode(), (GLsizei)segment_size, offset);
+      offset += (GLsizei)segment_size;
+    }
+  }
 }
 
 void Framebuffer::clear(GLenum mask) {

@@ -40,6 +40,9 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
   
     GLenum mode() const;
     void set_mode(GLenum);
+  
+    std::vector<size_t> const& segments() const;
+    void set_segments(std::vector<size_t> const&);
 
   public:
     ProgramConstRef program() const;
@@ -48,8 +51,10 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
     ProgramConstRef _program;
     GLenum _mode { GL_POINTS };
     GLsizei _count { 0 };
+    std::vector<size_t> _segments;
 
 };
+
 
 } // namespace gl
 
