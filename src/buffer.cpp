@@ -11,9 +11,9 @@ void Buffer::data(size_t size, void const* data, GLenum usage, GLenum target) {
 }
 
 
-void Buffer::subdata(size_t offset, size_t size, void const* data) {
-  BufferBindguard guard(GL_COPY_WRITE_BUFFER, *this);
-  GL_CALL(glBufferSubData(GL_COPY_WRITE_BUFFER, offset, size, data));
+void Buffer::subdata(size_t offset, size_t size, void const* data, GLenum target) {
+  BufferBindguard guard(target, *this);
+  GL_CALL(glBufferSubData(target, offset, size, data));
 }
 
 

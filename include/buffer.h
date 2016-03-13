@@ -56,10 +56,14 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
 
   public:
     template<typename T>
-    void subdata(size_t offset, std::vector<T> const& container) {
-      subdata(offset, container.data(), container.size() * sizeof(T));
+    void subdata(size_t offset, std::vector<T> const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
+      subdata(offset, container.size() * sizeof(T), container.data(), target);
     }
-  
+
+    template<typename T>
+    void subdata(std::vector<T> const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
+      subdata(0, container.size() * sizeof(T), container.data(), target);
+    }
 
   public:
     void* map(GLenum target, GLenum access);
@@ -77,7 +81,7 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
 
   private:
     void data(size_t size, void const* data, GLenum usage, GLenum target);
-    void subdata(size_t offset, size_t size, void const* data);
+    void subdata(size_t offset, size_t size, void const* data, GLenum target);
 
 
   private:
