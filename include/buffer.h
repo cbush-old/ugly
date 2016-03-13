@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <array>
+#include <type_traits>
 
 namespace gl {
 
@@ -55,14 +56,15 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
 
 
   public:
-    template<typename T>
-    void subdata(size_t offset, std::vector<T> const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
-      subdata(offset, container.size() * sizeof(T), container.data(), target);
+    template<class Container>
+    void subdata(size_t offset, size_t count, Container const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
+      assert(count <= container.size());
+      _subdata(offset, count * sizeof(typename Container::value_type), container.data(), target);
     }
 
-    template<typename T>
-    void subdata(std::vector<T> const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
-      subdata(0, container.size() * sizeof(T), container.data(), target);
+    template<class Container>
+    void subdata(size_t offset, Container const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
+      subdata(offset, container.size(), container, target);
     }
 
   public:
@@ -81,7 +83,7 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
 
   private:
     void data(size_t size, void const* data, GLenum usage, GLenum target);
-    void subdata(size_t offset, size_t size, void const* data, GLenum target);
+    void _subdata(size_t offset, size_t size, void const* data, GLenum target);
 
 
   private:
