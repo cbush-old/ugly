@@ -110,12 +110,12 @@ void Framebuffer::clear(GLenum mask) {
   GL_CALL(glClear(mask));
 }
 
-void Framebuffer::draw(VertexArray const& vao, GLenum mode, GLsizei count, GLsizei first /* = 0 */) {
+void Framebuffer::draw(VertexArray const& vao, GLenum mode, size_t count, size_t first /* = 0 */) {
   VertexArrayBindguard guard(vao);
   ProgramBindguard program_guard(vao.program());
   FramebufferBindguard fb_guard(GL_FRAMEBUFFER, *this);
   GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
-  GL_CALL(glDrawArrays(mode, first, count));
+  GL_CALL(glDrawArrays(mode, (GLsizei)first, (GLsizei)count));
 }
 
 

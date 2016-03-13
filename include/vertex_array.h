@@ -30,10 +30,10 @@ class VertexArray : public GeneratedObject<glGenVertexArrays, glDeleteVertexArra
     void disable(std::string const& attrib_name);
 
   public:
-    void pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
-    void pointer(Buffer& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
-    void pointer(Buffer& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
-  
+    void pointer(Buffer const& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
+    void pointer(Buffer const& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
+    void pointer(Buffer const& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset);
+
   public: // Optionally store count and mode params for use with drawing.
     GLsizei count() const;
     void set_count(GLsizei);

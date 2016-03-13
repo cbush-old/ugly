@@ -23,19 +23,19 @@ ProgramConstRef VertexArray::program() const {
 }
 
 
-void VertexArray::pointer(Buffer& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
+void VertexArray::pointer(Buffer const& buffer, attrib const& attrib, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
   BufferBindguard buffer_guard(GL_ARRAY_BUFFER, buffer);
   VertexArrayBindguard vertex_array_guard(*this);
   GL_CALL(glVertexAttribPointer(attrib.location(), size, type, normalized, stride, (void const*)offset));
 }
 
-void VertexArray::pointer(Buffer& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
+void VertexArray::pointer(Buffer const& buffer, const char* attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
   BufferBindguard buffer_guard(GL_ARRAY_BUFFER, buffer);
   VertexArrayBindguard vertex_array_guard(*this);
   GL_CALL(glVertexAttribPointer(_program.attrib_location(attrib_name), size, type, normalized, stride, (void const*)offset));
 }
 
-void VertexArray::pointer(Buffer& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
+void VertexArray::pointer(Buffer const& buffer, std::string const& attrib_name, GLint size, GLenum type, bool normalized, GLsizei stride, size_t offset) {
   pointer(buffer, attrib_name.c_str(), size, type, normalized, stride, offset);
 }
 
