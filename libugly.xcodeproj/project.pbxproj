@@ -76,6 +76,8 @@
 		0B4EB8AD1C07B0620086BDD9 /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B4EB8AC1C07B0620086BDD9 /* demo.cpp */; };
 		0BA992021C113FF5007F55BE /* texture_unit.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BA992011C113FF5007F55BE /* texture_unit.h */; };
 		0BA992041C114018007F55BE /* texture_unit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BA992031C114018007F55BE /* texture_unit.cpp */; };
+		0BDA81131C94D33F00950A7A /* uniform_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDA81121C94D33F00950A7A /* uniform_buffer.cpp */; };
+		0BDA81151C94D35000950A7A /* uniform_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BDA81141C94D35000950A7A /* uniform_buffer.h */; };
 		0BDEB4FB1C28EA65003C4442 /* bindguard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDEB4F91C28EA3F003C4442 /* bindguard.cpp */; };
 		0BDEB5081C2902DA003C4442 /* image.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BDEB5071C2902DA003C4442 /* image.h */; };
 		0BDEB50A1C29100B003C4442 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDEB5091C29100B003C4442 /* image.cpp */; };
@@ -229,6 +231,8 @@
 		0B72F35A1C27B95C00EC2F10 /* frag1.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = frag1.glsl; sourceTree = "<group>"; };
 		0BA992011C113FF5007F55BE /* texture_unit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_unit.h; sourceTree = "<group>"; };
 		0BA992031C114018007F55BE /* texture_unit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_unit.cpp; sourceTree = "<group>"; };
+		0BDA81121C94D33F00950A7A /* uniform_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = uniform_buffer.cpp; sourceTree = "<group>"; };
+		0BDA81141C94D35000950A7A /* uniform_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uniform_buffer.h; sourceTree = "<group>"; };
 		0BDEB4F91C28EA3F003C4442 /* bindguard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bindguard.cpp; sourceTree = "<group>"; };
 		0BDEB5031C290195003C4442 /* libugly-ext.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libugly-ext.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BDEB5071C2902DA003C4442 /* image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
@@ -306,6 +310,7 @@
 			children = (
 				0BDEB4F91C28EA3F003C4442 /* bindguard.cpp */,
 				0B4EB7EE1C0788D40086BDD9 /* buffer.cpp */,
+				0BDA81121C94D33F00950A7A /* uniform_buffer.cpp */,
 				0B4EB7F01C0788D40086BDD9 /* context.cpp */,
 				0B4EB7F21C0788D40086BDD9 /* enum.cpp */,
 				0B4EB7F41C0788D40086BDD9 /* framebuffer.cpp */,
@@ -330,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				0B4EB8101C0788F00086BDD9 /* buffer.h */,
+				0BDA81141C94D35000950A7A /* uniform_buffer.h */,
 				0B4EB8121C0788F00086BDD9 /* context_instantiations.inl */,
 				0B4EB8111C0788F00086BDD9 /* context.h */,
 				0B4EB8131C0788F00086BDD9 /* enum.h */,
@@ -482,6 +488,7 @@
 				0B4EB87A1C078E280086BDD9 /* program.h in Headers */,
 				0B4EB87B1C078E280086BDD9 /* query.h in Headers */,
 				0BA992021C113FF5007F55BE /* texture_unit.h in Headers */,
+				0BDA81151C94D35000950A7A /* uniform_buffer.h in Headers */,
 				0B4EB87C1C078E280086BDD9 /* renderbuffer.h in Headers */,
 				0B4EB87D1C078E280086BDD9 /* sampler.h in Headers */,
 				0B4EB87E1C078E280086BDD9 /* shader.h in Headers */,
@@ -654,6 +661,7 @@
 				0BDEB4FB1C28EA65003C4442 /* bindguard.cpp in Sources */,
 				0B4EB85E1C078DAB0086BDD9 /* buffer.cpp in Sources */,
 				0B4EB85F1C078DAB0086BDD9 /* context.cpp in Sources */,
+				0BDA81131C94D33F00950A7A /* uniform_buffer.cpp in Sources */,
 				0B4EB8601C078DAB0086BDD9 /* enum.cpp in Sources */,
 				0B4EB8611C078DAB0086BDD9 /* framebuffer.cpp in Sources */,
 				0B4EB8621C078DAB0086BDD9 /* generated_object.cpp in Sources */,

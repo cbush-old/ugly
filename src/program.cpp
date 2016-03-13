@@ -263,6 +263,14 @@ uniform_info ProgramRef::active_uniform(GLuint index) const {
 }
 
 
+GLuint ProgramRef::uniform_block_index(const char* uniform_name) const {
+  GL_CALL(return glGetUniformBlockIndex(name(), uniform_name));
+}
+
+GLuint ProgramRef::uniform_block_index(std::string const& uniform_name) const {
+  return uniform_block_index(uniform_name.c_str());
+}
+
 
 
 } // namespace gl

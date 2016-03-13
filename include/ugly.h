@@ -9,6 +9,7 @@
 #include "texture_unit.h"
 #include "enum.h"
 #include "buffer.h"
+#include "uniform_buffer.h"
 #include "framebuffer.h"
 #include "vertex_array.h"
 #include "renderbuffer.h"

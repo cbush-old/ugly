@@ -69,6 +69,10 @@ class ProgramRef {
     untyped_uniform uniform(std::string const& name) const;
     untyped_uniform uniform(GLint location) const;
 
+  public: // uniform block, uniform buffer
+    GLuint uniform_block_index(const char* name) const;
+    GLuint uniform_block_index(std::string const& name) const;
+
   public:
     GLint attrib_location(const char* name) const;
     GLint attrib_location(std::string const& name) const;
