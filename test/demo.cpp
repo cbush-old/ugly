@@ -256,11 +256,11 @@ int main(int argc, const char* const argv[]) {
     projection.set(glm::value_ptr(projection_matrix));
     boring_projection.set(glm::value_ptr(projection_matrix));
 
-    gl::VertexArray vao (program);
+    gl::VertexArray vao;
     gl::Buffer buffer;
     set_vertex_data(buffer, vao, program);
 
-    gl::VertexArray boring_vao (boring_program);
+    gl::VertexArray boring_vao;
     gl::Buffer boring_buffer;
     set_boring_vertex_data(boring_buffer, boring_vao, boring_program);
 
@@ -348,10 +348,7 @@ int main(int argc, const char* const argv[]) {
       ),
     };
 
-    gl::VertexArray blur_vao[2] {
-      { blur_program[0] },
-      { blur_program[1] },
-    };
+    gl::VertexArray blur_vao[2];
     
     gl::uniform_mat4 blur_modelview[2] {
       { blur_program[0]["modelview"] },
@@ -375,10 +372,12 @@ int main(int argc, const char* const argv[]) {
     blur_projection[1].set(glm::value_ptr(projection_matrix));
     
     for (size_t i = 0; i < 2; ++i) {
-      blur_vao[i].pointer(boring_buffer, "position", 3, GL_FLOAT, GL_FALSE, 0, 0);
-      blur_vao[i].pointer(boring_buffer, "texcoord_in", 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
-      blur_vao[i].enable("position");
-      blur_vao[i].enable("texcoord_in");
+      auto position = blur_program[i].attrib_location("position");
+      auto texcoord = blur_program[i].attrib_location("texcoord_in");
+      blur_vao[i].pointer(boring_buffer, position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+      blur_vao[i].pointer(boring_buffer, texcoord, 2, GL_FLOAT, GL_FALSE, 0, 26 * 3 * sizeof(GLfloat));
+      blur_vao[i].enable(position);
+      blur_vao[i].enable(texcoord);
     }
 
     logi("framebuffer status: %s", fb.status_str());
@@ -422,7 +421,7 @@ int main(int argc, const char* const argv[]) {
       fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
       boring_sampler.set(unit);
-      fb.draw(boring_vao, GL_TRIANGLE_STRIP, 26, 0);
+      fb.draw(boring_program, boring_vao, GL_TRIANGLE_STRIP, 26, 0);
       context.clear_color(
         0.5f + cos(tick) * 0.5f,
         0.5f + cos(tick + 1.f) * 0.5f,
@@ -444,7 +443,7 @@ int main(int argc, const char* const argv[]) {
       fb2.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       sampler.set(fb_unit);
       modelview.set(glm::value_ptr(slow_rotated_modelview_matrix));
-      fb2.draw(vao, GL_PATCHES, 24);
+      fb2.draw(program, vao, GL_PATCHES, 24);
 
       modelview_matrix = glm::translate(glm::mat4(),
         glm::vec3(0.f, 0.f, -2.f)
@@ -454,11 +453,11 @@ int main(int argc, const char* const argv[]) {
 
       blur_fb.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       blur_sampler[0].set(fb_unit2);
-      blur_fb.draw(blur_vao[0], GL_TRIANGLE_STRIP, 4, 0);
+      blur_fb.draw(blur_program[0], blur_vao[0], GL_TRIANGLE_STRIP, 4, 0);
 
       context.clear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
       blur_sampler[1].set(blur_unit[1]);
-      context.draw(blur_vao[1], GL_TRIANGLE_STRIP, 4, 0);
+      context.draw(blur_program[1], blur_vao[1], GL_TRIANGLE_STRIP, 4, 0);
       app.update();
     }
 
