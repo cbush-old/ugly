@@ -30,20 +30,17 @@ struct Binary {
 };
 
 
-class Program;
-
-
-class ProgramRef {
+class Program {
   public:
-    ProgramRef();
+    Program();
 
     template<typename... ShaderT>
-    ProgramRef(Shader const&, ShaderT const&...);
+    Program(Shader const&, ShaderT const&...);
   
   public:
-    ProgramRef(ProgramRef const&);
-    ProgramRef& operator=(ProgramRef const&);
-    ~ProgramRef();
+    Program(Program const&) = delete;
+    Program& operator=(Program const&) = delete;
+    ~Program();
 
   public:
     void attach(Shader const&);
@@ -102,28 +99,24 @@ class ProgramRef {
     void attach() {}
 
   private:
-    std::shared_ptr<Program> _shared;
+    GLuint _name;
 
 };
 
 
 template<typename... ShaderT>
-inline ProgramRef::ProgramRef(Shader const& shader, ShaderT const&... shaders)
-  : ProgramRef()
+inline Program::Program(Shader const& shader, ShaderT const&... shaders)
+  : Program()
 {
   attach(shader, shaders...);
   link();
 }
 
 template<typename ShaderT, typename... ShaderV>
-inline void ProgramRef::attach(ShaderT const& first, ShaderV const&... the_rest) {
+inline void Program::attach(ShaderT const& first, ShaderV const&... the_rest) {
   attach(static_cast<Shader const&>(first));
   attach(the_rest...);
 }
-
-
-
-using ProgramConstRef = ProgramRef const;
 
 
 

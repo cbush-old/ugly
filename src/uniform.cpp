@@ -9,12 +9,12 @@
 
 namespace gl {
 
-untyped_uniform::untyped_uniform(ProgramConstRef program, GLint location)
+untyped_uniform::untyped_uniform(Program const& program, GLint location)
   : _program(program)
   , _location(location)
   {}
 
-ProgramConstRef untyped_uniform::program() const {
+Program const& untyped_uniform::program() const {
   return _program;
 }
 

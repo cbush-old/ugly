@@ -14,7 +14,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 
-void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::ProgramConstRef program) {
+void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
 
   float scale = 1.f;
   float t = 1.f;
@@ -123,7 +123,7 @@ void set_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::ProgramConstR
 
 
 
-void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::ProgramConstRef program) {
+void set_boring_vertex_data(gl::Buffer& buffer, gl::VertexArray& vao, gl::Program const& program) {
 
   float scale = 1.f;
   float t = 1.f;
@@ -208,7 +208,7 @@ int main(int argc, const char* const argv[]) {
     context.enable<GL_DEPTH_TEST>();
 
 
-    gl::ProgramRef program (
+    gl::Program program (
       gl::VertexShader("shaders/demo/vert.glsl"),
       gl::TessControlShader("shaders/demo/tess_control.glsl"),
       gl::TessEvaluationShader("shaders/demo/tess_eval.glsl"),
@@ -216,7 +216,7 @@ int main(int argc, const char* const argv[]) {
       gl::FragmentShader("shaders/demo/frag.glsl")
     );
     
-    gl::ProgramRef boring_program (
+    gl::Program boring_program (
       gl::VertexShader("shaders/vert.glsl"),
       gl::FragmentShader("shaders/frag.glsl")
     );
@@ -339,13 +339,9 @@ int main(int argc, const char* const argv[]) {
     blur_fb_texture.storage(1, tw, tw);
     blur_fb.texture(GL_COLOR_ATTACHMENT0, blur_fb_texture);
     blur_fb.viewport(0, 0, tw, tw);
-    gl::ProgramRef blur_program[2] {
-      gl::ProgramRef (
-        gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag0.glsl")
-      ),
-      gl::ProgramRef (
-        gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag1.glsl")
-      ),
+    gl::Program blur_program[2] {
+      { gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag0.glsl") },
+      { gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/blur/frag1.glsl") }
     };
 
     gl::VertexArray blur_vao[2];

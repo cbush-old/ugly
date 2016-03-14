@@ -38,7 +38,7 @@ class basic_uniform {
     GLint location() const;
 
   protected:
-    ProgramConstRef _program;
+    Program const& _program;
     GLint _location { -1 };
 };
 
@@ -109,10 +109,10 @@ class uniform_sampler : public uniform<int> {
 
 class untyped_uniform {
   public:
-    untyped_uniform(ProgramConstRef program, GLint location);
+    untyped_uniform(Program const& program, GLint location);
   
   public:
-    ProgramConstRef program() const;
+    Program const& program() const;
     GLint location() const;
   
   public:
@@ -131,7 +131,7 @@ class untyped_uniform {
     }
 
   private:
-    ProgramConstRef _program;
+    Program const& _program;
     GLint _location { -1 };
 
 };

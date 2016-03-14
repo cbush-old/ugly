@@ -10,7 +10,6 @@
 namespace gl {
 
 
-class Program;
 class Buffer;
 class Framebuffer;
 class attrib;

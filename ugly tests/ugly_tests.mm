@@ -122,15 +122,15 @@ gl::Context *context;
 - (void)testProgram {
   gl::VertexShader vert ("shaders/vert.glsl");
   gl::FragmentShader frag ("shaders/frag.glsl");
-  gl::ProgramRef program (vert, frag);
-  gl::ProgramRef program2 (gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/frag.glsl"));
+  gl::Program program (vert, frag);
+  gl::Program program2 (gl::VertexShader("shaders/vert.glsl"), gl::FragmentShader("shaders/frag.glsl"));
   
 }
 
 - (void)testUniforms {
   gl::VertexShader vert ("shaders/vert.glsl");
   gl::FragmentShader frag ("shaders/frag.glsl");
-  gl::ProgramRef program (vert, frag);
+  gl::Program program (vert, frag);
   
   {
     gl::uniform<int> a (program["blah"]);
@@ -161,7 +161,7 @@ gl::Context *context;
 - (void)testUniformMatrix {
   gl::VertexShader vert ("shaders/vert.glsl");
   gl::FragmentShader frag ("shaders/frag.glsl");
-  gl::ProgramRef program (vert, frag);
+  gl::Program program (vert, frag);
 
   glm::mat4 projection_matrix {
     glm::perspective<GLfloat>(

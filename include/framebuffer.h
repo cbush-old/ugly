@@ -25,12 +25,12 @@ class BasicFramebuffer {
 
   public:
     virtual void clear(GLenum mask) =0;
-    virtual void draw(ProgramConstRef, VertexArray const&, GLenum mode, size_t count, size_t first = 0) =0;
+    virtual void draw(Program const&, VertexArray const&, GLenum mode, size_t count, size_t first = 0) =0;
   
     /**
      * @brief draw using the given VertexArray object's 'mode' and 'count'.
      **/
-    virtual void draw(ProgramConstRef, VertexArray const&);
+    virtual void draw(Program const&, VertexArray const&);
 
   protected:
     Viewport _viewport;
@@ -53,7 +53,7 @@ class Framebuffer
 
   public:
     void clear(GLenum mask) override;
-    void draw(ProgramConstRef program, VertexArray const&, GLenum mode, size_t count, size_t first = 0) override;
+    void draw(Program const& program, VertexArray const&, GLenum mode, size_t count, size_t first = 0) override;
 
   public:
     GLenum status() const;
