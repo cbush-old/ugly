@@ -90,15 +90,15 @@ void BasicFramebuffer::clear_color(color c) {
   _clear_color = c;
 }
 
-void BasicFramebuffer::draw(VertexArray const& vao) {
+void BasicFramebuffer::draw(ProgramConstRef program, VertexArray const& vao) {
   auto const& segments = vao.segments();
   if (segments.empty()) {
     GL_ASSERT(vao.count(), "draw called with 0-count vertex array %p", &vao);
-    draw(vao, vao.mode(), vao.count());
+    draw(program, vao, vao.mode(), vao.count());
   } else {
     GLsizei offset = 0;
     for (size_t segment_size : segments) {
-      draw(vao, vao.mode(), (GLsizei)segment_size, offset);
+      draw(program, vao, vao.mode(), (GLsizei)segment_size, offset);
       offset += (GLsizei)segment_size;
     }
   }
@@ -110,9 +110,9 @@ void Framebuffer::clear(GLenum mask) {
   GL_CALL(glClear(mask));
 }
 
-void Framebuffer::draw(VertexArray const& vao, GLenum mode, size_t count, size_t first /* = 0 */) {
+void Framebuffer::draw(ProgramConstRef program, VertexArray const& vao, GLenum mode, size_t count, size_t first /* = 0 */) {
   VertexArrayBindguard guard(vao);
-  ProgramBindguard program_guard(vao.program());
+  ProgramBindguard program_guard(program);
   FramebufferBindguard fb_guard(GL_FRAMEBUFFER, *this);
   GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
   GL_CALL(glDrawArrays(mode, (GLsizei)first, (GLsizei)count));

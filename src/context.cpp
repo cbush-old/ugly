@@ -180,9 +180,9 @@ void Context::clear(GLenum mask) {
   GL_CALL(glClear(mask));
 }
 
-void Context::draw(VertexArray const& vao, GLenum mode, size_t count, size_t first /* = 0 */) {
+void Context::draw(ProgramConstRef program, VertexArray const& vao, GLenum mode, size_t count, size_t first /* = 0 */) {
   VertexArrayBindguard guard(vao);
-  ProgramBindguard program_guard(vao.program());
+  ProgramBindguard program_guard(program);
   GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
   GL_CALL(glDrawArrays(mode, (GLsizei)first, (GLsizei)count));
 }

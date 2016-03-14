@@ -169,11 +169,11 @@ GLint ProgramRef::attrib_location(std::string const& attrib_name) const {
 }
 
 attrib ProgramRef::attrib(const char* name) const {
-  return { *this, attrib_location(name) };
+  return { attrib_location(name) };
 }
 
 attrib ProgramRef::attrib(std::string const& name) const {
-  return { *this, attrib_location(name) };
+  return { attrib_location(name) };
 }
 
 

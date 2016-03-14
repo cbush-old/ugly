@@ -310,7 +310,6 @@
 			children = (
 				0BDEB4F91C28EA3F003C4442 /* bindguard.cpp */,
 				0B4EB7EE1C0788D40086BDD9 /* buffer.cpp */,
-				0BDA81121C94D33F00950A7A /* uniform_buffer.cpp */,
 				0B4EB7F01C0788D40086BDD9 /* context.cpp */,
 				0B4EB7F21C0788D40086BDD9 /* enum.cpp */,
 				0B4EB7F41C0788D40086BDD9 /* framebuffer.cpp */,
@@ -324,6 +323,7 @@
 				0BA992031C114018007F55BE /* texture_unit.cpp */,
 				0B4EB8041C0788D40086BDD9 /* texture.cpp */,
 				0B4EB8061C0788D40086BDD9 /* transform_feedback.cpp */,
+				0BDA81121C94D33F00950A7A /* uniform_buffer.cpp */,
 				0B4EB8081C0788D40086BDD9 /* uniform.cpp */,
 				0B4EB80B1C0788D40086BDD9 /* vertex_array.cpp */,
 				0B4EB80D1C0788D40086BDD9 /* viewport.cpp */,

@@ -60,7 +60,7 @@ class Context : public BasicFramebuffer {
 
   public: // BasicFramebuffer
     void clear(GLenum mask) override;
-    void draw(VertexArray const&, GLenum mode, size_t count, size_t first = 0) override;
+    void draw(ProgramConstRef, VertexArray const&, GLenum mode, size_t count, size_t first = 0) override;
 
   public:
     void color_mask(color const&);
