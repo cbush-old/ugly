@@ -59,12 +59,13 @@ class Buffer : public GeneratedObject<glGenBuffers, glDeleteBuffers> {
     template<class Container>
     void subdata(size_t offset, size_t count, Container const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
       assert(count <= container.size());
-      _subdata(offset, count * sizeof(typename Container::value_type), container.data(), target);
+      auto const size = sizeof(typename Container::value_type);
+      _subdata(offset * size, count * size, container.data() + offset * size, target);
     }
 
     template<class Container>
     void subdata(size_t offset, Container const& container, GLenum target = GL_COPY_WRITE_BUFFER) {
-      subdata(offset, container.size(), container, target);
+      subdata(offset, container.size() - offset, container, target);
     }
 
   public:

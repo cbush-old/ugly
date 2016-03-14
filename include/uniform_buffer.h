@@ -16,9 +16,14 @@ class UniformBuffer {
     UniformBuffer& operator=(UniformBuffer const&) = delete;
 
   public:
-    template<typename T>
-    void data(std::vector<T> const& container, GLenum usage) {
+    template<typename Container>
+    void data(Container const& container, GLenum usage) {
       _buffer.data(container, usage, GL_UNIFORM_BUFFER);
+    }
+  
+    template<typename Container>
+    void subdata(size_t offset, size_t count, Container const& container) {
+      _buffer.subdata(offset, count, container);
     }
 
     void bind(GLuint binding);
