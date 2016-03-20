@@ -102,6 +102,9 @@ class Texture : public GeneratedObject<glGenTextures, glDeleteTextures> {
     void parameter(GLenum pname, GLint const*);
   
   public:
+    void generate_mipmap();
+
+  public:
     GLenum target() const;
 
   protected:

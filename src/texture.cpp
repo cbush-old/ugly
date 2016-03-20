@@ -184,6 +184,11 @@ void Texture::parameter(GLenum pname, GLint const* values) {
   GL_CALL(glTexParameteriv(_target, pname, values));
 }
 
+void Texture::generate_mipmap() {
+  TextureBindguard guard(_target, *this);
+  GL_CALL(glGenerateMipmap(_target));
+}
+
 GLenum Texture::target() const {
   return _target;
 }

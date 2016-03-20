@@ -60,6 +60,7 @@ class uniform : public basic_uniform {
 template<unsigned N, unsigned M = N>
 class uniform_matrix : public basic_uniform {
   public:
+    uniform_matrix();
     uniform_matrix(untyped_uniform const&, GLsizei count = 1);
 
   public:
