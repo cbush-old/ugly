@@ -118,6 +118,26 @@ void Framebuffer::draw(Program const& program, VertexArray const& vao, GLenum mo
   GL_CALL(glDrawArrays(mode, (GLsizei)first, (GLsizei)count));
 }
 
+void Framebuffer::draw_instanced(Program const& program, VertexArray const& vao, size_t instance_count, GLenum mode, size_t count, size_t first /* = 0 */) {
+  VertexArrayBindguard guard(vao);
+  ProgramBindguard program_guard(program);
+  FramebufferBindguard fb_guard(GL_FRAMEBUFFER, *this);
+  GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
+  GL_CALL(glDrawArraysInstanced(mode, (GLsizei)first, (GLsizei)count, (GLsizei)instance_count));
+}
+
+void BasicFramebuffer::draw_buffer(GLenum buffer) {
+  GL_CALL(glDrawBuffer(buffer));
+}
+
+void Framebuffer::draw_buffer(GLenum buffer) {
+  FramebufferBindguard guard(GL_FRAMEBUFFER, *this);
+  BasicFramebuffer::draw_buffer(buffer);
+}
+
+bool Framebuffer::is_complete() const {
+  return status() == GL_FRAMEBUFFER_COMPLETE;
+}
 
 
 

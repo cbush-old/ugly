@@ -31,6 +31,11 @@ class BasicFramebuffer {
      * @brief draw using the given VertexArray object's 'mode' and 'count'.
      **/
     virtual void draw(Program const&, VertexArray const&);
+  
+    virtual void draw_instanced(Program const&, VertexArray const&, size_t instance_count, GLenum mode, size_t count, size_t first = 0) =0;
+  
+  public:
+    virtual void draw_buffer(GLenum buffer);
 
   protected:
     Viewport _viewport;
@@ -54,8 +59,13 @@ class Framebuffer
   public:
     void clear(GLenum mask) override;
     void draw(Program const& program, VertexArray const&, GLenum mode, size_t count, size_t first = 0) override;
+    void draw_instanced(Program const&, VertexArray const&, size_t instance_count, GLenum mode, size_t count, size_t first = 0) override;
 
   public:
+    void draw_buffer(GLenum buffer) override;
+
+  public:
+    bool is_complete() const;
     GLenum status() const;
     const char* status_str() const;
 

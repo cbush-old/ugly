@@ -187,6 +187,13 @@ void Context::draw(Program const& program, VertexArray const& vao, GLenum mode, 
   GL_CALL(glDrawArrays(mode, (GLsizei)first, (GLsizei)count));
 }
 
+void Context::draw_instanced(Program const& program, VertexArray const& vao, size_t instance_count, GLenum mode, size_t count, size_t first /* = 0 */) {
+  VertexArrayBindguard guard(vao);
+  ProgramBindguard program_guard(program);
+  GL_CALL(glViewport(_viewport.x, _viewport.y, _viewport.width, _viewport.height));
+  GL_CALL(glDrawArraysInstanced(mode, (GLsizei)first, (GLsizei)count, (GLsizei)instance_count));
+}
+
 
 Context::Context() {}
 
