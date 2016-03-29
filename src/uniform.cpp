@@ -168,6 +168,10 @@ void uniform_sampler::set(TextureUnit const& unit) {
   uniform<int>::set(unit.unit());
 }
 
+void uniform_sampler::set(std::vector<GLint> const& v) {
+  GL_CALL(glProgramUniform1iv(_program.name(), _location, (GLsizei)v.size(), v.data()));
+}
+
 
 attrib::attrib()
   : _location(-1)

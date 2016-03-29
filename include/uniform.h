@@ -3,6 +3,7 @@
 
 #include "gl_type.h"
 #include "program.h"
+#include "texture_unit.h"
 
 #include <vector>
 #include <string>
@@ -105,6 +106,7 @@ class uniform_sampler : public uniform<int> {
 
   public:
     void set(TextureUnit const&);
+    void set(std::vector<GLint> const& v);
 
 };
 
