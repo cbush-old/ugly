@@ -34,7 +34,7 @@ class UniformBuffer {
   
     template<typename Container>
     void subdata(size_t offset, size_t count, Container const& container) {
-      _buffer.subdata(offset, count, container);
+      _buffer.subdata(offset, count, container, GL_UNIFORM_BUFFER);
     }
 
     void bind(GLuint binding);
