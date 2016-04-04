@@ -6,7 +6,7 @@ UniformBuffer::UniformBuffer() {}
 
 UniformBuffer::~UniformBuffer() {}
 
-void UniformBuffer::bind(GLuint binding) {
+void UniformBuffer::bind(GLuint binding) const {
   GL_CALL(glBindBufferBase(
     GL_UNIFORM_BUFFER,
     binding,

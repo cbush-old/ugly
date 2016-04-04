@@ -37,7 +37,7 @@ class UniformBuffer {
       _buffer.subdata(offset, count, container, GL_UNIFORM_BUFFER);
     }
 
-    void bind(GLuint binding);
+    void bind(GLuint binding) const;
 
   private:
     Buffer _buffer;
