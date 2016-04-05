@@ -9,9 +9,6 @@ namespace gl {
 class Texture;
 
 class TextureUnit {
-  private:
-    static std::atomic<unsigned> s_unit;
-
   public:
     TextureUnit();
 
