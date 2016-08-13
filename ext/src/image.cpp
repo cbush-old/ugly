@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 
-#include "png.h"
+#include <png.h>
 
 namespace glx {
 
