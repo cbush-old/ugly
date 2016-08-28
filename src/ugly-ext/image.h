@@ -1,7 +1,7 @@
 #ifndef UGLY_EXT_IMAGE_H
 #define UGLY_EXT_IMAGE_H
 
-#include "ugly.h"
+#include "ugly/ugly.h"
 #include <string>
 
 namespace glx {

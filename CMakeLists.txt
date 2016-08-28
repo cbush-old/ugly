@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 project(ugly)
 
-set(REL_SRC_DIR     ./src)
-set(REL_EXT_DIR     ./ext)
+set(REL_SRC_BASE    ./src)
+set(REL_SRC_DIR     ${REL_SRC_BASE}/ugly)
+set(REL_EXT_DIR     ${REL_SRC_BASE}/ugly-ext)
 
 set(SRC_FILES
   ${REL_SRC_DIR}/bindguard.cpp
@@ -63,10 +64,9 @@ set(INCLUDE_FILES_EXT
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 include_directories(SYSTEM /System/Library/Frameworks/OpenGL.framework/Headers)
-include_directories(SYSTEM /opt/local/include)
+include_directories(SYSTEM /opt/local/include) # png includes for ext
 
-include_directories(${REL_SRC_DIR})
-include_directories(${REL_EXT_DIR})
+include_directories(${REL_SRC_BASE})
 
 add_library(ugly        STATIC ${SRC_FILES} ${INCLUDE_FILES})
 add_library(ugly-ext    STATIC ${SRC_FILES_EXT} ${INCLUDE_FILES_EXT})
