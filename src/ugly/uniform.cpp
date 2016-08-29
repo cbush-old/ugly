@@ -41,7 +41,7 @@ GLint basic_uniform::location() const {
 // Variadic templates are explicitly instantiated only for the types accepted by OpenGL
 // while template specializations, aided by macros, do the translation to the appropriate
 // OpenGL function name.
-#pragma wankfest
+#pragma mark wankfest
 
 
 template<typename... T>

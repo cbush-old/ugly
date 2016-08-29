@@ -61,7 +61,7 @@ set(INCLUDE_FILES_EXT
   ${REL_EXT_DIR}/image.h
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror")
 
 include_directories(SYSTEM /System/Library/Frameworks/OpenGL.framework/Headers)
 include_directories(SYSTEM /opt/local/include) # png includes for ext
