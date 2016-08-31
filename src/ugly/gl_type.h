@@ -89,6 +89,9 @@ struct color {
   float r, g, b, a;
   color() {}
   color(float r, float g, float b, float a): r(r), g(g), b(b), a(a) {}
+  explicit color(vec3<float> v): r(v.x), g(v.y), b(v.z), a(1.f) {}
+  explicit color(vec4<float> v): r(v.x), g(v.y), b(v.z), a(v.w) {}
+
   bool operator==(color const& o) const {
     return r == o.r && g == o.g && b == o.b && a == o.a;
   }
